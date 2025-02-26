@@ -487,6 +487,7 @@ impl<I2c: I2cTrait> smart_battery::SmartBattery for Bq40z50<I2c> {
 
 #[cfg(test)]
 mod tests {
+    use embedded_batteries_async::smart_battery::SmartBattery;
     use embedded_hal_mock::eh1::i2c::{Mock, Transaction};
 
     use super::*;
@@ -554,5 +555,54 @@ mod tests {
         assert_eq!(f.full_access_key_a(), 0x0101);
         assert_eq!(f.full_access_key_b(), 0x1010);
         bq.interface.i2c.done();
+    }
+
+    #[tokio::test]
+    async fn test_battery_status() {
+        let expectations = vec![Transaction::write_read(BQ_ADDR, vec![0x16], vec![0x30, 0x30])];
+        let i2c = Mock::new(&expectations);
+        let mut bq = Bq40z50::new(i2c);
+
+        let status = match bq.battery_status().await {
+            Ok(status) => status,
+            Err(e) => match e {
+                BQ40Z50Error::I2c(err) => panic!(),
+                BQ40Z50Error::BatteryStatus(er) => panic!(),
+            },
+        };
+
+        assert_eq!(status.error_code(), ErrorCode::Ok);
+
+        bq.device.interface.i2c.done();
+    }
+
+    #[tokio::test]
+    async fn test_capacity_mode() {
+        let expectations = vec![
+            Transaction::write(BQ_ADDR, vec![0x03, 0x00, 0x80]),
+            Transaction::write_read(BQ_ADDR, vec![0x0F], vec![100, 0x00]),
+            Transaction::write(BQ_ADDR, vec![0x03, 0x00, 0x00]),
+            Transaction::write_read(BQ_ADDR, vec![0x0F], vec![80, 0x00]),
+        ];
+        let i2c = Mock::new(&expectations);
+        let mut bq = Bq40z50::new(i2c);
+
+        assert_eq!(bq.capacity_mode_state.get(), CapacityModeState::Milliamps);
+
+        let mode = BatteryModeFields::new().with_capacity_mode(true);
+        bq.set_battery_mode(mode).await.unwrap();
+        assert_eq!(bq.capacity_mode_state.get(), CapacityModeState::Centiwatt);
+
+        let mode = BatteryModeFields::new().with_capacity_mode(false);
+        let rem_cap = bq.remaining_capacity().await.unwrap();
+        assert!(matches!(rem_cap, CapacityModeValue::CentiWattUnsigned(100)));
+
+        let info = bq.set_battery_mode(mode).await;
+        assert_eq!(bq.capacity_mode_state.get(), CapacityModeState::Milliamps);
+
+        let rem_cap = bq.remaining_capacity().await.unwrap();
+        assert!(matches!(rem_cap, CapacityModeValue::MilliAmpUnsigned(80)));
+
+        bq.device.interface.i2c.done();
     }
 }
