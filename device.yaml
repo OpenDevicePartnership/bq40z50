@@ -2064,16 +2064,7 @@ BATTERY_STATUS:
       access: RO
       start: 0
       end: 3
-      conversion:
-        name: "ErrCode"
-        OK: 0
-        Busy: 1
-        Reserved: 2
-        Unsupported: 3
-        AccessDenied: 4
-        OverOrUnderflow: 5
-        BadSize: 6
-        UnknownErr: 7
+      conversion: "ErrorCode"
     FD:
       base: bool
       access: RO
