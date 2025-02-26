@@ -1965,15 +1965,15 @@ ABSOLUTE_STATE_OF_CHARGE:
 REMAINING_CAPACITY:
   type: register
   address: 0x0F
-  size_bits: 8
+  size_bits: 16
   reset_value: 0
   access: RO
   fields:
-    ABSOLUTE_STATE_OF_CHARGE:
+    REMAINING_CAPACITY:
       base: uint
       access: RO
       start: 0
-      end: 8
+      end: 16
 
 FULL_CHARGE_CAPACITY:
   type: register
