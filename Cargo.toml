@@ -24,6 +24,7 @@ defmt = { version = "0.3", optional = true }
 embedded-hal = "1.0.0"
 embedded-hal-async = "1.0.0"
 embedded-batteries-async = { git = "https://github.com/OpenDevicePartnership/embedded-batteries" }
+byteorder = { version = "1.5.0", default-features = false }
 
 [dev-dependencies]
 embedded-hal-mock = { version = "0.11.1", features = ["embedded-hal-async"] }
@@ -42,4 +43,4 @@ style = "forbid"
 pedantic = "deny"
 
 [features]
-defmt-03 = ["dep:defmt", "device-driver/defmt-03"]
+defmt-03 = ["dep:defmt", "device-driver/defmt-03", "embedded-batteries-async/defmt"]

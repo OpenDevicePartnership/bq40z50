@@ -1965,15 +1965,15 @@ ABSOLUTE_STATE_OF_CHARGE:
 REMAINING_CAPACITY:
   type: register
   address: 0x0F
-  size_bits: 8
+  size_bits: 16
   reset_value: 0
   access: RO
   fields:
-    ABSOLUTE_STATE_OF_CHARGE:
+    REMAINING_CAPACITY:
       base: uint
       access: RO
       start: 0
-      end: 8
+      end: 16
 
 FULL_CHARGE_CAPACITY:
   type: register
@@ -2064,16 +2064,7 @@ BATTERY_STATUS:
       access: RO
       start: 0
       end: 3
-      conversion:
-        name: "ErrCode"
-        OK: 0
-        Busy: 1
-        Reserved: 2
-        Unsupported: 3
-        AccessDenied: 4
-        OverOrUnderflow: 5
-        BadSize: 6
-        UnknownErr: 7
+      conversion: "ErrorCode"
     FD:
       base: bool
       access: RO
