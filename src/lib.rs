@@ -214,6 +214,71 @@ impl<I2C: I2cTrait> Bq40z50<I2C> {
             CapacityModeState::Milliamps
         });
     }
+
+    /// Read data from an arbitrary register from the device.
+    ///
+    /// If the register you are trying to read exists in the manifest file, use that function instead.
+    ///
+    /// Warning: To avoid loss of data, make sure that the `data` slice passed in is large enough to hold all expected data.
+    /// Otherwise an `Overrun` error will be returned.
+    /// Ensure that the register address is valid in the datasheet. Also ensure that the register is able to be written to.
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if an I2C bus error occurs.
+    ///
+    /// # Safety
+    ///
+    /// This function should only be called with valid register addresses and data slice size.
+    /// Ensure that the register is able to be written to.
+    #[allow(unsafe_code)]
+    pub async unsafe fn read_register_unchecked(
+        &mut self,
+        reg_address: u8,
+        data: &mut [u8],
+    ) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        self.device
+            .interface
+            .i2c
+            .write_read(BQ_ADDR, &[reg_address], data)
+            .await
+            .map_err(BQ40Z50Error::I2c)
+    }
+
+    /// Write data to an arbitrary register on the device.
+    ///
+    /// If the register you are trying to read exists in the manifest file, use that function instead.
+    ///
+    /// Warning: To avoid loss of data, make sure that the `data` slice passed in is the right size.
+    /// Ensure that the register address is valid in the datasheet. Also ensure that the register is able to be written to.
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if an I2C bus error occurs.
+    ///
+    /// # Safety
+    ///
+    /// This function should only be called with valid register addresses and data slice size.
+    /// Ensure that the register is able to be written to.
+    #[allow(unsafe_code)]
+    pub async unsafe fn write_register_unchecked(
+        &mut self,
+        reg_address: u8,
+        data: &[u8],
+    ) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        debug_assert!((data.len() <= LARGEST_REG_SIZE_BYTES), "Register size too big");
+
+        // Add one byte for register address
+        let mut buf = [0u8; 1 + LARGEST_REG_SIZE_BYTES];
+        buf[0] = reg_address;
+        buf[1..=data.len()].copy_from_slice(data);
+        self.device
+            .interface
+            .i2c
+            .write(BQ_ADDR, &buf[..=data.len()])
+            .await
+            .map_err(BQ40Z50Error::I2c)
+    }
 }
 
 impl<I2C: I2cTrait> smart_battery::ErrorType for Bq40z50<I2C> {
@@ -569,6 +634,30 @@ mod tests {
         };
 
         assert_eq!(status.error_code(), ErrorCode::Ok);
+
+        bq.device.interface.i2c.done();
+    }
+
+    #[tokio::test]
+    #[allow(unsafe_code)]
+    async fn test_read_write_unchecked() {
+        let expectations = vec![
+            Transaction::write_read(BQ_ADDR, vec![0x16], vec![0x30, 0x30]),
+            Transaction::write(BQ_ADDR, vec![0x16, 0x2F, 0x30]),
+        ];
+        let i2c = Mock::new(&expectations);
+        let mut bq = Bq40z50::new(i2c);
+
+        let mut data = [0u8; 2];
+
+        unsafe {
+            bq.read_register_unchecked(0x16, &mut data).await.unwrap();
+        }
+        data[0] -= 1;
+
+        unsafe {
+            bq.write_register_unchecked(0x16, &data).await.unwrap();
+        }
 
         bq.device.interface.i2c.done();
     }
