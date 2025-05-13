@@ -29,11 +29,16 @@ pub enum BQ40Z50Error<I2cError> {
 }
 
 const BQ_ADDR: u8 = 0x0B;
+const BQ40Z50_REG_MFG_BLOCK_ACCESS: usize = 0x44; // BQ40Z50 Manufacturer block access
 const LARGEST_REG_SIZE_BYTES: usize = 5;
 const LARGEST_CMD_SIZE_BYTES: usize = 32;
 const LARGEST_BUF_SIZE_BYTES: usize = 33;
-const MAC_CMD_ADDR_SIZE_BYTES: usize = 2;
-const MAC_CMD_ADDR_SIZE_BITS: usize = MAC_CMD_ADDR_SIZE_BYTES * 8;
+const MAC_REG_ADDR_SIZE_BYTES: usize = 2; // Manufacturing access register size
+const MAC_CMD_ADDR_SIZE_BYTES: usize = 1; // Manufacturing access command size
+const MAC_CMD_LEN_SIZE_BYTES: usize = 1; // Manufacturing access length size
+const BQ40Z50_MFG_ACCESS_DATA_SIZE: usize = 32; // Battery mfg access data size
+const MFG_ACCESS_BLOCK_SIZE: usize =
+    MAC_CMD_LEN_SIZE_BYTES + MAC_CMD_ADDR_SIZE_BYTES + MAC_REG_ADDR_SIZE_BYTES + BQ40Z50_MFG_ACCESS_DATA_SIZE;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum CapacityModeState {
@@ -141,16 +146,27 @@ impl<I2C: I2cTrait> device_driver::AsyncCommandInterface for DeviceInterface<I2C
         output: &mut [u8],
     ) -> Result<(), Self::Error> {
         debug_assert!((input.len() <= LARGEST_CMD_SIZE_BYTES), "Command size too big");
+        const RESPONSE_OFFSET: usize = MAC_CMD_LEN_SIZE_BYTES + MAC_REG_ADDR_SIZE_BYTES;
+        let mut rx_buf = [0u8; MFG_ACCESS_BLOCK_SIZE];
 
-        let mut buf = [0u8; 1 + MAC_CMD_ADDR_SIZE_BYTES + LARGEST_CMD_SIZE_BYTES];
-        buf[0] = ((address >> MAC_CMD_ADDR_SIZE_BITS) & 0xFF) as u8;
-        buf[1] = ((address >> 8) & 0xFF) as u8;
-        buf[2] = (address & 0xFF) as u8;
-        buf[3..input.len() + 3].copy_from_slice(input);
+        let mut write_buf = [0u8; MFG_ACCESS_BLOCK_SIZE];
+        write_buf[0] = ((address >> 24) & 0xFF) as u8; // Byte 0       Command
+        write_buf[1] = ((address >> 16) & 0xFF) as u8; // Byte 1       Length (n)
+        write_buf[2] = ((address >> 8) & 0xFF) as u8; // Byte 2       Register (LSB)
+        write_buf[3] = (address & 0xFF) as u8; // Byte 3       Register (MSB)
+        write_buf[4..4 + input.len()].copy_from_slice(input); // Byte 4->n    Data
         self.i2c
-            .write_read(BQ_ADDR, &buf[..=input.len() + MAC_CMD_ADDR_SIZE_BYTES], output)
+            .write(BQ_ADDR, &write_buf[..4 + input.len()])
             .await
-            .map_err(BQ40Z50Error::I2c)
+            .map_err(BQ40Z50Error::I2c)?;
+
+        let read_cmd = [BQ40Z50_REG_MFG_BLOCK_ACCESS as u8];
+        self.i2c
+            .write_read(BQ_ADDR, &read_cmd, &mut rx_buf[..output.len() + RESPONSE_OFFSET])
+            .await
+            .map_err(BQ40Z50Error::I2c)?;
+        output.copy_from_slice(&rx_buf[RESPONSE_OFFSET..output.len() + RESPONSE_OFFSET]);
+        Ok(())
     }
 }
 

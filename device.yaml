@@ -8,7 +8,7 @@ config:
 
 MAC_DEVICE_TYPE:
   type: command
-  address: 0x440100
+  address: 0x44020100
   size_bits_out: 16
   fields_out:
     DEVICE_TYPE:
@@ -20,7 +20,7 @@ MAC_DEVICE_TYPE:
 
 MAC_FIRMWARE_VERSION:
   type: command
-  address: 0x440200
+  address: 0x44020200
   size_bits_out: 88
   fields_out:
     DEVICE_NUMBER:
@@ -43,12 +43,20 @@ MAC_FIRMWARE_VERSION:
       base: uint
       start: 56
       end: 72
+    RESERVED_1:
+      base: uint
+      start: 72
+      end: 80  
+    RESERVED_2:
+      base: uint
+      start: 80
+      end: 88
   description: |
     The device can be checked for the firmware version of the IC.
 
 MAC_HARDWARE_VERSION:
   type: command
-  address: 0x440300
+  address: 0x44020300
   size_bits_out: 8
   fields_out:
     HW_VERS:
@@ -58,7 +66,7 @@ MAC_HARDWARE_VERSION:
 
 MAC_INSTRUCTION_FLASH_SIGNATURE:
   type: command
-  address: 0x440400
+  address: 0x44020400
   size_bits_out: 8
   fields_out:
     INSN_FLSH_SIG:
@@ -68,7 +76,7 @@ MAC_INSTRUCTION_FLASH_SIGNATURE:
 
 MAC_STATIC_DF_SIGNATURE:
   type: command
-  address: 0x440500
+  address: 0x44020500
   size_bits_out: 16
   fields_out:
     STATIC_DF_SIG:
@@ -81,7 +89,7 @@ MAC_STATIC_DF_SIGNATURE:
 
 MAC_CHEM_ID:
   type: command
-  address: 0x440600
+  address: 0x44020600
   size_bits_out: 8
   fields_out:
     CHEM_ID:
@@ -91,7 +99,7 @@ MAC_CHEM_ID:
 
 MAC_STATIC_CHEM_DF_SIG:
   type: command
-  address: 0x440800
+  address: 0x44020800
   size_bits_out: 16
   fields_out:
     STATIC_CHEM_DF_SIG:
@@ -104,7 +112,7 @@ MAC_STATIC_CHEM_DF_SIG:
 
 MAC_ALL_DF_SIGNATURE:
   type: command
-  address: 0x440900
+  address: 0x44020900
   size_bits_out: 16
   fields_out:
     STATIC_CHEM_DF_SIG:
@@ -272,7 +280,7 @@ MAC_DEVICE_RESET:
 
 MAC_SAFETY_ALERT:
   type: command
-  address: 0x445000
+  address: 0x44025000
   size_bits_out: 32
   fields_out:
     CUV:
@@ -347,7 +355,7 @@ MAC_SAFETY_ALERT:
 
 MAC_SAFETY_STATUS:
   type: command
-  address: 0x445100
+  address: 0x44025100
   size_bits_out: 32
   fields_out:
     CUV:
@@ -428,7 +436,7 @@ MAC_SAFETY_STATUS:
 
 MAC_PF_ALERT:
   type: command
-  address: 0x445200
+  address: 0x44025200
   size_bits_out: 32
   fields_out:
     SUV:
@@ -503,7 +511,7 @@ MAC_PF_ALERT:
 
 MAC_PF_STATUS:
   type: command
-  address: 0x445300
+  address: 0x44025300
   size_bits_out: 32
   fields_out:
     SUV:
@@ -587,7 +595,7 @@ MAC_PF_STATUS:
 
 MAC_OPERATION_STATUS:
   type: command
-  address: 0x445400
+  address: 0x44025400
   size_bits_out: 32
   fields_out:
     PRES:
@@ -681,7 +689,7 @@ MAC_OPERATION_STATUS:
 
 MAC_CHARGING_STATUS:
   type: command
-  address: 0x445500
+  address: 0x44025500
   size_bits_out: 32
   fields_out:
     UT:
@@ -801,7 +809,7 @@ MAC_GAUGING_STATUS:
 
 MAC_MANUFACTURING_STATUS:
   type: command
-  address: 0x445700
+  address: 0x44025700
   size_bits_out: 16
   fields_out:
     PCHG_EN:
@@ -843,7 +851,7 @@ MAC_MANUFACTURING_STATUS:
 
 MAC_AFE_REG:
   type: command
-  address: 0x445800
+  address: 0x44025800
   size_bits_out: 168
   fields_out:
     AFE_INT_STATUS:
@@ -933,7 +941,7 @@ MAC_AFE_REG:
 
 MAC_LIFETIME_DATA_BLOCK_1:
   type: command
-  address: 0x446000
+  address: 0x44026000
   size_bits_out: 256
   fields_out:
     CELL_1_MAX_V:
@@ -1015,7 +1023,7 @@ MAC_LIFETIME_DATA_BLOCK_1:
 
 MAC_LIFETIME_DATA_BLOCK_2:
   type: command
-  address: 0x446100
+  address: 0x44026100
   size_bits_out: 64
   fields_out:
     NUM_SHUTDOWNS:
@@ -1053,7 +1061,7 @@ MAC_LIFETIME_DATA_BLOCK_2:
 
 MAC_LIFETIME_DATA_BLOCK_3:
   type: command
-  address: 0x446200
+  address: 0x44026200
   size_bits_out: 128
   fields_out:
     TOTAL_FW_RUNTIME:
@@ -1091,7 +1099,7 @@ MAC_LIFETIME_DATA_BLOCK_3:
 
 MAC_LIFETIME_DATA_BLOCK_4:
   type: command
-  address: 0x446300
+  address: 0x44026300
   size_bits_out: 256
   fields_out:
     NUM_COV_EVENTS:
@@ -1161,7 +1169,7 @@ MAC_LIFETIME_DATA_BLOCK_4:
 
 MAC_LIFETIME_DATA_BLOCK_5:
   type: command
-  address: 0x446400
+  address: 0x44026400
   size_bits_out: 256
   fields_out:
     NUM_ASCC_EVENTS:
@@ -1231,7 +1239,7 @@ MAC_LIFETIME_DATA_BLOCK_5:
 
 MAC_MANUFACTURE_INFO:
   type: command
-  address: 0x447000
+  address: 0x44027000
   size_bits_out: 256
   fields_out:
     MANUFACTURE_INFO_0:
@@ -1253,7 +1261,7 @@ MAC_MANUFACTURE_INFO:
 
 MAC_DA_STATUS_1:
   type: command
-  address: 0x447100
+  address: 0x44027100
   size_bits_out: 256
   fields_out:
     CELL_VOLTAGE_1:
@@ -1323,7 +1331,7 @@ MAC_DA_STATUS_1:
 
 MAC_DA_STATUS_2:
   type: command
-  address: 0x447200
+  address: 0x44027200
   size_bits_out: 112
   fields_out:
     INT_TEMP:
@@ -1357,7 +1365,7 @@ MAC_DA_STATUS_2:
 
 MAC_GAUGE_STATUS_1:
   type: command
-  address: 0x447300
+  address: 0x44027300
   size_bits_out: 256
   fields_out:
     TRUE_REM_Q:
@@ -1427,7 +1435,7 @@ MAC_GAUGE_STATUS_1:
 
 MAC_GAUGE_STATUS_2:
   type: command
-  address: 0x447400
+  address: 0x44027400
   size_bits_out: 256
   fields_out:
     PACK_GRID:
@@ -1517,7 +1525,7 @@ MAC_GAUGE_STATUS_2:
 
 MAC_GAUGE_STATUS_3:
   type: command
-  address: 0x447500
+  address: 0x44027500
   size_bits_out: 192
   fields_out:
     QMAX_0:
@@ -1571,7 +1579,7 @@ MAC_GAUGE_STATUS_3:
 
 MAC_CB_STATUS:
   type: command
-  address: 0x447600
+  address: 0x44027600
   size_bits_out: 64
   fields_out:
     CB_TIME_0:
@@ -1593,7 +1601,7 @@ MAC_CB_STATUS:
 
 MAC_STATE_OF_HEALTH:
   type: command
-  address: 0x447700
+  address: 0x44027700
   size_bits_out: 32
   fields_out:
     SOH_FCC:
@@ -1607,7 +1615,7 @@ MAC_STATE_OF_HEALTH:
 
 MAC_FILTER_CAPACITY:
   type: command
-  address: 0x447800
+  address: 0x44027800
   size_bits_out: 64
   fields_out:
     FILT_REM_CAP:
@@ -4071,4 +4079,3 @@ FILTER_CAPACITY:
       access: RO
       start: 48
       end: 64
-
