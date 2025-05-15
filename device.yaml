@@ -3162,26 +3162,26 @@ AFE_REG:
       start: 160
       end: 168
 
-TURBO_POWER:
+MAX_TURBO_POWER:
   type: register
   address: 0x59
   size_bits: 16
   access: RW
   fields:
-    TURBO_POWER:
-      base: uint
+    MAX_TURBO_POWER:
+      base: int
       access: RW
       start: 0
       end: 16
 
-TURBO_FINAL:
+SUS_TURBO_POWER:
   type: register
   address: 0x5A
   size_bits: 16
   access: RW
   fields:
-    TURBO_FINAL:
-      base: uint
+    SUS_TURBO_POWER:
+      base: int
       access: RW
       start: 0
       end: 16
@@ -3603,6 +3603,32 @@ LIFETIME_DATA_BLOCK_5:
       access: RO
       start: 240
       end: 256
+
+TURBO_RHF_EFFECTIVE:
+  type: register
+  address: 0x68
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    TURBO_RHF_EFFECTIVE :
+      base: int
+      access: RO
+      start: 0
+      end: 16
+
+TURBO_VLOAD:
+  type: register
+  address: 0x69
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    TURBO_VLOAD:
+      base: int
+      access: RO
+      start: 0
+      end: 16
 
 MANUFACTURE_INFO:
   type: buffer
