@@ -56,11 +56,17 @@ jobs:
         with:
           toolchain: ${{ matrix.toolchain }}
           components: clippy
-      - name: cargo clippy
+      - name: cargo clippy r1
         uses: giraffate/clippy-action@v1
         with:
           reporter: 'github-pr-check'
-          clippy_flags: -- -F clippy::suspicious -F clippy::correctness -F clippy::perf -F clippy::style
+          clippy_flags: --features r1 -- -F clippy::suspicious -F clippy::correctness -F clippy::perf -F clippy::style
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: cargo clippy r4
+        uses: giraffate/clippy-action@v1
+        with:
+          reporter: 'github-pr-check'
+          clippy_flags: --features r4 -- -F clippy::suspicious -F clippy::correctness -F clippy::perf -F clippy::style
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   # Enable once we have a released crate
@@ -90,28 +96,14 @@ jobs:
           submodules: true
       - name: Install nightly
         uses: dtolnay/rust-toolchain@nightly
-      - name: cargo doc
-        run: cargo doc --no-deps --all-features
+      - name: cargo doc r1
+        run: cargo doc --no-deps --features r1
         env:
           RUSTDOCFLAGS: --cfg docsrs
-
-  hack:
-    # cargo-hack checks combinations of feature flags to ensure that features are all additive
-    # which is required for feature unification
-    runs-on: ubuntu-latest
-    name: ubuntu / stable / features
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Install stable
-        uses: dtolnay/rust-toolchain@stable
-      - name: cargo install cargo-hack
-        uses: taiki-e/install-action@cargo-hack
-      # intentionally no target specifier; see https://github.com/jonhoo/rust-ci-conf/pull/4
-      # --feature-powerset runs for every combination of features
-      - name: cargo hack
-        run: cargo hack --feature-powerset check
+      - name: cargo doc r4
+        run: cargo doc --no-deps --features r4
+        env:
+          RUSTDOCFLAGS: --cfg docsrs
 
   deny:
     # cargo-deny checks licenses, advisories, sources, and bans for
@@ -164,5 +156,7 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.msrv }}
-      - name: cargo +${{ matrix.msrv }} check
-        run: cargo check
+      - name: cargo +${{ matrix.msrv }} check r1
+        run: cargo check --features r1
+      - name: cargo +${{ matrix.msrv }} check r4
+        run: cargo check --features r4

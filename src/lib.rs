@@ -29,8 +29,11 @@ pub enum BQ40Z50Error<I2cError> {
 }
 
 const BQ_ADDR: u8 = 0x0B;
+#[cfg(any(feature = "r1", feature = "r4"))]
 const LARGEST_REG_SIZE_BYTES: usize = 5;
+#[cfg(any(feature = "r1", feature = "r4"))]
 const LARGEST_CMD_SIZE_BYTES: usize = 32;
+#[cfg(any(feature = "r1", feature = "r4"))]
 const LARGEST_BUF_SIZE_BYTES: usize = 33;
 const MAC_CMD_ADDR_SIZE_BYTES: usize = 2;
 const MAC_CMD_ADDR_SIZE_BITS: usize = MAC_CMD_ADDR_SIZE_BYTES * 8;
@@ -84,9 +87,16 @@ pub struct DeviceInterface<I2C: I2cTrait> {
     pub i2c: I2C,
 }
 
+#[cfg(feature = "r1")]
 device_driver::create_device!(
     device_name: Device,
-    manifest: "device.yaml"
+    manifest: "device_R1.yaml"
+);
+
+#[cfg(feature = "r4")]
+device_driver::create_device!(
+    device_name: Device,
+    manifest: "device_R4.yaml"
 );
 
 impl<I2C: I2cTrait> device_driver::AsyncRegisterInterface for DeviceInterface<I2C> {

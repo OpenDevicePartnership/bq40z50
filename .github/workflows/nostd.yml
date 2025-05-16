@@ -26,5 +26,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: rustup target add ${{ matrix.target }}
         run: rustup target add ${{ matrix.target }}
-      - name: cargo check
-        run: cargo check --target ${{ matrix.target }} --no-default-features
+      - name: cargo check r1
+        run: cargo check --target ${{ matrix.target }} --features r1
+      - name: cargo check r4
+        run: cargo check --target ${{ matrix.target }} --features r4
