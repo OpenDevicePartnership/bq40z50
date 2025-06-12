@@ -210,6 +210,62 @@ MAC_SEAL:
   type: command
   address: 0x443000
 
+MAC_SECURITY_KEYS:
+  type: command
+  address: 0x443500
+  size_bits_in: 64
+  fields_in:
+    UNSEAL_KEY_A:
+      base: uint
+      start: 0
+      end: 16
+    UNSEAL_KEY_B:
+      base: uint
+      start: 16
+      end: 32
+    FULL_ACCESS_KEY_A:
+      base: uint
+      start: 32
+      end: 48
+    FULL_ACCESS_KEY_B:
+      base: uint
+      start: 48
+      end: 64
+  size_bits_out: 64
+  fields_out:
+    UNSEAL_KEY_A:
+      base: uint
+      start: 0
+      end: 16
+    UNSEAL_KEY_B:
+      base: uint
+      start: 16
+      end: 32
+    FULL_ACCESS_KEY_A:
+      base: uint
+      start: 32
+      end: 48
+    FULL_ACCESS_KEY_B:
+      base: uint
+      start: 48
+      end: 64
+
+MAC_AUTH_KEY:
+  type: command
+  address: 0x443700
+  size_bits_in: 128
+  fields_in:
+    AUTHENTICATION_KEY:
+      base: uint
+      start: 0
+      end: 128
+  size_bits_out: 128
+  fields_out:
+    AUTHENTICATION_KEY:
+      base: uint
+      start: 0
+      end: 128
+
 MAC_DEVICE_RESET:
   type: command
   address: 0x444100
@@ -1570,6 +1626,28 @@ MAC_FILTER_CAPACITY:
       base: uint
       start: 48
       end: 64
+
+MAC_MANUFACTURE_INFO_B:
+  type: command
+  address: 0x447A00
+  size_bits_out: 256
+  fields_out:
+    MANUFACTURE_INFO_B_0:
+      base: uint
+      start: 0
+      end: 64
+    MANUFACTURE_INFO_B_1:
+      base: uint
+      start: 64
+      end: 128
+    MANUFACTURE_INFO_B_2:
+      base: uint
+      start: 128
+      end: 192
+    MANUFACTURE_INFO_B_3:
+      base: uint
+      start: 192
+      end: 256
 
 MAC_ROM_MODE:
   type: command

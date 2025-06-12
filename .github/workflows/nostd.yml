@@ -18,6 +18,7 @@ jobs:
     strategy:
       matrix:
         target: [thumbv8m.main-none-eabihf]
+        chip-rev: [r1, r4]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,5 +27,5 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: rustup target add ${{ matrix.target }}
         run: rustup target add ${{ matrix.target }}
-      - name: cargo check
-        run: cargo check --target ${{ matrix.target }} --no-default-features
+      - name: cargo check ${{ matrix.chip-rev }}
+        run: cargo check --target ${{ matrix.target }} --features ${{ matrix.chip-rev }}

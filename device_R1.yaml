@@ -1,0 +1,4017 @@
+config:
+  register_address_type: u8
+  command_address_type: u32
+  buffer_address_type: u8
+  default_byte_order: LE
+  default_bit_order: LSB0
+  defmt_feature: defmt-03
+
+MAC_DEVICE_TYPE:
+  type: command
+  address: 0x440100
+  size_bits_out: 16
+  fields_out:
+    DEVICE_TYPE:
+      base: uint
+      start: 0
+      end: 16
+  description: |
+    The device can be checked for the IC part number.
+
+MAC_FIRMWARE_VERSION:
+  type: command
+  address: 0x440200
+  size_bits_out: 88
+  fields_out:
+    DEVICE_NUMBER:
+      base: uint
+      start: 0
+      end: 16
+    VERSION:
+      base: uint
+      start: 16
+      end: 32
+    BUILD_NUMBER:
+      base: uint
+      start: 32
+      end: 48
+    FIRMWARE_TYPE:
+      base: uint
+      start: 48
+      end: 56
+    IMPEDENCE_TRACK_VERS:
+      base: uint
+      start: 56
+      end: 72
+  description: |
+    The device can be checked for the firmware version of the IC.
+
+MAC_HARDWARE_VERSION:
+  type: command
+  address: 0x440300
+  size_bits_out: 8
+  fields_out:
+    HW_VERS:
+      base: uint
+      start: 0
+      end: 8
+
+MAC_INSTRUCTION_FLASH_SIGNATURE:
+  type: command
+  address: 0x440400
+  size_bits_out: 8
+  fields_out:
+    INSN_FLSH_SIG:
+      base: uint
+      start: 0
+      end: 8
+
+MAC_STATIC_DF_SIGNATURE:
+  type: command
+  address: 0x440500
+  size_bits_out: 16
+  fields_out:
+    STATIC_DF_SIG:
+      base: uint
+      start: 0
+      end: 15
+    SIG_MISMATCH:
+      base: bool
+      start: 15
+
+MAC_CHEM_ID:
+  type: command
+  address: 0x440600
+  size_bits_out: 8
+  fields_out:
+    CHEM_ID:
+      base: uint
+      start: 0
+      end: 8
+
+MAC_STATIC_CHEM_DF_SIG:
+  type: command
+  address: 0x440800
+  size_bits_out: 16
+  fields_out:
+    STATIC_CHEM_DF_SIG:
+      base: uint
+      start: 0
+      end: 15
+    SIG_MISMATCH:
+      base: bool
+      start: 15
+
+MAC_ALL_DF_SIGNATURE:
+  type: command
+  address: 0x440900
+  size_bits_out: 16
+  fields_out:
+    STATIC_CHEM_DF_SIG:
+      base: uint
+      start: 0
+      end: 15
+    SIG_MISMATCH:
+      base: bool
+      start: 15
+
+MAC_SHUTDOWN_MODE:
+  type: command
+  address: 0x441000
+
+MAC_SLEEP_MODE:
+  type: command
+  address: 0x441100
+
+MAC_AUTO_CC_OFFSET:
+  type: command
+  address: 0x441300
+
+MAC_FUSE_TOGGLE:
+  type: command
+  address: 0x441D00
+
+MAC_PCHG_FET_TOGGLE:
+  type: command
+  address: 0x441E00
+
+MAC_CHG_FET_TOGGLE:
+  type: command
+  address: 0x441F00
+
+MAC_DSG_FET_TOGGLE:
+  type: command
+  address: 0x442000
+
+MAC_GAUGING:
+  type: command
+  address: 0x442100
+  description: |
+    This command enables or disables the gauging function to ease
+    testing during manufacturing. 
+
+MAC_FET_CTRL:
+  type: command
+  address: 0x442200
+
+MAC_LIFETIME_DATA_COLLECTION:
+  type: command
+  address: 0x442300
+
+MAC_PERMANENT_FAILURE:
+  type: command
+  address: 0x442400
+
+MAC_BLACK_BLOCK_RECORDER:
+  type: command
+  address: 0x442500
+
+MAC_FUSE:
+  type: command
+  address: 0x442600
+
+MAC_LED_DISP_EN:
+  type: command
+  address: 0x442700
+
+MAC_LIFETIME_DATA_RST:
+  type: command
+  address: 0x442800
+
+MAC_PF_DATA_RST:
+  type: command
+  address: 0x442900
+
+MAC_BLK_BOX_REC_RESET:
+  type: command
+  address: 0x442A00
+
+MAC_LED_TOGGLE:
+  type: command
+  address: 0x442B00
+
+MAC_LED_DISP_PRESS:
+  type: command
+  address: 0x442C00
+
+MAC_CALIBRATION_MODE:
+  type: command
+  address: 0x442D00
+
+MAC_LIFETIME_DATA_FLUSH:
+  type: command
+  address: 0x442E00
+
+MAC_LIFETIME_DATA_SPEED_UP_MODE:
+  type: command
+  address: 0x442F00
+
+MAC_SEAL:
+  type: command
+  address: 0x443000
+
+MAC_DEVICE_RESET:
+  type: command
+  address: 0x444100
+
+MAC_SAFETY_ALERT:
+  type: command
+  address: 0x445000
+  size_bits_out: 32
+  fields_out:
+    CUV:
+      base: bool
+      start: 0
+    COV:
+      base: bool
+      start: 1
+    OCC1:
+      base: bool
+      start: 2
+    OCC2:
+      base: bool
+      start: 3
+    OCD1:
+      base: bool
+      start: 4
+    OCD2:
+      base: bool
+      start: 5
+    AOLDL:
+      base: bool
+      start: 7
+    ASCCL:
+      base: bool
+      start: 9
+    ASCDL:
+      base: bool
+      start: 11
+    OTC:
+      base: bool
+      start: 12
+    OTD:
+      base: bool
+      start: 13
+    CUVC:
+      base: bool
+      start: 14
+    OTF:
+      base: bool
+      start: 16
+    PTO:
+      base: bool
+      start: 18
+    PTOS:
+      base: bool
+      start: 19
+    CTO:
+      base: bool
+      start: 20
+    CTOS:
+      base: bool
+      start: 21
+    OC:
+      base: bool
+      start: 22
+    CHGC:
+      base: bool
+      start: 23
+    CHGV:
+      base: bool
+      start: 24
+    PCHGC:
+      base: bool
+      start: 25
+    UTC:
+      base: bool
+      start: 26
+    UTD:
+      base: bool
+      start: 27
+
+MAC_SAFETY_STATUS:
+  type: command
+  address: 0x445100
+  size_bits_out: 32
+  fields_out:
+    CUV:
+      base: bool
+      start: 0
+    COV:
+      base: bool
+      start: 1
+    OCC1:
+      base: bool
+      start: 2
+    OCC2:
+      base: bool
+      start: 3
+    OCD1:
+      base: bool
+      start: 4
+    OCD2:
+      base: bool
+      start: 5
+    AOLD:
+      base: bool
+      start: 6
+    AOLDL:
+      base: bool
+      start: 7
+    ASCC:
+      base: bool
+      start: 8
+    ASCCL:
+      base: bool
+      start: 9
+    ASCD:
+      base: bool
+      start: 10
+    ASCDL:
+      base: bool
+      start: 11
+    OTC:
+      base: bool
+      start: 12
+    OTD:
+      base: bool
+      start: 13
+    CUVC:
+      base: bool
+      start: 14
+    OTF:
+      base: bool
+      start: 16
+    PTO:
+      base: bool
+      start: 18
+    PTOS:
+      base: bool
+      start: 19
+    CTO:
+      base: bool
+      start: 20
+    OC:
+      base: bool
+      start: 22
+    CHGC:
+      base: bool
+      start: 23
+    CHGV:
+      base: bool
+      start: 24
+    PCHGC:
+      base: bool
+      start: 25
+    UTC:
+      base: bool
+      start: 26
+    UTD:
+      base: bool
+      start: 27
+
+MAC_PF_ALERT:
+  type: command
+  address: 0x445200
+  size_bits_out: 32
+  fields_out:
+    SUV:
+      base: bool
+      start: 0
+    SOV:
+      base: bool
+      start: 1
+    SOCC:
+      base: bool
+      start: 2
+    SOCD:
+      base: bool
+      start: 3
+    SOT:
+      base: bool
+      start: 4
+    SOTF:
+      base: bool
+      start: 6
+    QIM:
+      base: bool
+      start: 7
+    CB:
+      base: bool
+      start: 8
+    IMP:
+      base: bool
+      start: 9
+    CD:
+      base: bool
+      start: 10
+    VIMR:
+      base: bool
+      start: 11
+    VIMA:
+      base: bool
+      start: 12
+    CFETF:
+      base: bool
+      start: 16
+    DFETF:
+      base: bool
+      start: 17
+    FUSE:
+      base: bool
+      start: 19
+    AFER:
+      base: bool
+      start: 20
+    AFEC:
+      base: bool
+      start: 21
+    SECOND_LVL:
+      base: bool
+      start: 22
+    OPNC:
+      base: bool
+      start: 25
+    TS1:
+      base: bool
+      start: 28
+    TS2:
+      base: bool
+      start: 29
+    TS3:
+      base: bool
+      start: 30
+    TS4:
+      base: bool
+      start: 31
+
+MAC_PF_STATUS:
+  type: command
+  address: 0x445300
+  size_bits_out: 32
+  fields_out:
+    SUV:
+      base: bool
+      start: 0
+    SOV:
+      base: bool
+      start: 1
+    SOCC:
+      base: bool
+      start: 2
+    SOCD:
+      base: bool
+      start: 3
+    SOT:
+      base: bool
+      start: 4
+    SOTF:
+      base: bool
+      start: 6
+    QIM:
+      base: bool
+      start: 7
+    CB:
+      base: bool
+      start: 8
+    IMP:
+      base: bool
+      start: 9
+    CD:
+      base: bool
+      start: 10
+    VIMR:
+      base: bool
+      start: 11
+    VIMA:
+      base: bool
+      start: 12
+    CFETF:
+      base: bool
+      start: 16
+    DFETF:
+      base: bool
+      start: 17
+    FUSE:
+      base: bool
+      start: 19
+    AFER:
+      base: bool
+      start: 20
+    AFEC:
+      base: bool
+      start: 21
+    SECOND_LVL:
+      base: bool
+      start: 22
+    PTC:
+      base: bool
+      start: 23
+    IFC:
+      base: bool
+      start: 24
+    OPNCELL:
+      base: bool
+      start: 25
+    DFW:
+      base: bool
+      start: 26
+    TS1:
+      base: bool
+      start: 28
+    TS2:
+      base: bool
+      start: 29
+    TS3:
+      base: bool
+      start: 30
+    TS4:
+      base: bool
+      start: 31
+
+MAC_OPERATION_STATUS:
+  type: command
+  address: 0x445400
+  size_bits_out: 32
+  fields_out:
+    PRES:
+      base: bool
+      start: 0
+    DSG:
+      base: bool
+      start: 1
+    CHG:
+      base: bool
+      start: 2
+    PCHG:
+      base: bool
+      start: 3
+    FUSE:
+      base: bool
+      start: 5
+    BTP_INT:
+      base: bool
+      start: 7
+    SEC:
+      base: uint
+      start: 8
+      end: 10
+      conversion:
+        name: "MACSecurityMode"
+        Reserved: 0
+        FullAccess: 1
+        UnSealed: 2
+        Sealed: 3
+    SDV:
+      base: bool
+      start: 10
+    SS:
+      base: bool
+      start: 11
+    PF:
+      base: bool
+      start: 12
+    XDSG:
+      base: bool
+      start: 13
+    XCHG:
+      base: bool
+      start: 14
+    SLEEP:
+      base: bool
+      start: 15
+    SDM:
+      base: bool
+      start: 16
+    LED:
+      base: bool
+      start: 17
+    AUTH:
+      base: bool
+      start: 18
+    AUTOCALM:
+      base: bool
+      start: 19
+    CAL:
+      base: bool
+      start: 20
+    CAL_OFFSET:
+      base: bool
+      start: 21
+    XL:
+      base: bool
+      start: 22
+    SLEEPM:
+      base: bool
+      start: 23
+    INIT:
+      base: bool
+      start: 24
+    SMBLCAL:
+      base: bool
+      start: 25
+    SLPAD:
+      base: bool
+      start: 26
+    SLPCC:
+      base: bool
+      start: 27
+    CB:
+      base: bool
+      start: 28
+    EMSHUT:
+      base: bool
+      start: 29
+
+MAC_CHARGING_STATUS:
+  type: command
+  address: 0x445500
+  size_bits_out: 32
+  fields_out:
+    UT:
+      base: bool
+      start: 0
+    LT:
+      base: bool
+      start: 1
+    STL:
+      base: bool
+      start: 2
+    RT:
+      base: bool
+      start: 3
+    STH:
+      base: bool
+      start: 4
+    HT:
+      base: bool
+      start: 5
+    OT:
+      base: bool
+      start: 6
+    PV:
+      base: bool
+      start: 8
+    LV:
+      base: bool
+      start: 9
+    MV:
+      base: bool
+      start: 10
+    HV:
+      base: bool
+      start: 11
+    CHG_IN:
+      base: bool
+      start: 12
+    MCHG:
+      base: bool
+      start: 13
+    VCT:
+      base: bool
+      start: 14
+    CCR:
+      base: bool
+      start: 15
+    CVR:
+      base: bool
+      start: 16
+    CCC:
+      base: bool
+      start: 17
+
+MAC_GAUGING_STATUS:
+  type: command
+  address: 0x445600
+  size_bits_out: 32
+  fields_out:
+    FD:
+      base: bool
+      start: 0
+    FC:
+      base: bool
+      start: 1
+    TD:
+      base: bool
+      start: 2
+    TC:
+      base: bool
+      start: 3
+    BAL_EN:
+      base: bool
+      start: 4
+    EDV:
+      base: bool
+      start: 5
+    DSG:
+      base: bool
+      start: 6
+    CF:
+      base: bool
+      start: 7
+    REST:
+      base: bool
+      start: 8
+    R_DIS:
+      base: bool
+      start: 10
+    VOK:
+      base: bool
+      start: 11
+    QEN:
+      base: bool
+      start: 12
+    SLPQMAX:
+      base: bool
+      start: 13
+    NSFM:
+      base: bool
+      start: 15
+    VDQ:
+      base: bool
+      start: 16
+    QMAX:
+      base: bool
+      start: 17
+    RX:
+      base: bool
+      start: 18
+    LDMD:
+      base: bool
+      start: 19
+    OCVFR:
+      base: bool
+      start: 20
+
+MAC_MANUFACTURING_STATUS:
+  type: command
+  address: 0x445700
+  size_bits_out: 16
+  fields_out:
+    PCHG_EN:
+      base: bool
+      start: 0
+    CHG_EN:
+      base: bool
+      start: 1
+    DSG_EN:
+      base: bool
+      start: 2
+    GAUGE_EN:
+      base: bool
+      start: 3
+    FET_EN:
+      base: bool
+      start: 4
+    LF_EN:
+      base: bool
+      start: 5
+    PF_EN:
+      base: bool
+      start: 6
+    BBR_EN:
+      base: bool
+      start: 7
+    FUSE_EN:
+      base: bool
+      start: 8
+    LED_EN:
+      base: bool
+      start: 9
+    LT_TEST:
+      base: bool
+      start: 14
+    CAL_TEST:
+      base: bool
+      start: 15
+
+MAC_AFE_REG:
+  type: command
+  address: 0x445800
+  size_bits_out: 168
+  fields_out:
+    AFE_INT_STATUS:
+      base: uint
+      start: 0
+      end: 8
+    AFE_FET_STATUS:
+      base: uint
+      start: 8
+      end: 16
+    AFE_RXIN:
+      base: uint
+      start: 16
+      end: 24
+    AFE_LATCH_STATUS:
+      base: uint
+      start: 24
+      end: 32
+    AFE_INT_EN:
+      base: uint
+      start: 32
+      end: 40
+    AFE_CTRL:
+      base: uint
+      start: 40
+      end: 48
+    AFE_RXIEN:
+      base: uint
+      start: 48
+      end: 56
+    AFE_RLOUT:
+      base: uint
+      start: 56
+      end: 64
+    AFE_RHOUT:
+      base: uint
+      start: 64
+      end: 72
+    AFE_RHINT:
+      base: uint
+      start: 72
+      end: 80
+    AFE_CELL_BALANCE:
+      base: uint
+      start: 80
+      end: 88
+    AFE_ADC_CC_CTRL:
+      base: uint
+      start: 88
+      end: 96
+    AFE_ADC_MUX_CTRL:
+      base: uint
+      start: 96
+      end: 104
+    AFE_LED_CTRL:
+      base: uint
+      start: 104
+      end: 112
+    AFE_HW_CTRL:
+      base: uint
+      start: 112
+      end: 120
+    AFE_TMR_CTRL:
+      base: uint
+      start: 120
+      end: 128
+    AFE_PROTECTION:
+      base: uint
+      start: 128
+      end: 136
+    AFE_OCD:
+      base: uint
+      start: 136
+      end: 144
+    AFE_SCC:
+      base: uint
+      start: 144
+      end: 152
+    AFE_SCD1:
+      base: uint
+      start: 152
+      end: 160
+    AFE_SCD2:
+      base: uint
+      start: 160
+      end: 168
+
+MAC_LIFETIME_DATA_BLOCK_1:
+  type: command
+  address: 0x446000
+  size_bits_out: 256
+  fields_out:
+    CELL_1_MAX_V:
+      base: uint
+      start: 0
+      end: 16
+    CELL_2_MAX_V:
+      base: uint
+      start: 16
+      end: 32
+    CELL_3_MAX_V:
+      base: uint
+      start: 32
+      end: 48
+    CELL_4_MAX_V:
+      base: uint
+      start: 48
+      end: 64
+    CELL_1_MIN_V:
+      base: uint
+      start: 64
+      end: 80
+    CELL_2_MIN_V:
+      base: uint
+      start: 80
+      end: 96
+    CELL_3_MIN_V:
+      base: uint
+      start: 96
+      end: 112
+    CELL_4_MIN_V:
+      base: uint
+      start: 112
+      end: 128
+    MAX_DELTA_CELL_V:
+      base: uint
+      start: 128
+      end: 144
+    MAX_CHARGE_A:
+      base: uint
+      start: 144
+      end: 160
+    MAX_DISCHARGE_A:
+      base: uint
+      start: 160
+      end: 176
+    MAX_AVG_DISCHARGE_A:
+      base: uint
+      start: 176
+      end: 192
+    MAX_AVG_DISCHARGE_PWR:
+      base: uint
+      start: 192
+      end: 208
+    MAX_TEMP_CELL:
+      base: uint
+      start: 208
+      end: 216
+    MIN_TEMP_CELL:
+      base: uint
+      start: 216
+      end: 224
+    MAX_DELTA_CELL_TEMP:
+      base: uint
+      start: 224
+      end: 232
+    MAX_TEMP_INT_SENSOR:
+      base: uint
+      start: 232
+      end: 240
+    MIN_TEMP_INT_SENSOR:
+      base: uint
+      start: 240
+      end: 248
+    MAX_TEMP_FET:
+      base: uint
+      start: 248
+      end: 256
+
+MAC_LIFETIME_DATA_BLOCK_2:
+  type: command
+  address: 0x446100
+  size_bits_out: 64
+  fields_out:
+    NUM_SHUTDOWNS:
+      base: uint
+      start: 0
+      end: 8
+    NUM_PART_RESETS:
+      base: uint
+      start: 8
+      end: 16
+    NUM_FULL_RESETS:
+      base: uint
+      start: 16
+      end: 24
+    NUM_WDT_RESETS:
+      base: uint
+      start: 24
+      end: 32
+    CB_TIME_CELL_1:
+      base: uint
+      start: 32
+      end: 40
+    CB_TIME_CELL_2:
+      base: uint
+      start: 40
+      end: 48
+    CB_TIME_CELL_3:
+      base: uint
+      start: 48
+      end: 56
+    CB_TIME_CELL_4:
+      base: uint
+      start: 56
+      end: 64
+
+MAC_LIFETIME_DATA_BLOCK_3:
+  type: command
+  address: 0x446200
+  size_bits_out: 128
+  fields_out:
+    TOTAL_FW_RUNTIME:
+      base: uint
+      start: 0
+      end: 16
+    TIME_SPENT_IN_UT:
+      base: uint
+      start: 16
+      end: 32
+    TIME_SPENT_IN_LT:
+      base: uint
+      start: 32
+      end: 48
+    TIME_SPENT_IN_STL:
+      base: uint
+      start: 48
+      end: 64
+    TIME_SPENT_IN_RT:
+      base: uint
+      start: 64
+      end: 80
+    TIME_SPENT_IN_STH:
+      base: uint
+      start: 80
+      end: 96
+    TIME_SPENT_IN_HT:
+      base: uint
+      start: 96
+      end: 112
+    TIME_SPENT_IN_OT:
+      base: uint
+      start: 112
+      end: 128
+
+MAC_LIFETIME_DATA_BLOCK_4:
+  type: command
+  address: 0x446300
+  size_bits_out: 256
+  fields_out:
+    NUM_COV_EVENTS:
+      base: uint
+      start: 0
+      end: 16
+    LAST_COV_EVENT:
+      base: uint
+      start: 16
+      end: 32
+    NUM_CUV_EVENTS:
+      base: uint
+      start: 32
+      end: 48
+    LAST_CUV_EVENT:
+      base: uint
+      start: 48
+      end: 64
+    NUM_OCD1_EVENT:
+      base: uint
+      start: 64
+      end: 80
+    LAST_OCD1_EVENT:
+      base: uint
+      start: 80
+      end: 96
+    NUM_OCD2_EVENTS:
+      base: uint
+      start: 96
+      end: 112
+    LAST_OCD2_EVENT:
+      base: uint
+      start: 112
+      end: 128
+    NUM_OCC1_EVENTS:
+      base: uint
+      start: 128
+      end: 144
+    LAST_OCC1_EVENT:
+      base: uint
+      start: 144
+      end: 160
+    NUM_OCC2_EVENTS:
+      base: uint
+      start: 160
+      end: 176
+    LAST_OCC2_EVENT:
+      base: uint
+      start: 176
+      end: 192
+    NUM_AOLD_EVENTS:
+      base: uint
+      start: 192
+      end: 208
+    LAST_AOLD_EVENT:
+      base: uint
+      start: 208
+      end: 224
+    NUM_ASCD_EVENTS:
+      base: uint
+      start: 224
+      end: 240
+    LAST_ASCD_EVENT:
+      base: uint
+      start: 240
+      end: 256
+
+MAC_LIFETIME_DATA_BLOCK_5:
+  type: command
+  address: 0x446400
+  size_bits_out: 256
+  fields_out:
+    NUM_ASCC_EVENTS:
+      base: uint
+      start: 0
+      end: 16
+    LAST_ASCC_EVENT:
+      base: uint
+      start: 16
+      end: 32
+    NUM_OTC_EVENTS:
+      base: uint
+      start: 32
+      end: 48
+    LAST_OTC_EVENT:
+      base: uint
+      start: 48
+      end: 64
+    NUM_OTD_EVENT:
+      base: uint
+      start: 64
+      end: 80
+    LAST_OTD_EVENT:
+      base: uint
+      start: 80
+      end: 96
+    NUM_OTF_EVENTS:
+      base: uint
+      start: 96
+      end: 112
+    LAST_OTF_EVENT:
+      base: uint
+      start: 112
+      end: 128
+    NUM_VALID_CHG_TERM:
+      base: uint
+      start: 128
+      end: 144
+    LAST_VALID_CHG_TERM:
+      base: uint
+      start: 144
+      end: 160
+    NUM_QMAX_UPDATES:
+      base: uint
+      start: 160
+      end: 176
+    LAST_QMAX_UPDATE:
+      base: uint
+      start: 176
+      end: 192
+    NUM_RA_UPDATES:
+      base: uint
+      start: 192
+      end: 208
+    LAST_RA_UPDATE:
+      base: uint
+      start: 208
+      end: 224
+    NUM_RA_DISABLE:
+      base: uint
+      start: 224
+      end: 240
+    LAST_RA_DISABLE:
+      base: uint
+      start: 240
+      end: 256
+
+MAC_MANUFACTURE_INFO:
+  type: command
+  address: 0x447000
+  size_bits_out: 256
+  fields_out:
+    MANUFACTURE_INFO_0:
+      base: uint
+      start: 0
+      end: 64
+    MANUFACTURE_INFO_1:
+      base: uint
+      start: 64
+      end: 128
+    MANUFACTURE_INFO_2:
+      base: uint
+      start: 128
+      end: 192
+    MANUFACTURE_INFO_3:
+      base: uint
+      start: 192
+      end: 256
+
+MAC_DA_STATUS_1:
+  type: command
+  address: 0x447100
+  size_bits_out: 256
+  fields_out:
+    CELL_VOLTAGE_1:
+      base: uint
+      start: 0
+      end: 16
+    CELL_VOLTAGE_2:
+      base: uint
+      start: 16
+      end: 32
+    CELL_VOLTAGE_3:
+      base: uint
+      start: 32
+      end: 48
+    CELL_VOLTAGE_4:
+      base: uint
+      start: 48
+      end: 64
+    BAT_VOLTAGE:
+      base: uint
+      start: 64
+      end: 80
+    PACK_VOLTAGE:
+      base: uint
+      start: 80
+      end: 96
+    CELL_CURRENT_1:
+      base: uint
+      start: 96
+      end: 112
+    CELL_CURRENT_2:
+      base: uint
+      start: 112
+      end: 128
+    CELL_CURRENT_3:
+      base: uint
+      start: 128
+      end: 144
+    CELL_CURRENT_4:
+      base: uint
+      start: 144
+      end: 160
+    CELL_PWR_1:
+      base: uint
+      start: 160
+      end: 176
+    CELL_PWR_2:
+      base: uint
+      start: 176
+      end: 192
+    CELL_PWR_3:
+      base: uint
+      start: 192
+      end: 208
+    CELL_PWR_4:
+      base: uint
+      start: 208
+      end: 224
+    TOTAL_PWR:
+      base: uint
+      start: 224
+      end: 240
+    AVG_PWR:
+      base: uint
+      start: 240
+      end: 256
+
+MAC_DA_STATUS_2:
+  type: command
+  address: 0x447200
+  size_bits_out: 112
+  fields_out:
+    INT_TEMP:
+      base: uint
+      start: 0
+      end: 16
+    TS1_TEMP:
+      base: uint
+      start: 16
+      end: 32
+    TS2_TEMP:
+      base: uint
+      start: 32
+      end: 48
+    TS3_TEMP:
+      base: uint
+      start: 48
+      end: 64
+    TS4_TEMP:
+      base: uint
+      start: 64
+      end: 80
+    CELL_TEMP:
+      base: uint
+      start: 80
+      end: 96
+    FET_TEMP:
+      base: uint
+      start: 96
+      end: 112
+
+MAC_GAUGE_STATUS_1:
+  type: command
+  address: 0x447300
+  size_bits_out: 256
+  fields_out:
+    TRUE_REM_Q:
+      base: uint
+      start: 0
+      end: 16
+    TRUE_REM_E:
+      base: uint
+      start: 16
+      end: 32
+    INITIAL_Q:
+      base: uint
+      start: 32
+      end: 48
+    INITIAL_E:
+      base: uint
+      start: 48
+      end: 64
+    TRUE_FCC_Q:
+      base: uint
+      start: 64
+      end: 80
+    TRUE_FCC_E:
+      base: uint
+      start: 80
+      end: 96
+    T_SIM:
+      base: uint
+      start: 96
+      end: 112
+    T_AMBIENT:
+      base: uint
+      start: 112
+      end: 128
+    RA_SCALE_0:
+      base: uint
+      start: 128
+      end: 144
+    RA_SCALE_1:
+      base: uint
+      start: 144
+      end: 160
+    RA_SCALE_2:
+      base: uint
+      start: 160
+      end: 176
+    RA_SCALE_3:
+      base: uint
+      start: 176
+      end: 192
+    COMP_RES_0:
+      base: uint
+      start: 192
+      end: 208
+    COMP_RES_1:
+      base: uint
+      start: 208
+      end: 224
+    COMP_RES_2:
+      base: uint
+      start: 224
+      end: 240
+    COMP_RES_3:
+      base: uint
+      start: 240
+      end: 256
+
+MAC_GAUGE_STATUS_2:
+  type: command
+  address: 0x447400
+  size_bits_out: 256
+  fields_out:
+    PACK_GRID:
+      base: uint
+      start: 0
+      end: 8
+    Q_MAX_STATUS:
+      base: uint
+      start: 8
+      end: 10
+      conversion:
+        name: "MACQMaxStatus"
+        BattOK: 0
+        QMaxUpdated: 1
+        QMaxRTableUpdated: 2
+        Reserved: 3
+    ITEN:
+      base: bool
+      start: 10
+    QMAX_FIELD_UPDATED:
+      base: bool
+      start: 11
+    CELL_GRID_0:
+      base: uint
+      start: 16
+      end: 24
+    CELL_GRID_1:
+      base: uint
+      start: 24
+      end: 32
+    CELL_GRID_2:
+      base: uint
+      start: 32
+      end: 40
+    CELL_GRID_3:
+      base: uint
+      start: 40
+      end: 48
+    STATE_TIME:
+      base: uint
+      start: 48
+      end: 80
+    DOD0_0:
+      base: uint
+      start: 80
+      end: 96
+    DOD0_1:
+      base: uint
+      start: 96
+      end: 112
+    DOD0_2:
+      base: uint
+      start: 112
+      end: 128
+    DOD0_3:
+      base: uint
+      start: 128
+      end: 144
+    DOD0_PASSED_Q:
+      base: uint
+      start: 144
+      end: 160
+    DOD0_PASSED_E:
+      base: uint
+      start: 160
+      end: 176
+    DOD0_TIME:
+      base: uint
+      start: 176
+      end: 192
+    DODEOC_0:
+      base: uint
+      start: 192
+      end: 208
+    DODEOC_1:
+      base: uint
+      start: 208
+      end: 224
+    DODEOC_2:
+      base: uint
+      start: 224
+      end: 240
+    DODEOC_3:
+      base: uint
+      start: 240
+      end: 256
+
+MAC_GAUGE_STATUS_3:
+  type: command
+  address: 0x447500
+  size_bits_out: 192
+  fields_out:
+    QMAX_0:
+      base: uint
+      start: 0
+      end: 16
+    QMAX_1:
+      base: uint
+      start: 16
+      end: 32
+    QMAX_2:
+      base: uint
+      start: 32
+      end: 48
+    QMAX_3:
+      base: uint
+      start: 48
+      end: 64
+    QMAX_DOD0_0:
+      base: uint
+      start: 64
+      end: 80
+    QMAX_DOD0_1:
+      base: uint
+      start: 80
+      end: 96
+    QMAX_DOD0_2:
+      base: uint
+      start: 96
+      end: 112
+    QMAX_DOD0_3:
+      base: uint
+      start: 112
+      end: 128
+    QMAX_PASSED_Q:
+      base: uint
+      start: 128
+      end: 144
+    QMAX_TIME:
+      base: uint
+      start: 144
+      end: 160
+    TEMP_K_FACTOR:
+      base: uint
+      start: 160
+      end: 176
+    TEMP_A_FACTOR:
+      base: uint
+      start: 176
+      end: 192
+
+MAC_CB_STATUS:
+  type: command
+  address: 0x447600
+  size_bits_out: 64
+  fields_out:
+    CB_TIME_0:
+      base: uint
+      start: 0
+      end: 16
+    CB_TIME_1:
+      base: uint
+      start: 16
+      end: 32
+    CB_TIME_2:
+      base: uint
+      start: 32
+      end: 48
+    CB_TIME_3:
+      base: uint
+      start: 48
+      end: 64
+
+MAC_STATE_OF_HEALTH:
+  type: command
+  address: 0x447700
+  size_bits_out: 32
+  fields_out:
+    SOH_FCC:
+      base: uint
+      start: 0
+      end: 16
+    SOH_ENERGY:
+      base: uint
+      start: 16
+      end: 32
+
+MAC_FILTER_CAPACITY:
+  type: command
+  address: 0x447800
+  size_bits_out: 64
+  fields_out:
+    FILT_REM_CAP:
+      base: uint
+      start: 0
+      end: 16
+    FILT_REM_ENERGY:
+      base: uint
+      start: 16
+      end: 32
+    FILT_FULL_CHG_CAP:
+      base: uint
+      start: 32
+      end: 48
+    FILT_FULL_CHG_ENERGY:
+      base: uint
+      start: 48
+      end: 64
+
+MAC_ROM_MODE:
+  type: command
+  address: 0x44000F
+
+MAC_EXIT_CALIBRATION_OUTPUT_MODE:
+  type: command
+  address: 0x4480F0
+
+MAC_STOP_OUTPUT_CCADC_CAL:
+  type: command
+  address: 0x4481F0
+  allow_address_overlap: true
+
+MAC_OUTPUT_CCADC_CAL:
+  type: command
+  address: 0x4481F0
+  allow_address_overlap: true
+  size_bits_out: 192
+  fields_out:
+    REFRESH_CTR:
+      base: uint
+      start: 0
+      end: 8
+    STATUS:
+      base: uint
+      start: 8
+      end: 16
+    CURRENT:
+      base: uint
+      start: 16
+      end: 32
+    CELL_VOLTAGE_1:
+      base: uint
+      start: 32
+      end: 48
+    CELL_VOLTAGE_2:
+      base: uint
+      start: 48
+      end: 64
+    CELL_VOLTAGE_3:
+      base: uint
+      start: 64
+      end: 80
+    CELL_VOLTAGE_4:
+      base: uint
+      start: 80
+      end: 96
+    PACK_VOLTAGE:
+      base: uint
+      start: 96
+      end: 112
+    BAT_VOLTAGE:
+      base: uint
+      start: 112
+      end: 128
+    CELL_CURRENT_1:
+      base: uint
+      start: 128
+      end: 144
+    CELL_CURRENT_2:
+      base: uint
+      start: 144
+      end: 160
+    CELL_CURRENT_3:
+      base: uint
+      start: 160
+      end: 176
+    CELL_CURRENT_4:
+      base: uint
+      start: 176
+      end: 192
+
+MAC_STOP_OUTPUT_SHORTED_CCADC_CAL:
+  type: command
+  address: 0x4482F0
+  allow_address_overlap: true
+
+MAC_OUTPUT_SHORTED_CCADC_CAL:
+  type: command
+  address: 0x4482F0
+  allow_address_overlap: true
+  size_bits_out: 192
+  fields_out:
+    REFRESH_CTR:
+      base: uint
+      start: 0
+      end: 8
+    STATUS:
+      base: uint
+      start: 8
+      end: 16
+    CURRENT:
+      base: uint
+      start: 16
+      end: 32
+    CELL_VOLTAGE_1:
+      base: uint
+      start: 32
+      end: 48
+    CELL_VOLTAGE_2:
+      base: uint
+      start: 48
+      end: 64
+    CELL_VOLTAGE_3:
+      base: uint
+      start: 64
+      end: 80
+    CELL_VOLTAGE_4:
+      base: uint
+      start: 80
+      end: 96
+    PACK_VOLTAGE:
+      base: uint
+      start: 96
+      end: 112
+    BAT_VOLTAGE:
+      base: uint
+      start: 112
+      end: 128
+    CELL_CURRENT_1:
+      base: uint
+      start: 128
+      end: 144
+    CELL_CURRENT_2:
+      base: uint
+      start: 144
+      end: 160
+    CELL_CURRENT_3:
+      base: uint
+      start: 160
+      end: 176
+    CELL_CURRENT_4:
+      base: uint
+      start: 176
+      end: 192
+
+REMAINING_CAPACITY_ALARM:
+  type: register
+  address: 0x01
+  size_bits: 16
+  reset_value: 300
+  fields:
+    REMAINING_CAPACITY_ALARM:
+      base: uint
+      start: 0
+      end: 16
+  description: This read/write word function sets a low capacity alarm threshold for the cell stack.
+
+REMAINING_TIME_ALARM:
+  type: register
+  address: 0x02
+  size_bits: 16
+  reset_value: 10
+  fields:
+    REMAINING_TIME_ALARM:
+      base: uint
+      start: 0
+      end: 16
+  description: This read/write word function sets a low remaining time-to-fully discharge alarm threshold for the cell stack.
+
+BATTERY_MODE:
+  type: register
+  address: 0x03
+  size_bits: 16
+  reset_value: 0x4000
+  fields:
+    ICC:
+      base: bool
+      access: RO
+      start: 0
+    PBS:
+      base: bool
+      access: RO
+      start: 1
+    CF:
+      base: bool
+      access: RO
+      start: 7
+    CC:
+      base: bool
+      start: 8
+    PB:
+      base: bool
+      start: 9
+    AM:
+      base: bool
+      start: 13
+    CHGM:
+      base: bool
+      start: 14
+    CAPM:
+      base: bool
+      start: 15
+
+AT_RATE:
+  type: register
+  address: 0x04
+  size_bits: 16
+  reset_value: 0
+  fields:
+    AT_RATE:
+      base: int
+      start: 0
+      end: 16
+
+AT_RATE_TIME_TO_FULL:
+  type: register
+  address: 0x05
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    AT_RATE_TIME_TO_FULL:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+AT_RATE_TIME_TO_EMPTY:
+  type: register
+  address: 0x06
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    AT_RATE_TIME_TO_EMPTY:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+AT_RATE_OK:
+  type: register
+  address: 0x07
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    AT_RATE_OK:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+TEMPERATURE:
+  type: register
+  address: 0x08
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    TEMPERATURE:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+VOLTAGE:
+  type: register
+  address: 0x09
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    VOLTAGE:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+CURRENT:
+  type: register
+  address: 0x0A
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    CURRENT:
+      base: int
+      access: RO
+      start: 0
+      end: 16
+
+AVG_CURRENT:
+  type: register
+  address: 0x0B
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    AVG_CURRENT:
+      base: int
+      access: RO
+      start: 0
+      end: 16
+
+MAX_ERROR:
+  type: register
+  address: 0x0C
+  size_bits: 8
+  reset_value: 0
+  access: RO
+  fields:
+    MAX_ERROR:
+      base: uint
+      access: RO
+      start: 0
+      end: 8
+
+RELATIVE_STATE_OF_CHARGE:
+  type: register
+  address: 0x0D
+  size_bits: 8
+  reset_value: 0
+  access: RO
+  fields:
+    RELATIVE_STATE_OF_CHARGE:
+      base: uint
+      access: RO
+      start: 0
+      end: 8
+
+ABSOLUTE_STATE_OF_CHARGE:
+  type: register
+  address: 0x0E
+  size_bits: 8
+  reset_value: 0
+  access: RO
+  fields:
+    ABSOLUTE_STATE_OF_CHARGE:
+      base: uint
+      access: RO
+      start: 0
+      end: 8
+
+REMAINING_CAPACITY:
+  type: register
+  address: 0x0F
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    REMAINING_CAPACITY:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+FULL_CHARGE_CAPACITY:
+  type: register
+  address: 0x10
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    FULL_CHARGE_CAPACITY:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+RUN_TIME_TO_EMPTY:
+  type: register
+  address: 0x11
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    RUN_TIME_TO_EMPTY:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+AVERAGE_TIME_TO_EMPTY:
+  type: register
+  address: 0x12
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    AVERAGE_TIME_TO_EMPTY:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+AVERAGE_TIME_TO_FULL:
+  type: register
+  address: 0x13
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    AVERAGE_TIME_TO_FULL:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+CHARGING_CURRENT:
+  type: register
+  address: 0x14
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    CHARGING_CURRENT:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+CHARGING_VOLTAGE:
+  type: register
+  address: 0x15
+  size_bits: 16
+  reset_value: 0
+  access: RO
+  fields:
+    CHARGING_VOLTAGE:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+BATTERY_STATUS:
+  type: register
+  address: 0x16
+  size_bits: 16
+  access: RO
+  fields:
+    EC:
+      base: uint
+      access: RO
+      start: 0
+      end: 3
+      conversion: "ErrorCode"
+    FD:
+      base: bool
+      access: RO
+      start: 4
+    FC:
+      base: bool
+      access: RO
+      start: 5
+    DSG:
+      base: bool
+      access: RO
+      start: 6
+    INIT:
+      base: bool
+      access: RO
+      start: 7
+    RTA:
+      base: bool
+      access: RO
+      start: 8
+    RCA:
+      base: bool
+      access: RO
+      start: 9
+    TDA:
+      base: bool
+      access: RO
+      start: 11
+    OTA:
+      base: bool
+      access: RO
+      start: 12
+    TCA:
+      base: bool
+      access: RO
+      start: 14
+    OCA:
+      base: bool
+      access: RO
+      start: 15
+
+CYCLE_COUNT:
+  type: register
+  address: 0x17
+  size_bits: 16
+  access: RW
+  fields:
+    CYCLE_COUNT:
+      base: uint
+      access: RW
+      start: 0
+      end: 16
+
+DESIGN_CAPACITY:
+  type: register
+  address: 0x18
+  size_bits: 16
+  access: RW
+  fields:
+    DESIGN_CAPACITY:
+      base: uint
+      access: RW
+      start: 0
+      end: 16
+
+DESIGN_VOLTAGE:
+  type: register
+  address: 0x19
+  size_bits: 16
+  access: RW
+  fields:
+    DESIGN_VOLTAGE:
+      base: uint
+      access: RW
+      start: 0
+      end: 16
+
+SPECIFICATION_INFO:
+  type: register
+  address: 0x1A
+  size_bits: 16
+  access: RW
+  fields:
+    REVISION:
+      base: uint
+      start: 0
+      end: 4
+    VERSION:
+      base: uint
+      start: 4
+      end: 8
+    VSCALE:
+      base: uint
+      access: RO
+      start: 8
+      end: 12
+    IPSCALE:
+      base: uint
+      access: RO
+      start: 12
+      end: 16
+
+MANUFACTURE_DATE:
+  type: register
+  address: 0x1B
+  size_bits: 16
+  access: RW
+  fields:
+    MANUFACTURE_DATE:
+      base: uint
+      access: RW
+      start: 0
+      end: 16
+
+SERIAL_NUMBER:
+  type: register
+  address: 0x1C
+  size_bits: 16
+  reset_value: 0x0001
+  access: RW
+  fields:
+    SERIAL_NUMBER:
+      base: uint
+      access: RW
+      start: 0
+      end: 16
+
+MANUFACTURE_NAME:
+  type: buffer
+  address: 0x20
+  access: RO
+
+DEVICE_NAME:
+  type: buffer
+  address: 0x21
+  access: RO
+
+DEVICE_CHEMISTRY:
+  type: buffer
+  address: 0x22
+  access: RO
+
+MANUFACTURER_DATA:
+  type: buffer
+  address: 0x23
+  access: RO
+
+AUTHENTICATE:
+  type: buffer
+  address: 0x2F
+  access: RW
+
+CELL_VOLTAGE_4:
+  type: register
+  address: 0x3C
+  size_bits: 16
+  access: RO
+  fields:
+    CELL_VOLTAGE_4:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+CELL_VOLTAGE_3:
+  type: register
+  address: 0x3D
+  size_bits: 16
+  access: RO
+  fields:
+    CELL_VOLTAGE_3:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+CELL_VOLTAGE_2:
+  type: register
+  address: 0x3E
+  size_bits: 16
+  access: RO
+  fields:
+    CELL_VOLTAGE_2:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+CELL_VOLTAGE_1:
+  type: register
+  address: 0x3F
+  size_bits: 16
+  access: RO
+  fields:
+    CELL_VOLTAGE_1:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+
+BTP_DISCHARGE_SET:
+  type: register
+  address: 0x4A
+  size_bits: 16
+  reset_value: 150
+  fields:
+    BTP_DISCHARGE_SET:
+      base: int
+      start: 0
+      end: 16
+
+BTP_CHARGE_SET:
+  type: register
+  address: 0x4B
+  size_bits: 16
+  reset_value: 175
+  fields:
+    BTP_CHARGE_SET:
+      base: int
+      start: 0
+      end: 16
+
+STATE_OF_HEALTH_SOH:
+  type: register
+  address: 0x4F
+  size_bits: 16
+  access: RO
+  fields:
+    STATE_OF_HEALTH_SOH:
+      base: int
+      access: RO
+      start: 0
+      end: 16
+
+SAFETY_ALERT:
+  type: register
+  address: 0x50
+  size_bits: 32
+  access: RO
+  fields:
+    CUV:
+      base: bool
+      access: RO
+      start: 0
+    COV:
+      base: bool
+      access: RO
+      start: 1
+    OCC1:
+      base: bool
+      access: RO
+      start: 2
+    OCC2:
+      base: bool
+      access: RO
+      start: 3
+    OCD1:
+      base: bool
+      access: RO
+      start: 4
+    OCD2:
+      base: bool
+      access: RO
+      start: 5
+    AOLDL:
+      base: bool
+      access: RO
+      start: 7
+    ASCCL:
+      base: bool
+      access: RO
+      start: 9
+    ASCDL:
+      base: bool
+      access: RO
+      start: 11
+    OTC:
+      base: bool
+      access: RO
+      start: 12
+    OTD:
+      base: bool
+      access: RO
+      start: 13
+    CUVC:
+      base: bool
+      access: RO
+      start: 14
+    OTF:
+      base: bool
+      access: RO
+      start: 16
+    PTO:
+      base: bool
+      access: RO
+      start: 18
+    PTOS:
+      base: bool
+      access: RO
+      start: 19
+    CTO:
+      base: bool
+      access: RO
+      start: 20
+    CTOS:
+      base: bool
+      access: RO
+      start: 21
+    OC:
+      base: bool
+      access: RO
+      start: 22
+    CHGC:
+      base: bool
+      access: RO
+      start: 23
+    CHGV:
+      base: bool
+      access: RO
+      start: 24
+    PCHGC:
+      base: bool
+      access: RO
+      start: 25
+    UTC:
+      base: bool
+      access: RO
+      start: 26
+    UTD:
+      base: bool
+      access: RO
+      start: 27
+
+SAFETY_STATUS:
+  type: register
+  address: 0x51
+  access: RO
+  size_bits: 32
+  fields:
+    CUV:
+      base: bool
+      access: RO
+      start: 0
+    COV:
+      base: bool
+      access: RO
+      start: 1
+    OCC1:
+      base: bool
+      access: RO
+      start: 2
+    OCC2:
+      base: bool
+      access: RO
+      start: 3
+    OCD1:
+      base: bool
+      access: RO
+      start: 4
+    OCD2:
+      base: bool
+      access: RO
+      start: 5
+    AOLD:
+      base: bool
+      access: RO
+      start: 6
+    AOLDL:
+      base: bool
+      access: RO
+      start: 7
+    ASCC:
+      base: bool
+      access: RO
+      start: 8
+    ASCCL:
+      base: bool
+      access: RO
+      start: 9
+    ASCD:
+      base: bool
+      access: RO
+      start: 10
+    ASCDL:
+      base: bool
+      access: RO
+      start: 11
+    OTC:
+      base: bool
+      access: RO
+      start: 12
+    OTD:
+      base: bool
+      access: RO
+      start: 13
+    CUVC:
+      base: bool
+      access: RO
+      start: 14
+    OTF:
+      base: bool
+      access: RO
+      start: 16
+    PTO:
+      base: bool
+      access: RO
+      start: 18
+    PTOS:
+      base: bool
+      access: RO
+      start: 19
+    CTO:
+      base: bool
+      access: RO
+      start: 20
+    OC:
+      base: bool
+      access: RO
+      start: 22
+    CHGC:
+      base: bool
+      access: RO
+      start: 23
+    CHGV:
+      base: bool
+      access: RO
+      start: 24
+    PCHGC:
+      base: bool
+      access: RO
+      start: 25
+    UTC:
+      base: bool
+      access: RO
+      start: 26
+    UTD:
+      base: bool
+      access: RO
+      start: 27
+
+PF_ALERT:
+  type: register
+  address: 0x52
+  size_bits: 32
+  access: RO
+  fields:
+    SUV:
+      base: bool
+      access: RO
+      start: 0
+    SOV:
+      base: bool
+      access: RO
+      start: 1
+    SOCC:
+      base: bool
+      access: RO
+      start: 2
+    SOCD:
+      base: bool
+      access: RO
+      start: 3
+    SOT:
+      base: bool
+      access: RO
+      start: 4
+    SOTF:
+      base: bool
+      access: RO
+      start: 6
+    QIM:
+      base: bool
+      access: RO
+      start: 7
+    CB:
+      base: bool
+      access: RO
+      start: 8
+    IMP:
+      base: bool
+      access: RO
+      start: 9
+    CD:
+      base: bool
+      access: RO
+      start: 10
+    VIMR:
+      base: bool
+      access: RO
+      start: 11
+    VIMA:
+      base: bool
+      access: RO
+      start: 12
+    CFETF:
+      base: bool
+      access: RO
+      start: 16
+    DFETF:
+      base: bool
+      access: RO
+      start: 17
+    FUSE:
+      base: bool
+      access: RO
+      start: 19
+    AFER:
+      base: bool
+      access: RO
+      start: 20
+    AFEC:
+      base: bool
+      access: RO
+      start: 21
+    SECOND_LVL:
+      base: bool
+      access: RO
+      start: 22
+    OPNC:
+      base: bool
+      access: RO
+      start: 25
+    TS1:
+      base: bool
+      access: RO
+      start: 28
+    TS2:
+      base: bool
+      access: RO
+      start: 29
+    TS3:
+      base: bool
+      access: RO
+      start: 30
+    TS4:
+      base: bool
+      access: RO
+      start: 31
+
+PF_STATUS:
+  type: register
+  address: 0x53
+  access: RO
+  size_bits: 32
+  fields:
+    SUV:
+      base: bool
+      access: RO
+      start: 0
+    SOV:
+      base: bool
+      access: RO
+      start: 1
+    SOCC:
+      base: bool
+      access: RO
+      start: 2
+    SOCD:
+      base: bool
+      access: RO
+      start: 3
+    SOT:
+      base: bool
+      access: RO
+      start: 4
+    SOTF:
+      base: bool
+      access: RO
+      start: 6
+    QIM:
+      base: bool
+      access: RO
+      start: 7
+    CB:
+      base: bool
+      access: RO
+      start: 8
+    IMP:
+      base: bool
+      access: RO
+      start: 9
+    CD:
+      base: bool
+      access: RO
+      start: 10
+    VIMR:
+      base: bool
+      access: RO
+      start: 11
+    VIMA:
+      base: bool
+      access: RO
+      start: 12
+    CFETF:
+      base: bool
+      access: RO
+      start: 16
+    DFETF:
+      base: bool
+      access: RO
+      start: 17
+    FUSE:
+      base: bool
+      access: RO
+      start: 19
+    AFER:
+      base: bool
+      access: RO
+      start: 20
+    AFEC:
+      base: bool
+      access: RO
+      start: 21
+    SECOND_LVL:
+      base: bool
+      access: RO
+      start: 22
+    PTC:
+      base: bool
+      access: RO
+      start: 23
+    IFC:
+      base: bool
+      access: RO
+      start: 24
+    OPNCELL:
+      base: bool
+      access: RO
+      start: 25
+    DFW:
+      base: bool
+      access: RO
+      start: 26
+    TS1:
+      base: bool
+      access: RO
+      start: 28
+    TS2:
+      base: bool
+      access: RO
+      start: 29
+    TS3:
+      base: bool
+      access: RO
+      start: 30
+    TS4:
+      base: bool
+      access: RO
+      start: 31
+
+OPERATION_STATUS:
+  type: register
+  address: 0x54
+  size_bits: 32
+  access: RO
+  fields:
+    PRES:
+      base: bool
+      access: RO
+      start: 0
+    DSG:
+      base: bool
+      access: RO
+      start: 1
+    CHG:
+      base: bool
+      access: RO
+      start: 2
+    PCHG:
+      base: bool
+      access: RO
+      start: 3
+    FUSE:
+      base: bool
+      access: RO
+      start: 5
+    BTP_INT:
+      base: bool
+      access: RO
+      start: 7
+    SEC:
+      base: uint
+      access: RO
+      start: 8
+      end: 10
+      conversion:
+        name: "SecurityMode"
+        Reserved: 0
+        FullAccess: 1
+        UnSealed: 2
+        Sealed: 3
+    SDV:
+      base: bool
+      access: RO
+      start: 10
+    SS:
+      base: bool
+      access: RO
+      start: 11
+    PF:
+      base: bool
+      access: RO
+      start: 12
+    XDSG:
+      base: bool
+      access: RO
+      start: 13
+    XCHG:
+      base: bool
+      access: RO
+      start: 14
+    SLEEP:
+      base: bool
+      access: RO
+      start: 15
+    SDM:
+      base: bool
+      access: RO
+      start: 16
+    LED:
+      base: bool
+      access: RO
+      start: 17
+    AUTH:
+      base: bool
+      access: RO
+      start: 18
+    AUTOCALM:
+      base: bool
+      access: RO
+      start: 19
+    CAL:
+      base: bool
+      access: RO
+      start: 20
+    CAL_OFFSET:
+      base: bool
+      access: RO
+      start: 21
+    XL:
+      base: bool
+      access: RO
+      start: 22
+    SLEEPM:
+      base: bool
+      access: RO
+      start: 23
+    INIT:
+      base: bool
+      access: RO
+      start: 24
+    SMBLCAL:
+      base: bool
+      access: RO
+      start: 25
+    SLPAD:
+      base: bool
+      access: RO
+      start: 26
+    SLPCC:
+      base: bool
+      access: RO
+      start: 27
+    CB:
+      base: bool
+      access: RO
+      start: 28
+    EMSHUT:
+      base: bool
+      access: RO
+      start: 29
+
+CHARGING_STATUS:
+  type: register
+  address: 0x55
+  size_bits: 32
+  access: RO
+  fields:
+    UT:
+      base: bool
+      access: RO
+      start: 0
+    LT:
+      base: bool
+      access: RO
+      start: 1
+    STL:
+      base: bool
+      access: RO
+      start: 2
+    RT:
+      base: bool
+      access: RO
+      start: 3
+    STH:
+      base: bool
+      access: RO
+      start: 4
+    HT:
+      base: bool
+      access: RO
+      start: 5
+    OT:
+      base: bool
+      access: RO
+      start: 6
+    PV:
+      base: bool
+      access: RO
+      start: 8
+    LV:
+      base: bool
+      access: RO
+      start: 9
+    MV:
+      base: bool
+      access: RO
+      start: 10
+    HV:
+      base: bool
+      access: RO
+      start: 11
+    CHG_IN:
+      base: bool
+      access: RO
+      start: 12
+    MCHG:
+      base: bool
+      access: RO
+      start: 13
+    VCT:
+      base: bool
+      access: RO
+      start: 14
+    CCR:
+      base: bool
+      access: RO
+      start: 15
+    CVR:
+      base: bool
+      access: RO
+      start: 16
+    CCC:
+      base: bool
+      access: RO
+      start: 17
+
+GAUGING_STATUS:
+  type: register
+  address: 0x56
+  access: RO
+  size_bits: 32
+  fields:
+    FD:
+      base: bool
+      access: RO
+      start: 0
+    FC:
+      base: bool
+      access: RO
+      start: 1
+    TD:
+      base: bool
+      access: RO
+      start: 2
+    TC:
+      base: bool
+      access: RO
+      start: 3
+    BAL_EN:
+      base: bool
+      access: RO
+      start: 4
+    EDV:
+      base: bool
+      access: RO
+      start: 5
+    DSG:
+      base: bool
+      access: RO
+      start: 6
+    CF:
+      base: bool
+      access: RO
+      start: 7
+    REST:
+      base: bool
+      access: RO
+      start: 8
+    R_DIS:
+      base: bool
+      access: RO
+      start: 10
+    VOK:
+      base: bool
+      access: RO
+      start: 11
+    QEN:
+      base: bool
+      access: RO
+      start: 12
+    SLPQMAX:
+      base: bool
+      access: RO
+      start: 13
+    NSFM:
+      base: bool
+      access: RO
+      start: 15
+    VDQ:
+      base: bool
+      access: RO
+      start: 16
+    QMAX:
+      base: bool
+      access: RO
+      start: 17
+    RX:
+      base: bool
+      access: RO
+      start: 18
+    LDMD:
+      base: bool
+      access: RO
+      start: 19
+    OCVFR:
+      base: bool
+      access: RO
+      start: 20
+
+MANUFACTURING_STATUS:
+  type: register
+  address: 0x57
+  size_bits: 16
+  access: RO
+  fields:
+    PCHG_EN:
+      base: bool
+      access: RO
+      start: 0
+    CHG_EN:
+      base: bool
+      access: RO
+      start: 1
+    DSG_EN:
+      base: bool
+      access: RO
+      start: 2
+    GAUGE_EN:
+      base: bool
+      access: RO
+      start: 3
+    FET_EN:
+      base: bool
+      access: RO
+      start: 4
+    LF_EN:
+      base: bool
+      access: RO
+      start: 5
+    PF_EN:
+      base: bool
+      access: RO
+      start: 6
+    BBR_EN:
+      base: bool
+      access: RO
+      start: 7
+    FUSE_EN:
+      base: bool
+      access: RO
+      start: 8
+    LED_EN:
+      base: bool
+      access: RO
+      start: 9
+    LT_TEST:
+      base: bool
+      access: RO
+      start: 14
+    CAL_TEST:
+      base: bool
+      access: RO
+      start: 15
+
+AFE_REG:
+  type: register
+  address: 0x58
+  size_bits: 168
+  access: RO
+  fields:
+    AFE_INT_STATUS:
+      base: uint
+      access: RO
+      start: 0
+      end: 8
+    AFE_FET_STATUS:
+      base: uint
+      access: RO
+      start: 8
+      end: 16
+    AFE_RXIN:
+      base: uint
+      access: RO
+      start: 16
+      end: 24
+    AFE_LATCH_STATUS:
+      base: uint
+      access: RO
+      start: 24
+      end: 32
+    AFE_INT_EN:
+      base: uint
+      access: RO
+      start: 32
+      end: 40
+    AFE_CTRL:
+      base: uint
+      access: RO
+      start: 40
+      end: 48
+    AFE_RXIEN:
+      base: uint
+      access: RO
+      start: 48
+      end: 56
+    AFE_RLOUT:
+      base: uint
+      access: RO
+      start: 56
+      end: 64
+    AFE_RHOUT:
+      base: uint
+      access: RO
+      start: 64
+      end: 72
+    AFE_RHINT:
+      base: uint
+      access: RO
+      start: 72
+      end: 80
+    AFE_CELL_BALANCE:
+      base: uint
+      access: RO
+      start: 80
+      end: 88
+    AFE_ADC_CC_CTRL:
+      base: uint
+      access: RO
+      start: 88
+      end: 96
+    AFE_ADC_MUX_CTRL:
+      base: uint
+      access: RO
+      start: 96
+      end: 104
+    AFE_LED_CTRL:
+      base: uint
+      access: RO
+      start: 104
+      end: 112
+    AFE_HW_CTRL:
+      base: uint
+      access: RO
+      start: 112
+      end: 120
+    AFE_TMR_CTRL:
+      base: uint
+      access: RO
+      start: 120
+      end: 128
+    AFE_PROTECTION:
+      base: uint
+      access: RO
+      start: 128
+      end: 136
+    AFE_OCD:
+      base: uint
+      access: RO
+      start: 136
+      end: 144
+    AFE_SCC:
+      base: uint
+      access: RO
+      start: 144
+      end: 152
+    AFE_SCD1:
+      base: uint
+      access: RO
+      start: 152
+      end: 160
+    AFE_SCD2:
+      base: uint
+      access: RO
+      start: 160
+      end: 168
+
+TURBO_POWER:
+  type: register
+  address: 0x59
+  size_bits: 16
+  access: RW
+  fields:
+    TURBO_POWER:
+      base: uint
+      access: RW
+      start: 0
+      end: 16
+
+TURBO_FINAL:
+  type: register
+  address: 0x5A
+  size_bits: 16
+  access: RW
+  fields:
+    TURBO_FINAL:
+      base: uint
+      access: RW
+      start: 0
+      end: 16
+
+TURBO_PACK_R:
+  type: register
+  address: 0x5B
+  size_bits: 16
+  access: RW
+  fields:
+    TURBO_PACK_R:
+      base: uint
+      access: RW
+      start: 0
+      end: 16
+
+TURBO_SYS_R:
+  type: register
+  address: 0x5C
+  size_bits: 16
+  access: RW
+  fields:
+    TURBO_SYS_R:
+      base: uint
+      access: RW
+      start: 0
+      end: 16
+
+TURBO_EDV:
+  type: register
+  address: 0x5D
+  size_bits: 16
+  access: RW
+  fields:
+    TURBO_EDV:
+      base: uint
+      access: RW
+      start: 0
+      end: 16
+
+TURBO_CURRENT:
+  type: register
+  address: 0x5E
+  size_bits: 16
+  access: RW
+  fields:
+    TURBO_CURRENT:
+      base: uint
+      access: RW
+      start: 0
+      end: 16
+
+LIFETIME_DATA_BLOCK_1:
+  type: register
+  address: 0x60
+  size_bits: 256
+  access: RO
+  fields:
+    CELL_1_MAX_V:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+    CELL_2_MAX_V:
+      base: uint
+      access: RO
+      start: 16
+      end: 32
+    CELL_3_MAX_V:
+      base: uint
+      access: RO
+      start: 32
+      end: 48
+    CELL_4_MAX_V:
+      base: uint
+      access: RO
+      start: 48
+      end: 64
+    CELL_1_MIN_V:
+      base: uint
+      access: RO
+      start: 64
+      end: 80
+    CELL_2_MIN_V:
+      base: uint
+      access: RO
+      start: 80
+      end: 96
+    CELL_3_MIN_V:
+      base: uint
+      access: RO
+      start: 96
+      end: 112
+    CELL_4_MIN_V:
+      base: uint
+      access: RO
+      start: 112
+      end: 128
+    MAX_DELTA_CELL_V:
+      base: uint
+      access: RO
+      start: 128
+      end: 144
+    MAX_CHARGE_A:
+      base: uint
+      access: RO
+      start: 144
+      end: 160
+    MAX_DISCHARGE_A:
+      base: uint
+      access: RO
+      start: 160
+      end: 176
+    MAX_AVG_DISCHARGE_A:
+      base: uint
+      access: RO
+      start: 176
+      end: 192
+    MAX_AVG_DISCHARGE_PWR:
+      base: uint
+      access: RO
+      start: 192
+      end: 208
+    MAX_TEMP_CELL:
+      base: uint
+      access: RO
+      start: 208
+      end: 216
+    MIN_TEMP_CELL:
+      base: uint
+      access: RO
+      start: 216
+      end: 224
+    MAX_DELTA_CELL_TEMP:
+      base: uint
+      access: RO
+      start: 224
+      end: 232
+    MAX_TEMP_INT_SENSOR:
+      base: uint
+      access: RO
+      start: 232
+      end: 240
+    MIN_TEMP_INT_SENSOR:
+      base: uint
+      access: RO
+      start: 240
+      end: 248
+    MAX_TEMP_FET:
+      base: uint
+      access: RO
+      start: 248
+      end: 256
+
+LIFETIME_DATA_BLOCK_2:
+  type: register
+  address: 0x61
+  access: RO
+  size_bits: 64
+  fields:
+    NUM_SHUTDOWNS:
+      base: uint
+      access: RO
+      start: 0
+      end: 8
+    NUM_PART_RESETS:
+      base: uint
+      access: RO
+      start: 8
+      end: 16
+    NUM_FULL_RESETS:
+      base: uint
+      access: RO
+      start: 16
+      end: 24
+    NUM_WDT_RESETS:
+      base: uint
+      access: RO
+      start: 24
+      end: 32
+    CB_TIME_CELL_1:
+      base: uint
+      access: RO
+      start: 32
+      end: 40
+    CB_TIME_CELL_2:
+      base: uint
+      access: RO
+      start: 40
+      end: 48
+    CB_TIME_CELL_3:
+      base: uint
+      access: RO
+      start: 48
+      end: 56
+    CB_TIME_CELL_4:
+      base: uint
+      access: RO
+      start: 56
+      end: 64
+
+LIFETIME_DATA_BLOCK_3:
+  type: register
+  address: 0x62
+  access: RO
+  size_bits: 128
+  fields:
+    TOTAL_FW_RUNTIME:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+    TIME_SPENT_IN_UT:
+      base: uint
+      access: RO
+      start: 16
+      end: 32
+    TIME_SPENT_IN_LT:
+      base: uint
+      access: RO
+      start: 32
+      end: 48
+    TIME_SPENT_IN_STL:
+      base: uint
+      access: RO
+      start: 48
+      end: 64
+    TIME_SPENT_IN_RT:
+      base: uint
+      access: RO
+      start: 64
+      end: 80
+    TIME_SPENT_IN_STH:
+      base: uint
+      access: RO
+      start: 80
+      end: 96
+    TIME_SPENT_IN_HT:
+      base: uint
+      access: RO
+      start: 96
+      end: 112
+    TIME_SPENT_IN_OT:
+      base: uint
+      access: RO
+      start: 112
+      end: 128
+
+LIFETIME_DATA_BLOCK_4:
+  type: register
+  address: 0x63
+  size_bits: 256
+  access: RO
+  fields:
+    NUM_COV_EVENTS:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+    LAST_COV_EVENT:
+      base: uint
+      access: RO
+      start: 16
+      end: 32
+    NUM_CUV_EVENTS:
+      base: uint
+      access: RO
+      start: 32
+      end: 48
+    LAST_CUV_EVENT:
+      base: uint
+      access: RO
+      start: 48
+      end: 64
+    NUM_OCD1_EVENT:
+      base: uint
+      access: RO
+      start: 64
+      end: 80
+    LAST_OCD1_EVENT:
+      base: uint
+      access: RO
+      start: 80
+      end: 96
+    NUM_OCD2_EVENTS:
+      base: uint
+      access: RO
+      start: 96
+      end: 112
+    LAST_OCD2_EVENT:
+      base: uint
+      access: RO
+      start: 112
+      end: 128
+    NUM_OCC1_EVENTS:
+      base: uint
+      access: RO
+      start: 128
+      end: 144
+    LAST_OCC1_EVENT:
+      base: uint
+      access: RO
+      start: 144
+      end: 160
+    NUM_OCC2_EVENTS:
+      base: uint
+      access: RO
+      start: 160
+      end: 176
+    LAST_OCC2_EVENT:
+      base: uint
+      access: RO
+      start: 176
+      end: 192
+    NUM_AOLD_EVENTS:
+      base: uint
+      access: RO
+      start: 192
+      end: 208
+    LAST_AOLD_EVENT:
+      base: uint
+      access: RO
+      start: 208
+      end: 224
+    NUM_ASCD_EVENTS:
+      base: uint
+      access: RO
+      start: 224
+      end: 240
+    LAST_ASCD_EVENT:
+      base: uint
+      access: RO
+      start: 240
+      end: 256
+
+LIFETIME_DATA_BLOCK_5:
+  type: register
+  address: 0x64
+  size_bits: 256
+  access: RO
+  fields:
+    NUM_ASCC_EVENTS:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+    LAST_ASCC_EVENT:
+      base: uint
+      access: RO
+      start: 16
+      end: 32
+    NUM_OTC_EVENTS:
+      base: uint
+      access: RO
+      start: 32
+      end: 48
+    LAST_OTC_EVENT:
+      base: uint
+      access: RO
+      start: 48
+      end: 64
+    NUM_OTD_EVENT:
+      base: uint
+      access: RO
+      start: 64
+      end: 80
+    LAST_OTD_EVENT:
+      base: uint
+      access: RO
+      start: 80
+      end: 96
+    NUM_OTF_EVENTS:
+      base: uint
+      access: RO
+      start: 96
+      end: 112
+    LAST_OTF_EVENT:
+      base: uint
+      access: RO
+      start: 112
+      end: 128
+    NUM_VALID_CHG_TERM:
+      base: uint
+      access: RO
+      start: 128
+      end: 144
+    LAST_VALID_CHG_TERM:
+      base: uint
+      access: RO
+      start: 144
+      end: 160
+    NUM_QMAX_UPDATES:
+      base: uint
+      access: RO
+      start: 160
+      end: 176
+    LAST_QMAX_UPDATE:
+      base: uint
+      access: RO
+      start: 176
+      end: 192
+    NUM_RA_UPDATES:
+      base: uint
+      access: RO
+      start: 192
+      end: 208
+    LAST_RA_UPDATE:
+      base: uint
+      access: RO
+      start: 208
+      end: 224
+    NUM_RA_DISABLE:
+      base: uint
+      access: RO
+      start: 224
+      end: 240
+    LAST_RA_DISABLE:
+      base: uint
+      access: RO
+      start: 240
+      end: 256
+
+MANUFACTURE_INFO:
+  type: buffer
+  address: 0x70
+  access: RW
+
+DA_STATUS_1:
+  type: register
+  address: 0x71
+  size_bits: 256
+  access: RO
+  fields:
+    CELL_VOLTAGE_1:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+    CELL_VOLTAGE_2:
+      base: uint
+      access: RO
+      start: 16
+      end: 32
+    CELL_VOLTAGE_3:
+      base: uint
+      access: RO
+      start: 32
+      end: 48
+    CELL_VOLTAGE_4:
+      base: uint
+      access: RO
+      start: 48
+      end: 64
+    BAT_VOLTAGE:
+      base: uint
+      access: RO
+      start: 64
+      end: 80
+    PACK_VOLTAGE:
+      base: uint
+      access: RO
+      start: 80
+      end: 96
+    CELL_CURRENT_1:
+      base: uint
+      access: RO
+      start: 96
+      end: 112
+    CELL_CURRENT_2:
+      base: uint
+      access: RO
+      start: 112
+      end: 128
+    CELL_CURRENT_3:
+      base: uint
+      access: RO
+      start: 128
+      end: 144
+    CELL_CURRENT_4:
+      base: uint
+      access: RO
+      start: 144
+      end: 160
+    CELL_PWR_1:
+      base: uint
+      access: RO
+      start: 160
+      end: 176
+    CELL_PWR_2:
+      base: uint
+      access: RO
+      start: 176
+      end: 192
+    CELL_PWR_3:
+      base: uint
+      access: RO
+      start: 192
+      end: 208
+    CELL_PWR_4:
+      base: uint
+      access: RO
+      start: 208
+      end: 224
+    TOTAL_PWR:
+      base: uint
+      access: RO
+      start: 224
+      end: 240
+    AVG_PWR:
+      base: uint
+      access: RO
+      start: 240
+      end: 256
+
+DA_STATUS_2:
+  type: register
+  address: 0x72
+  size_bits: 112
+  access: RO
+  fields:
+    INT_TEMP:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+    TS1_TEMP:
+      base: uint
+      access: RO
+      start: 16
+      end: 32
+    TS2_TEMP:
+      base: uint
+      access: RO
+      start: 32
+      end: 48
+    TS3_TEMP:
+      base: uint
+      access: RO
+      start: 48
+      end: 64
+    TS4_TEMP:
+      base: uint
+      access: RO
+      start: 64
+      end: 80
+    CELL_TEMP:
+      base: uint
+      access: RO
+      start: 80
+      end: 96
+    FET_TEMP:
+      base: uint
+      access: RO
+      start: 96
+      end: 112
+
+GAUGE_STATUS_1:
+  type: register
+  address: 0x73
+  size_bits: 256
+  access: RO
+  fields:
+    TRUE_REM_Q:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+    TRUE_REM_E:
+      base: uint
+      access: RO
+      start: 16
+      end: 32
+    INITIAL_Q:
+      base: uint
+      access: RO
+      start: 32
+      end: 48
+    INITIAL_E:
+      base: uint
+      access: RO
+      start: 48
+      end: 64
+    TRUE_FCC_Q:
+      base: uint
+      access: RO
+      start: 64
+      end: 80
+    TRUE_FCC_E:
+      base: uint
+      access: RO
+      start: 80
+      end: 96
+    T_SIM:
+      base: uint
+      access: RO
+      start: 96
+      end: 112
+    T_AMBIENT:
+      base: uint
+      access: RO
+      start: 112
+      end: 128
+    RA_SCALE_0:
+      base: uint
+      access: RO
+      start: 128
+      end: 144
+    RA_SCALE_1:
+      base: uint
+      access: RO
+      start: 144
+      end: 160
+    RA_SCALE_2:
+      base: uint
+      access: RO
+      start: 160
+      end: 176
+    RA_SCALE_3:
+      base: uint
+      access: RO
+      start: 176
+      end: 192
+    COMP_RES_0:
+      base: uint
+      access: RO
+      start: 192
+      end: 208
+    COMP_RES_1:
+      base: uint
+      access: RO
+      start: 208
+      end: 224
+    COMP_RES_2:
+      base: uint
+      access: RO
+      start: 224
+      end: 240
+    COMP_RES_3:
+      base: uint
+      access: RO
+      start: 240
+      end: 256
+
+GAUGE_STATUS_2:
+  type: register
+  address: 0x74
+  size_bits: 256
+  fields:
+    PACK_GRID:
+      base: uint
+      access: RO
+      start: 0
+      end: 8
+    Q_MAX_STATUS:
+      base: uint
+      access: RO
+      start: 8
+      end: 10
+      conversion:
+        name: "QMaxStatus"
+        BattOK: 0
+        QMaxUpdated: 1
+        QMaxRTableUpdated: 2
+        Reserved: 3
+    ITEN:
+      base: bool
+      access: RO
+      start: 10
+    QMAX_FIELD_UPDATED:
+      base: bool
+      access: RO
+      start: 11
+    CELL_GRID_0:
+      base: uint
+      access: RO
+      start: 16
+      end: 24
+    CELL_GRID_1:
+      base: uint
+      access: RO
+      start: 24
+      end: 32
+    CELL_GRID_2:
+      base: uint
+      access: RO
+      start: 32
+      end: 40
+    CELL_GRID_3:
+      base: uint
+      access: RO
+      start: 40
+      end: 48
+    STATE_TIME:
+      base: uint
+      access: RO
+      start: 48
+      end: 80
+    DOD0_0:
+      base: uint
+      start: 80
+      end: 96
+    DOD0_1:
+      base: uint
+      access: RO
+      start: 96
+      end: 112
+    DOD0_2:
+      base: uint
+      access: RO
+      start: 112
+      end: 128
+    DOD0_3:
+      base: uint
+      access: RO
+      start: 128
+      end: 144
+    DOD0_PASSED_Q:
+      base: uint
+      access: RO
+      start: 144
+      end: 160
+    DOD0_PASSED_E:
+      base: uint
+      access: RO
+      start: 160
+      end: 176
+    DOD0_TIME:
+      base: uint
+      access: RO
+      start: 176
+      end: 192
+    DODEOC_0:
+      base: uint
+      access: RO
+      start: 192
+      end: 208
+    DODEOC_1:
+      base: uint
+      access: RO
+      start: 208
+      end: 224
+    DODEOC_2:
+      base: uint
+      access: RO
+      start: 224
+      end: 240
+    DODEOC_3:
+      base: uint
+      access: RO
+      start: 240
+      end: 256
+
+GAUGE_STATUS_3:
+  type: register
+  address: 0x75
+  size_bits: 192
+  access: RO
+  fields:
+    QMAX_0:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+    QMAX_1:
+      base: uint
+      access: RO
+      start: 16
+      end: 32
+    QMAX_2:
+      base: uint
+      access: RO
+      start: 32
+      end: 48
+    QMAX_3:
+      base: uint
+      access: RO
+      start: 48
+      end: 64
+    QMAX_DOD0_0:
+      base: uint
+      access: RO
+      start: 64
+      end: 80
+    QMAX_DOD0_1:
+      base: uint
+      access: RO
+      start: 80
+      end: 96
+    QMAX_DOD0_2:
+      base: uint
+      access: RO
+      start: 96
+      end: 112
+    QMAX_DOD0_3:
+      base: uint
+      access: RO
+      start: 112
+      end: 128
+    QMAX_PASSED_Q:
+      base: uint
+      access: RO
+      start: 128
+      end: 144
+    QMAX_TIME:
+      base: uint
+      access: RO
+      start: 144
+      end: 160
+    TEMP_K_FACTOR:
+      base: uint
+      access: RO
+      start: 160
+      end: 176
+    TEMP_A_FACTOR:
+      base: uint
+      access: RO
+      start: 176
+      end: 192
+
+CB_STATUS:
+  type: register
+  address: 0x76
+  size_bits: 64
+  access: RO
+  fields:
+    CB_TIME_0:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+    CB_TIME_1:
+      base: uint
+      access: RO
+      start: 16
+      end: 32
+    CB_TIME_2:
+      base: uint
+      access: RO
+      start: 32
+      end: 48
+    CB_TIME_3:
+      base: uint
+      access: RO
+      start: 48
+      end: 64
+
+STATE_OF_HEALTH:
+  type: register
+  address: 0x77
+  size_bits: 32
+  access: RO
+  fields:
+    SOH_FCC:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+    SOH_ENERGY:
+      base: uint
+      access: RO
+      start: 16
+      end: 32
+
+FILTER_CAPACITY:
+  type: register
+  address: 0x78
+  size_bits: 64
+  access: RO
+  fields:
+    FILT_REM_CAP:
+      base: uint
+      access: RO
+      start: 0
+      end: 16
+    FILT_REM_ENERGY:
+      base: uint
+      access: RO
+      start: 16
+      end: 32
+    FILT_FULL_CHG_CAP:
+      base: uint
+      access: RO
+      start: 32
+      end: 48
+    FILT_FULL_CHG_ENERGY:
+      base: uint
+      access: RO
+      start: 48
+      end: 64

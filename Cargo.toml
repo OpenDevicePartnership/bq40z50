@@ -1,11 +1,13 @@
 [package]
-name = "bq40z50"
+name = "bq40z50-rx"
 version = "0.1.0"
 repository = "https://github.com/OpenDevicePartnership/bq40z50"
 license = "MIT"
+authors = ["Matteo Tullo <matteotullo@microsoft.com>"]
+rust-version = "1.85"
 description = "Platform-agnostic Rust driver for the Texas Instruments BQ40Z50 battery fuel (gas) gauge."
 readme = "README.md"
-keywords = ["bq40z50", "TI", "Texas Instruments", "battery", "fuel", "gas", "gauge", "i2c", "driver", "embedded-hal-driver"]
+keywords = ["TI", "battery", "fuel-gauge", "i2c", "driver"]
 categories = ["embedded", "hardware-support", "no-std"]
 documentation = "https://docs.rs/bq40z50"
 include = [
@@ -13,12 +15,14 @@ include = [
 	"/Cargo.toml",
 	"/README.md",
 	"/LICENSE",
-	"/device.yaml",
+	"/device_R*.yaml",
 ]
 edition = "2024"
 
 [dependencies]
-device-driver = { version = "1.0.3", default-features = false, features = ["yaml"] }
+device-driver = { version = "1.0.3", default-features = false, features = [
+	"yaml",
+] }
 defmt = { version = "0.3", optional = true }
 
 embedded-hal = "1.0.0"
@@ -42,4 +46,10 @@ style = "forbid"
 pedantic = "deny"
 
 [features]
-defmt-03 = ["dep:defmt", "device-driver/defmt-03", "embedded-batteries-async/defmt"]
+defmt-03 = [
+	"dep:defmt",
+	"device-driver/defmt-03",
+	"embedded-batteries-async/defmt",
+]
+r1 = []
+r4 = []
