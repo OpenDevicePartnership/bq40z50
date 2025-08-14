@@ -1,6 +1,6 @@
 [package]
 name = "bq40z50-rx"
-version = "0.1.1"
+version = "0.2.0"
 repository = "https://github.com/OpenDevicePartnership/bq40z50"
 license = "MIT"
 authors = ["Matteo Tullo <matteotullo@microsoft.com>"]
