@@ -34,7 +34,7 @@ embassy-time = { version = "0.4.0", optional = true }
 embedded-hal-mock = { version = "0.11.1", features = ["embedded-hal-async"] }
 tokio = { version = "1.42.0", features = ["rt", "macros"] }
 embassy-time = { version = "0.4.0", features = ["std"] }
-embassy-executor = { git = "https://github.com/embassy-rs/embassy/", features = [
+embassy-executor = { version = "0.9.0", features = [
 	"arch-std",
 	"executor-thread",
 ] }
