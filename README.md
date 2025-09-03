@@ -1,3 +1,9 @@
+[![no-std](https://github.com/OpenDevicePartnership/bq40z50/actions/workflows/nostd.yml/badge.svg)](https://github.com/OpenDevicePartnership/bq40z50/actions/workflows/nostd.yml)
+[![check](https://github.com/OpenDevicePartnership/bq40z50/actions/workflows/check.yml/badge.svg)](https://github.com/OpenDevicePartnership/bq40z50/actions/workflows/check.yml)
+[![Documentation](https://docs.rs/bq40z50-rx/badge.svg)](https://docs.rs/bq40z50-rx)
+[![Crates.io Version](https://img.shields.io/crates/v/bq40z50-rx)](https://crates.io/crates/bq40z50-rx)
+[![LICENSE](https://img.shields.io/badge/License-MIT-blue)](./LICENSE)
+
 # BQ40Z50 Rust Device Driver
 
 A `#[no_std]` platform-agnostic driver for the [BQ40Z50](https://www.ti.com/product/BQ40Z50) family of lithium-ion battery fuel/gas gauge, capable of managing a 1- to 4-cell battery, using the [embedded-hal](https://docs.rs/embedded-hal) traits.
