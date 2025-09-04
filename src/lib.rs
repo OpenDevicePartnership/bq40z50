@@ -4,7 +4,12 @@
 //! [`embedded-hal`]: https://docs.rs/embedded-hal
 //!
 //! For further details of the device architecture and operation, please refer
-//! to the official [`Datasheet`].
+//! to one of the official Datasheets:
+//!
+//! - [`Datasheet R1`]
+//! - [`Datasheet R3`]
+//! - [`Datasheet R4`]
+//! - [`Datasheet R5`]
 //!
 //! [`Datasheet R1`]: https://www.ti.com/lit/ug/sluua43a/sluua43a.pdf
 //! [`Datasheet R3`]: https://www.ti.com/lit/ug/sluubu5a/sluubu5a.pdf
