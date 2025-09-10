@@ -19,6 +19,9 @@ include = [
 ]
 edition = "2024"
 
+[package.metadata.docs.rs]
+features = ["r5"]
+
 [dependencies]
 device-driver = { version = "1.0.3", default-features = false, features = [
 	"yaml",
