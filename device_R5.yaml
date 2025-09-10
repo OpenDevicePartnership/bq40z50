@@ -2257,28 +2257,6 @@ MAC_MANUFACTURE_INFO_B:
       start: 192
       end: 256
 
-MAC_MANUFACTURE_INFO_C:
-  type: command
-  address: 0x447B00
-  size_bits_out: 256
-  fields_out:
-    MANUFACTURE_INFO_C_0:
-      base: uint
-      start: 0
-      end: 64
-    MANUFACTURE_INFO_C_1:
-      base: uint
-      start: 64
-      end: 128
-    MANUFACTURE_INFO_C_2:
-      base: uint
-      start: 128
-      end: 192
-    MANUFACTURE_INFO_C_3:
-      base: uint
-      start: 192
-      end: 256
-
 MAC_LIFETIME_DATA_BLOCK_16:
   type: command
   address: 0x447E00
@@ -4512,11 +4490,6 @@ LIFETIME_DATA_BLOCK_12:
       access: RO
       start: 224
       end: 256
-
-MANUFACTURE_INFO:
-  type: buffer
-  address: 0x70
-  access: RW
 
 DA_STATUS_1:
   type: register

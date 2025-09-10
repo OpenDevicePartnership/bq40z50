@@ -69,6 +69,8 @@ const AUTH_KEY_CMD: [u8; MAC_CMD_ADDR_SIZE_BYTES as usize] = 0x0037u16.to_le_byt
 const AUTH_KEY_DATA_LEN_BYTES: u8 = 16;
 const AUTH_KEY_LEN_BYTES: u8 = AUTH_KEY_DATA_LEN_BYTES + MAC_CMD_ADDR_SIZE_BYTES;
 
+const MFG_INFO_CMD: u8 = 0x70;
+
 const DEFAULT_BUS_RETRIES: usize = 3;
 const DEFAULT_ERROR_BACKOFF_DELAY_MS: u32 = 10;
 #[cfg(feature = "embassy-timeout")]
@@ -671,6 +673,164 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50<I2C, DELAY> {
         buf[1..=data.len()].copy_from_slice(data);
 
         self.device.interface.write_with_retries(&buf[..=data.len()]).await
+    }
+
+    /// Seal the fuel gauge.
+    /// # Errors
+    ///
+    /// Will return `Err` if an I2C bus error occurs.
+    pub async fn seal_fg(&mut self) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        self.device.mac_seal().dispatch_async().await
+    }
+
+    /// Unseal the fuel gauge.
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if an I2C bus error occurs.
+    pub async fn unseal_fg(
+        &mut self,
+        unseal_key_lower: u16,
+        unseal_key_upper: u16,
+    ) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        self.send_access_key(unseal_key_lower, unseal_key_upper).await
+    }
+
+    /// Send access keys.
+    ///
+    /// Various keys are defined, please check the datasheet of the revision you're working with for
+    /// the types of keys and their function.
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if an I2C bus error occurs.
+    pub async fn send_access_key(
+        &mut self,
+        access_key_lower: u16,
+        access_key_upper: u16,
+    ) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        let mut buf = [0u8; 4];
+
+        // Write lower access key
+        buf[0] = MAC_CMD;
+        buf[1] = MAC_CMD_ADDR_SIZE_BYTES;
+        buf[2..4].copy_from_slice(&access_key_lower.to_le_bytes());
+        self.device.interface.mac_write_with_retries(&buf).await?;
+
+        // Write upper access key
+        buf[0] = MAC_CMD;
+        buf[1] = MAC_CMD_ADDR_SIZE_BYTES;
+        buf[2..4].copy_from_slice(&access_key_upper.to_le_bytes());
+        self.device.interface.mac_write_with_retries(&buf).await
+    }
+
+    /// Write to `MfgInfoC` MAC register.
+    ///
+    /// `data` can be at most 32 bytes large.
+    ///
+    /// For the R5 revision, the `MfgInfoC` access keys are required to be passed in as arguments.
+    /// # Errors
+    ///
+    /// Will return `Err` if an I2C bus error occurs.
+    #[cfg(feature = "r5")]
+    #[allow(clippy::cast_possible_truncation)]
+    pub async fn write_mfg_info_c(
+        &mut self,
+        access_key_lower: u16,
+        access_key_upper: u16,
+        data: &[u8],
+    ) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        const MFG_INFO_C_CMD: [u8; MAC_CMD_ADDR_SIZE_BYTES as usize] = 0x007Bu16.to_le_bytes();
+        let mut buf = [0u8; 4 + LARGEST_CMD_SIZE_BYTES];
+
+        self.send_access_key(access_key_lower, access_key_upper).await?;
+
+        // Write data
+        buf[0] = MAC_CMD;
+        buf[1] = data.len() as u8 + MAC_CMD_ADDR_SIZE_BYTES;
+        buf[2] = MFG_INFO_C_CMD[0];
+        buf[3] = MFG_INFO_C_CMD[1];
+        buf[4..data.len() + 4].copy_from_slice(data);
+        self.device
+            .interface
+            .mac_write_with_retries(&buf[..data.len() + 4])
+            .await
+    }
+
+    /// Write to `MfgInfoC` MAC register.
+    ///
+    /// `data` can be at most 32 bytes large.
+    ///
+    /// For the R4 revision, no access keys or unsealing is required.
+    /// # Errors
+    ///
+    /// Will return `Err` if an I2C bus error occurs.
+    #[cfg(feature = "r4")]
+    #[allow(clippy::cast_possible_truncation)]
+    pub async fn write_mfg_info_c(&mut self, data: &[u8]) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        const MFG_INFO_C_CMD: [u8; MAC_CMD_ADDR_SIZE_BYTES as usize] = 0x007Bu16.to_le_bytes();
+        let mut buf = [0u8; 4 + LARGEST_CMD_SIZE_BYTES];
+
+        // Write data
+        buf[0] = MAC_CMD;
+        buf[1] = data.len() as u8 + MAC_CMD_ADDR_SIZE_BYTES;
+        buf[2] = MFG_INFO_C_CMD[0];
+        buf[3] = MFG_INFO_C_CMD[1];
+        buf[4..data.len() + 4].copy_from_slice(data);
+        self.device
+            .interface
+            .mac_write_with_retries(&buf[..data.len() + 4])
+            .await
+    }
+
+    /// Read from the `MfgInfoC` MAC register.
+    ///
+    /// `data` can be at most 32 bytes large.
+    /// # Errors
+    ///
+    /// Will return `Err` if an I2C bus error occurs.
+    #[cfg(any(feature = "r4", feature = "r5"))]
+    pub async fn read_mfg_info_c(&mut self, data: &mut [u8]) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        const MFG_INFO_C_CMD: [u8; MAC_CMD_ADDR_SIZE_BYTES as usize] = 0x007Bu16.to_le_bytes();
+
+        let mut buf = [0u8; 4];
+        buf[0] = MAC_CMD;
+        buf[1] = MAC_CMD_ADDR_SIZE_BYTES;
+        buf[2] = MFG_INFO_C_CMD[0];
+        buf[3] = MFG_INFO_C_CMD[1];
+
+        self.device.interface.mac_read_with_retries(&buf, data).await
+    }
+
+    /// Write to the `MfgInfo` register. Despite it not being a MAC cmd, it uses the `SMBus` block command.
+    ///
+    /// Requires fuel gauge to be unsealed. Send `unseal_fg()` first, and then reseal with `seal_fg()` after this command.
+    ///
+    /// `data` can be at most 32 bytes large.
+    /// # Errors
+    ///
+    /// Will return `Err` if an I2C bus error occurs.
+    #[allow(clippy::cast_possible_truncation)]
+    pub async fn write_mfg_info(&mut self, data: &[u8]) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        let mut buf = [0u8; 2 + LARGEST_BUF_SIZE_BYTES];
+        buf[0] = MFG_INFO_CMD;
+        buf[1] = data.len() as u8;
+        buf[2..data.len() + 2].copy_from_slice(data);
+
+        self.device
+            .interface
+            .mac_write_with_retries(&buf[..data.len() + 2])
+            .await
+    }
+
+    /// Read from the `MfgInfo` register.
+    ///
+    /// `data` can be at most 32 bytes large.
+    /// # Errors
+    ///
+    /// Will return `Err` if an I2C bus error occurs.
+    pub async fn read_mfg_info(&mut self, data: &mut [u8]) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        self.device.interface.read_with_retries(&[MFG_INFO_CMD], data).await
     }
 }
 
