@@ -24,12 +24,22 @@ jobs:
           submodules: true
       - name: Install stable
         uses: dtolnay/rust-toolchain@stable
+      - name: Install nightly with rustfmt
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rustfmt
       - name: Install device-driver-cli from crates.io
         uses: baptiste0928/cargo-install@v3
         with:
           crate: device-driver-cli
       - name: Generate files
         run: device-driver-cli --manifest device_${{ matrix.chip-rev }}.yaml --device-name Device -o ci_gen_${{matrix.chip-rev}}.rs
+      - name: Format generated file with nightly rustfmt
+        # The committed pregen files are formatted with nightly rustfmt (see
+        # rustfmt.toml unstable options). Format the freshly generated file
+        # the same way before diffing, otherwise this check perpetually
+        # conflicts with the `nightly / fmt` check.
+        run: rustup run nightly rustfmt --edition 2024 ci_gen_${{matrix.chip-rev}}.rs
       - name: Check that the files are the exact same
         uses: LouisBrunner/diff-action@v2.0.0
         with:
