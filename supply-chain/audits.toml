@@ -1,0 +1,164 @@
+
+# cargo-vet audits file
+
+[[audits.cfg-if]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.0.3 -> 1.0.4"
+notes = "Delta: macro refactor to tt-munching, supports cfg(true/false). No unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.darling]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+version = "0.20.11"
+notes = "Full: thin facade re-exporting darling_core/macro. No unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.darling_core]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+version = "0.20.11"
+notes = "Full: proc-macro attribute parsing internals. No unsafe, no fs/net. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.darling_macro]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+version = "0.20.11"
+notes = "Full: trivial 42-line proc-macro shim. No unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.defmt]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.0.1 -> 1.1.0"
+notes = "Delta: Format impls for fmt::Error and Wrapping, xtensa target. No new unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.defmt-macros]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.0.1 -> 1.1.0"
+notes = "Delta: adds transparent/bound derive attrs. No unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.document-features]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "0.2.11 -> 0.2.12"
+notes = "Delta: litrs 1.0 API migration. No unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.embassy-executor]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+version = "0.9.1"
+notes = "Full: embedded async executor. Unsafe in task mgmt is sound. No fs/net access. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.embassy-executor-macros]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+version = "0.7.0"
+notes = "Full: proc-macro for embassy #[task]/#[main]. No unsafe in macro code. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.embedded-hal-mock]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+delta = "0.8.0 -> 0.11.1"
+notes = "Delta: adds embedded-hal 1.x support. No unsafe, test mock library. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.embedded-time]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+version = "0.12.1"
+notes = "Full: no_std time lib. deny(unsafe_code). No build script. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.futures-core]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "0.3.31 -> 0.3.32"
+notes = "Delta: AtomicWaker state-release simplified. No new unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.heapless]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "0.9.2 -> 0.9.1"
+notes = "Downgrade: removes APIs, net reduction of unsafe surface. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.ident_case]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+version = "1.0.1"
+notes = "Full: pure string case conversion, ~170 lines. No unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.litrs]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "0.4.2 -> 1.0.0"
+notes = "Delta: adds CStringLit support, escape handling refactor. No unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.num]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+delta = "0.4.0 -> 0.3.1"
+notes = "Downgrade: version-only dep bumps. no_std meta-crate. No unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.num-complex]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+delta = "0.4.2 -> 0.3.1"
+notes = "Downgrade: removes ComplexFloat, bytemuck. Feature subset. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.num-rational]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+delta = "0.4.1 -> 0.3.2"
+notes = "Downgrade: removes Default impl, ldexp. Pure math. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.portable-atomic]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+delta = "1.11.1 -> 1.13.1"
+notes = "Delta: new arch asm ops (mips64, arm, x86_64 vmovdqa). Consistent with crate purpose. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.stable_deref_trait]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.2.0 -> 1.2.1"
+notes = "Delta: adds unsafe impl StableDeref for Cow types, sound. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.syn]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "2.0.110 -> 2.0.117"
+notes = "Delta: no_std migration, receiver parsing fix. No new unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.thiserror]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "2.0.17 -> 2.0.18"
+notes = "Delta: build.rs match-to-let-else refactor. No new unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.thiserror-impl]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "2.0.17 -> 2.0.18"
+notes = "Delta: conditional clippy lint allows. No unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.tokio]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+delta = "1.51.1 -> 1.52.3"
+notes = "Delta: io-uring read, eager driver handoff, trace_with API. All unsafe sound. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.unicode-ident]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.0.18 -> 1.0.24"
+notes = "Delta: Unicode 16.0->17.0 table update. No unsafe, pure data. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.zerocopy]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "0.8.27 -> 0.8.48"
+notes = "Delta: field projection, SIMD types, build.rs cfg inversion. Bulk is tests. No new deps. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.zerocopy-derive]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "0.8.27 -> 0.8.48"
+notes = "Delta: proc macro only, generated unsafe is trait impls. No new deps. Assisted-by: copilot-cli:claude-opus-4.6"
