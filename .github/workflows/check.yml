@@ -107,7 +107,7 @@ jobs:
         with:
           toolchain: ${{ matrix.toolchain }}
       - name: cargo doc ${{ matrix.chip-rev }}
-        run: cargo doc --no-deps --features ${{ matrix.chip-rev }}
+        run: cargo doc --locked --no-deps --features ${{ matrix.chip-rev }}
         env:
           RUSTDOCFLAGS: --cfg docsrs
 
@@ -128,7 +128,7 @@ jobs:
           log-level: warn
           manifest-path: ./Cargo.toml
           command: check
-          arguments: --all-features
+          arguments: --all-features --locked
 
   msrv:
     # check that we can build using the minimal rust version that is specified by this crate
@@ -165,7 +165,7 @@ jobs:
         with:
           toolchain: ${{ matrix.toolchain }}
       - name: cargo +${{ matrix.toolchain }} check ${{ matrix.chip-rev }}
-        run: cargo check --features ${{ matrix.chip-rev }}
+        run: cargo check --locked --features ${{ matrix.chip-rev }}
 
   hack-clippy:
     # cargo-hack checks combinations of feature flags to ensure that features are all additive
@@ -193,4 +193,4 @@ jobs:
       # intentionally no target specifier; see https://github.com/jonhoo/rust-ci-conf/pull/4
       # --feature-powerset runs for every combination of features
       - name: cargo hack
-        run: cargo hack --feature-powerset clippy --target ${{ matrix.target }}
+        run: cargo hack --feature-powerset clippy --locked --target ${{ matrix.target }}
