@@ -117,7 +117,8 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
         use_pec: bool,
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
         let mut write_buf = [0u8; 1 + LARGEST_REG_SIZE_BYTES + 6];
-        let write_buf_ref = if use_pec {
+
+        let write_buf_ref: &[u8] = if use_pec {
             let mut pec = smbus_pec::Pec::default();
             // Device Addr + Write Bit (0)
             pec.write_u8(BQ_ADDR << 1);
@@ -949,11 +950,11 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::AsyncCommandInterface for 
         buf[2] = ((address >> 8) & 0xFF) as u8;
         buf[3] = (address & 0xFF) as u8;
 
-        if input.len() == 0 && output.len() == 0 {
+        if input.is_empty() && output.is_empty() {
             // Write only, writes don't have an output size nor an input size because
             // writes only consist of the register/command address.
             self.mac_write_with_retries(&buf).await?;
-        } else if input.len() == 0 && output.len() > 0 {
+        } else if input.is_empty() && !output.is_empty() {
             // For read only commands.
             self.mac_read_with_retries(&buf, output).await?;
         } else {
