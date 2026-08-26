@@ -1,6 +1,6 @@
 [package]
 name = "bq40z50-rx"
-version = "0.8.1"
+version = "0.9.0"
 repository = "https://github.com/OpenDevicePartnership/bq40z50"
 license = "MIT"
 rust-version = "1.85"
