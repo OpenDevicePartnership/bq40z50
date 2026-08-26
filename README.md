@@ -20,7 +20,7 @@ Please choose which revision you are using by enabling the appropriate feature.
 
 ## MSRV
 
-Currently, rust `1.85` and up is supported.
+Currently, rust `1.94` and up is supported.
 
 ## License
 

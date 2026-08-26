@@ -57,8 +57,8 @@ macro_rules! implement_embedded_batteries {
             ErrorCode, SpecificationInfoFields,
         };
 
-        impl From<field_sets::BatteryStatus> for BatteryStatusFields {
-            fn from(value: field_sets::BatteryStatus) -> Self {
+        impl From<BatteryStatus> for BatteryStatusFields {
+            fn from(value: BatteryStatus) -> Self {
                 BatteryStatusFields::new()
                     .with_error_code(value.ec())
                     .with_fully_discharged(value.fd())
@@ -74,21 +74,21 @@ macro_rules! implement_embedded_batteries {
             }
         }
 
-        impl From<field_sets::BatteryMode> for BatteryModeFields {
-            fn from(value: field_sets::BatteryMode) -> Self {
+        impl From<BatteryMode> for BatteryModeFields {
+            fn from(value: BatteryMode) -> Self {
                 let battery_mode_raw: [u8; 2] = value.into();
                 u16::from_le_bytes(battery_mode_raw).into()
             }
         }
 
-        impl From<BatteryModeFields> for field_sets::BatteryMode {
+        impl From<BatteryModeFields> for BatteryMode {
             fn from(value: BatteryModeFields) -> Self {
                 u16::from(value).to_le_bytes().into()
             }
         }
 
-        impl From<field_sets::SpecificationInfo> for SpecificationInfoFields {
-            fn from(value: field_sets::SpecificationInfo) -> Self {
+        impl From<SpecificationInfo> for SpecificationInfoFields {
+            fn from(value: SpecificationInfo) -> Self {
                 let spec_info_raw: [u8; 2] = value.into();
                 u16::from_le_bytes(spec_info_raw).into()
             }

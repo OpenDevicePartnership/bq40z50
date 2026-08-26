@@ -1,5 +1,6 @@
 use core::hash::Hasher;
 
+use device_driver::FieldsetMetadata;
 #[cfg(feature = "embassy-timeout")]
 use embassy_time::with_timeout;
 use embedded_hal_async::delay::DelayNs as DelayTrait;
@@ -37,13 +38,9 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
 }
 
 impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
-    pub(crate) async fn mac_write_with_retries(
-        &mut self,
-        write: &[u8],
-        use_pec: bool,
-    ) -> Result<(), BQ40Z50Error<I2C::Error>> {
+    pub(crate) async fn mac_write_with_retries(&mut self, write: &[u8]) -> Result<(), BQ40Z50Error<I2C::Error>> {
         // Same functionality as regular SMBus writes, write buffer just needs to be properly formed.
-        self.write_with_retries(write, use_pec).await
+        self.write_with_retries(write, self.config.pec_write).await
     }
 
     #[allow(clippy::cast_possible_truncation)]
@@ -51,8 +48,9 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
         &mut self,
         starting_address: u16,
         write: &[u8],
-        use_pec: bool,
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        let use_pec = self.config.pec_write;
+
         let mut bytes_left_to_write = write.len();
         while bytes_left_to_write > 0 {
             // Largest single write block is 1 byte MAC command + 1 byte size + 2 bytes starting address + 32 bytes data + 1 PEC byte.
@@ -118,8 +116,8 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
         use_pec: bool,
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
         let mut write_buf = [0u8; 1 + LARGEST_REG_SIZE_BYTES + 6];
-        let write_buf_ref: &[u8];
-        if use_pec {
+
+        let write_buf_ref: &[u8] = if use_pec {
             let mut pec = smbus_pec::Pec::default();
             // Device Addr + Write Bit (0)
             pec.write_u8(BQ_ADDR << 1);
@@ -130,10 +128,10 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
             write_buf[write.len()] = pec.finish().try_into().unwrap();
 
             // Include everything we want to write plus the PEC byte
-            write_buf_ref = &write_buf[..=write.len()];
+            &write_buf[..=write.len()]
         } else {
-            write_buf_ref = write;
-        }
+            write
+        };
         self.write_with_retries_internal(write_buf_ref).await
     }
 
@@ -203,8 +201,8 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
         &mut self,
         write: &[u8],
         read: &mut [u8],
-        use_pec: bool,
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        let use_pec = self.config.pec_read;
         let mut retries = self.config.max_bus_retries;
         // Read buffer with one extra space at the end, in case we use PEC
         // Response looks like [ Length (1 byte) | Command (2 bytes) | Data (output.len() bytes)]
@@ -493,8 +491,7 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
         use_pec: bool,
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
         let mut write_buf = [0u8; 1 + LARGEST_REG_SIZE_BYTES + 6];
-        let write_buf_ref: &[u8];
-        if use_pec {
+        let write_buf_ref: &[u8] = if use_pec {
             let mut pec = smbus_pec::Pec::default();
             // Device Addr + Write Bit (0)
             pec.write_u8(BQ_ADDR << 1);
@@ -505,10 +502,10 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
             write_buf[write.len()] = pec.finish().try_into().unwrap();
 
             // Include everything we want to write plus the PEC byte
-            write_buf_ref = &write_buf[..=write.len()];
+            &write_buf[..=write.len()]
         } else {
-            write_buf_ref = write;
-        }
+            write
+        };
         self.write_with_retries_internal(write_buf_ref).await
     }
 
@@ -582,8 +579,8 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
         &mut self,
         write: &[u8],
         read: &mut [u8],
-        use_pec: bool,
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        let use_pec = self.config.pec_read;
         let mut retries = self.config.max_bus_retries;
         // Read buffer with one extra space at the end, in case we use PEC
         // Response looks like [ Length (1 byte) | Command (2 bytes) | Data (output.len() bytes)]
@@ -879,15 +876,17 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
     }
 }
 
-impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::AsyncRegisterInterface for DeviceInterface<I2C, DELAY> {
+impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::RegisterInterfaceBase for DeviceInterface<I2C, DELAY> {
     type Error = BQ40Z50Error<I2C::Error>;
     type AddressType = u8;
+}
 
+impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::AsyncRegisterInterface for DeviceInterface<I2C, DELAY> {
     async fn write_register(
         &mut self,
         address: Self::AddressType,
-        _size_bits: u32,
-        data: &[u8],
+        data: &mut [u8],
+        _meta_data: &FieldsetMetadata,
     ) -> Result<(), Self::Error> {
         debug_assert!((data.len() <= LARGEST_REG_SIZE_BYTES), "Register size too big");
 
@@ -906,24 +905,26 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::AsyncRegisterInterface for
     async fn read_register(
         &mut self,
         address: Self::AddressType,
-        _size_bits: u32,
         data: &mut [u8],
+        _meta_data: &FieldsetMetadata,
     ) -> Result<(), Self::Error> {
         self.read_with_retries(&[address], data, self.config.pec_read).await
     }
 }
 
-impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::AsyncCommandInterface for DeviceInterface<I2C, DELAY> {
+impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::CommandInterfaceBase for DeviceInterface<I2C, DELAY> {
     type Error = BQ40Z50Error<I2C::Error>;
     type AddressType = u32;
+}
 
+impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::AsyncCommandInterface for DeviceInterface<I2C, DELAY> {
     async fn dispatch_command(
         &mut self,
         address: Self::AddressType,
-        size_bits_in: u32,
-        _input: &[u8],
-        size_bits_out: u32,
+        input: &mut [u8],
+        _meta_data_in: &FieldsetMetadata,
         output: &mut [u8],
+        _meta_data_out: &FieldsetMetadata,
     ) -> Result<(), Self::Error> {
         // For this driver, dispatch_command() is used for interfacing with MAC registers.
         // There are 3 possible scenarios, read only, write only, or read/write registers.
@@ -939,13 +940,13 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::AsyncCommandInterface for 
         buf[2] = ((address >> 8) & 0xFF) as u8;
         buf[3] = (address & 0xFF) as u8;
 
-        if size_bits_in == 0 && size_bits_out == 0 {
+        if input.is_empty() && output.is_empty() {
             // Write only, writes don't have an output size nor an input size because
             // writes only consist of the register/command address.
-            self.mac_write_with_retries(&buf, self.config.pec_write).await?;
-        } else if size_bits_in == 0 && size_bits_out > 0 {
+            self.mac_write_with_retries(&buf).await?;
+        } else if input.is_empty() && !output.is_empty() {
             // For read only commands.
-            self.mac_read_with_retries(&buf, output, self.config.pec_read).await?;
+            self.mac_read_with_retries(&buf, output).await?;
         } else {
             // Read/write, to be handled in other functions as special cases.
             unreachable!();
@@ -954,13 +955,12 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::AsyncCommandInterface for 
     }
 }
 
-impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::BufferInterfaceError for DeviceInterface<I2C, DELAY> {
+impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::BufferInterfaceBase for DeviceInterface<I2C, DELAY> {
     type Error = BQ40Z50Error<I2C::Error>;
+    type AddressType = u8;
 }
 
 impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::AsyncBufferInterface for DeviceInterface<I2C, DELAY> {
-    type AddressType = u8;
-
     async fn read(&mut self, address: Self::AddressType, buf: &mut [u8]) -> Result<usize, Self::Error> {
         // Don't use PEC for these types of registers, because we don't know the size of the data.
         self.read_with_retries(&[address], buf, false).await.map(|()| buf.len())
@@ -979,7 +979,7 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::AsyncBufferInterface for D
             .map(|()| buf.len())
     }
 
-    async fn flush(&mut self, _address: Self::AddressType) -> Result<(), Self::Error> {
-        Ok(())
+    fn flush(&mut self, _address: Self::AddressType) -> impl Future<Output = Result<(), Self::Error>> {
+        core::future::ready(Ok(()))
     }
 }

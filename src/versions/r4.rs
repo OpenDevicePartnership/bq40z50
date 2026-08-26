@@ -1,5 +1,6 @@
 use core::cell::Cell;
 
+use device_driver::Block;
 use embedded_hal_async::delay::DelayNs as DelayTrait;
 use embedded_hal_async::i2c::I2c as I2cTrait;
 
@@ -38,11 +39,11 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
     /// Concurrency is guaranteed by the mutable borrow, ensuring the config cannot change
     /// while a register transaction is in flight.
     pub fn update_config(&mut self, config: Config) {
-        self.device.interface.config = config;
+        self.device.interface().config = config;
     }
 
-    pub fn config(&self) -> Config {
-        self.device.interface.config
+    pub fn config(&mut self) -> Config {
+        self.device.interface().config
     }
 
     fn set_capacity_mode_state(&self, battery_mode_fields: BatteryModeFields) {
@@ -71,10 +72,7 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         buf[2] = SECURITY_KEYS_CMD[0];
         buf[3] = SECURITY_KEYS_CMD[1];
 
-        self.device
-            .interface
-            .mac_read_with_retries(&buf, output_buf, self.device.interface.config.pec_read)
-            .await
+        self.device.interface().mac_read_with_retries(&buf, output_buf).await
     }
 
     /// Write MAC Register 0x0035 Security Keys.
@@ -96,10 +94,7 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         buf[3] = SECURITY_KEYS_CMD[1];
         buf[4..].copy_from_slice(security_keys);
 
-        self.device
-            .interface
-            .mac_write_with_retries(&buf, self.device.interface.config.pec_write)
-            .await
+        self.device.interface().mac_write_with_retries(&buf).await
     }
 
     /// Read MAC Register 0x0037 Authentication Key.
@@ -120,10 +115,7 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         buf[2] = AUTH_KEY_CMD[0];
         buf[3] = AUTH_KEY_CMD[1];
 
-        self.device
-            .interface
-            .mac_read_with_retries(&buf, output_buf, self.device.interface.config.pec_read)
-            .await
+        self.device.interface().mac_read_with_retries(&buf, output_buf).await
     }
 
     /// Write MAC Register 0x0037 Authentication Key.
@@ -145,10 +137,7 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         buf[3] = AUTH_KEY_CMD[1];
         buf[4..].copy_from_slice(auth_key);
 
-        self.device
-            .interface
-            .mac_write_with_retries(&buf, self.device.interface.config.pec_write)
-            .await
+        self.device.interface().mac_write_with_retries(&buf).await
     }
 
     /// Read data from an arbitrary register from the device.
@@ -174,7 +163,7 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         data: &mut [u8],
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
         self.device
-            .interface
+            .interface()
             .read_with_retries(&[reg_address], data, false)
             .await
     }
@@ -208,7 +197,7 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         buf[1..=data.len()].copy_from_slice(data);
 
         self.device
-            .interface
+            .interface()
             .write_with_retries(&buf[..=data.len()], false)
             .await
     }
@@ -253,20 +242,14 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         buf[0] = MAC_CMD;
         buf[1] = MAC_CMD_ADDR_SIZE_BYTES;
         buf[2..4].copy_from_slice(&access_key_lower.to_le_bytes());
-        self.device
-            .interface
-            .mac_write_with_retries(&buf, self.device.interface.config.pec_write)
-            .await?;
+        self.device.interface().mac_write_with_retries(&buf).await?;
 
         // Write upper access key
         buf[0] = MAC_CMD;
         buf[1] = MAC_CMD_ADDR_SIZE_BYTES;
         buf[2..4].copy_from_slice(&access_key_upper.to_le_bytes());
 
-        self.device
-            .interface
-            .mac_write_with_retries(&buf, self.device.interface.config.pec_write)
-            .await
+        self.device.interface().mac_write_with_retries(&buf).await
     }
 
     /// Write to `MfgInfoC` MAC register.
@@ -292,8 +275,8 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         buf[3] = MFG_INFO_C_CMD[1];
         buf[4..data.len() + 4].copy_from_slice(data);
         self.device
-            .interface
-            .mac_write_with_retries(&buf[..data.len() + 4], self.device.interface.config.pec_write)
+            .interface()
+            .mac_write_with_retries(&buf[..data.len() + 4])
             .await
     }
 
@@ -315,22 +298,19 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         buf[2] = MFG_INFO_C_CMD[0];
         buf[3] = MFG_INFO_C_CMD[1];
 
-        if self.device.interface.config.pec_read {
+        if self.device.interface().config.pec_read {
             // If reading with PEC, the entire payload needs to be read to verify the PEC byte
             // This reduces performance because without PEC, we could read parts of the register and NACK early if we
             // know the size of the data we want to read.
             let mut read_buf = [0u8; 32];
             self.device
-                .interface
-                .mac_read_with_retries(&buf, &mut read_buf, self.device.interface.config.pec_read)
+                .interface()
+                .mac_read_with_retries(&buf, &mut read_buf)
                 .await?;
             data.copy_from_slice(&read_buf[..data.len()]);
             Ok(())
         } else {
-            self.device
-                .interface
-                .mac_read_with_retries(&buf, data, self.device.interface.config.pec_read)
-                .await
+            self.device.interface().mac_read_with_retries(&buf, data).await
         }
     }
 
@@ -353,8 +333,8 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         buf[2..data.len() + 2].copy_from_slice(data);
 
         self.device
-            .interface
-            .mac_write_with_retries(&buf[..data.len() + 2], self.device.interface.config.pec_write)
+            .interface()
+            .mac_write_with_retries(&buf[..data.len() + 2])
             .await
     }
 
@@ -372,21 +352,21 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         if data.len() > LARGEST_REG_SIZE_BYTES + 1 {
             return Err(BQ40Z50Error::DataTooLarge);
         }
-        if self.device.interface.config.pec_read {
+        if self.device.interface().config.pec_read {
             // If reading with PEC, the entire payload needs to be read to verify the PEC byte
             // This reduces performance because without PEC, we could read parts of the register and NACK early if we
             // know the size of the data we want to read.
             // [ size | data | data | ... | data | PEC (optional) ]
             let mut read_buf = [0u8; LARGEST_REG_SIZE_BYTES + 1];
             self.device
-                .interface
+                .interface()
                 .read_with_retries(&[MFG_INFO_CMD], &mut read_buf, true)
                 .await?;
             data.copy_from_slice(&read_buf[..data.len()]);
             Ok(())
         } else {
             self.device
-                .interface
+                .interface()
                 .read_with_retries(&[MFG_INFO_CMD], data, false)
                 .await
         }
@@ -412,10 +392,7 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         buf[10..12].copy_from_slice(&override_struct.hi_temp_chrg_mv.to_le_bytes());
         buf[12..14].copy_from_slice(&override_struct.recommended_temp_chrg_mv.to_le_bytes());
 
-        self.device
-            .interface
-            .mac_write_with_retries(&buf, self.device.interface.config.pec_write)
-            .await
+        self.device.interface().mac_write_with_retries(&buf).await
     }
 
     /// Read from the `ChargingVoltageOverride` register.
@@ -435,10 +412,7 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
 
         let mut data = [0u8; CHRG_VOLTAGE_OVERRIDE_SIZE_BYTES as usize];
 
-        self.device
-            .interface
-            .mac_read_with_retries(&buf, &mut data, self.device.interface.config.pec_read)
-            .await?;
+        self.device.interface().mac_read_with_retries(&buf, &mut data).await?;
 
         // Safe from Panics as the buffer is guaranteed to be large enough (10 bytes).
         Ok(ChargingVoltageOverride {
@@ -467,14 +441,14 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         starting_address: u16,
         read: &mut [u8],
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
-        if self.device.interface.config.pec_read {
+        if self.device.interface().config.pec_read {
             self.device
-                .interface
+                .interface()
                 .mac_read_from_df_with_retries_pec(starting_address, read)
                 .await
         } else {
             self.device
-                .interface
+                .interface()
                 .mac_read_from_df_with_retries(starting_address, read)
                 .await
         }
@@ -498,8 +472,8 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
         write: &[u8],
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
         self.device
-            .interface
-            .mac_write_to_df_with_retries(starting_address, write, self.device.interface.config.pec_write)
+            .interface()
+            .mac_write_to_df_with_retries(starting_address, write)
             .await
     }
 }

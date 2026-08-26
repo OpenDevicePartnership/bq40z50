@@ -33,7 +33,7 @@ jobs:
         with:
           crate: device-driver-cli
       - name: Generate files
-        run: device-driver-cli --manifest device_${{ matrix.chip-rev }}.yaml --device-name Device -o ci_gen_${{matrix.chip-rev}}.rs
+        run: ddc build rust -s device_${{ matrix.chip-rev }}.ddsl -o ci_gen_${{matrix.chip-rev}}.rs --rust-defmt-feature=defmt-03
       - name: Format generated file with nightly rustfmt
         # The committed pregen files are formatted with nightly rustfmt (see
         # rustfmt.toml unstable options). Format the freshly generated file
