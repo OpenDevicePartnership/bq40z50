@@ -22,7 +22,7 @@ edition = "2024"
 features = ["r5"]
 
 [dependencies]
-device-driver = { version = "1.0.9", default-features = false }
+device-driver = "2.1.0"
 defmt = { version = "0.3", optional = true }
 
 embedded-hal = "1.0.0"
@@ -57,7 +57,7 @@ pedantic = "deny"
 embassy-timeout = ["dep:embassy-time"]
 defmt-03 = [
 	"dep:defmt",
-	"device-driver/defmt-03",
+	"device-driver/defmt",
 	"embedded-batteries-async/defmt",
 	"embassy-time/defmt",
 	"embassy-time/defmt-timestamp-uptime",

@@ -2,7 +2,9 @@ macro_rules! bq40z50_tests {
     ($revision:ident) => {
         #[cfg(test)]
         mod tests {
-            use device_driver::{AsyncBufferInterface, AsyncCommandInterface, AsyncRegisterInterface};
+            use device_driver::{
+                AsyncBufferInterface, AsyncCommandInterface, AsyncRegisterInterface, FieldsetMetadata,
+            };
             use embedded_batteries_async::smart_battery::SmartBattery;
             use embedded_hal_mock::eh1::delay::{CheckedDelay, NoopDelay, Transaction as DelayTransaction};
             use embedded_hal_mock::eh1::i2c::{Mock, Transaction};
@@ -70,15 +72,23 @@ macro_rules! bq40z50_tests {
                     },
                 );
 
-                bq.device.mac_firmware_version().dispatch_async().await.unwrap();
+                bq.device
+                    .mac_firmware_version()
+                    .dispatch_out_async()
+                    .await
+                    .unwrap();
 
                 // Change the device config to not use PEC.
                 let mut config = bq.config();
                 config.pec_read = false;
                 bq.update_config(config);
-                bq.device.mac_firmware_version().dispatch_async().await.unwrap();
+                bq.device
+                    .mac_firmware_version()
+                    .dispatch_out_async()
+                    .await
+                    .unwrap();
 
-                bq.device.interface.i2c.done();
+                bq.device.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -89,7 +99,7 @@ macro_rules! bq40z50_tests {
 
                 bq.mac_gauging().dispatch_async().await.unwrap();
 
-                bq.interface.i2c.done();
+                bq.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -107,7 +117,7 @@ macro_rules! bq40z50_tests {
 
                 bq.mac_gauging().dispatch_async().await.unwrap();
 
-                bq.interface.i2c.done();
+                bq.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -119,8 +129,8 @@ macro_rules! bq40z50_tests {
                 let i2c = Mock::new(&expectations);
                 let mut bq = Device::new(DeviceInterface::new(i2c, NoopDelay::new()));
 
-                bq.mac_device_type().dispatch_async().await.unwrap();
-                bq.interface.i2c.done();
+                bq.mac_device_type().dispatch_out_async().await.unwrap();
+                bq.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -138,8 +148,8 @@ macro_rules! bq40z50_tests {
                 let i2c = Mock::new(&expectations);
                 let mut bq = Device::new(DeviceInterface::new(i2c, NoopDelay::new()));
 
-                bq.mac_firmware_version().dispatch_async().await.unwrap();
-                bq.interface.i2c.done();
+                bq.mac_firmware_version().dispatch_out_async().await.unwrap();
+                bq.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -164,8 +174,8 @@ macro_rules! bq40z50_tests {
                     },
                 ));
 
-                bq.mac_firmware_version().dispatch_async().await.unwrap();
-                bq.interface.i2c.done();
+                bq.mac_firmware_version().dispatch_out_async().await.unwrap();
+                bq.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -180,7 +190,7 @@ macro_rules! bq40z50_tests {
                     .read_async(&mut manufacture_name)
                     .await
                     .unwrap();
-                bq.interface.i2c.done();
+                bq.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -199,7 +209,7 @@ macro_rules! bq40z50_tests {
             async fn test_buffer_write_lengths() {
                 for use_pec in [false, true] {
                     for len in [0, 1, 3, 32, 33] {
-                        let data = vec![0xA5; len];
+                        let mut data = vec![0xA5; len];
                         let mut frame = vec![0x70];
                         frame.extend_from_slice(&data);
                         let expectations = [write_transaction(&frame, use_pec)];
@@ -227,7 +237,7 @@ macro_rules! bq40z50_tests {
             async fn test_register_transfer_lengths() {
                 for use_pec in [false, true] {
                     for len in [0, 1, 31, 32] {
-                        let data = vec![0xA5; len];
+                        let mut data = vec![0xA5; len];
                         let mut frame = vec![0x17];
                         frame.extend_from_slice(&data);
                         let expectations = [
@@ -243,15 +253,24 @@ macro_rules! bq40z50_tests {
                                 ..Default::default()
                             },
                         );
-                        let size_bits = u32::try_from(len * 8).unwrap();
 
-                        AsyncRegisterInterface::write_register(&mut interface, 0x17, size_bits, &data)
-                            .await
-                            .unwrap();
+                        AsyncRegisterInterface::write_register(
+                            &mut interface,
+                            0x17,
+                            &mut data,
+                            &FieldsetMetadata::DEFAULT,
+                        )
+                        .await
+                        .unwrap();
                         let mut read = vec![0xCC; len];
-                        AsyncRegisterInterface::read_register(&mut interface, 0x17, size_bits, &mut read)
-                            .await
-                            .unwrap();
+                        AsyncRegisterInterface::read_register(
+                            &mut interface,
+                            0x17,
+                            &mut read,
+                            &FieldsetMetadata::DEFAULT,
+                        )
+                        .await
+                        .unwrap();
                         assert_eq!(read, data);
 
                         interface.i2c.done();
@@ -278,9 +297,16 @@ macro_rules! bq40z50_tests {
                     );
                     let mut data = [0xCC; 32];
 
-                    AsyncCommandInterface::dispatch_command(&mut interface, 0x447000, 0, &[], 256, &mut data)
-                        .await
-                        .unwrap();
+                    AsyncCommandInterface::dispatch_command(
+                        &mut interface,
+                        0x447000,
+                        &mut [],
+                        &FieldsetMetadata::DEFAULT,
+                        &mut data,
+                        &FieldsetMetadata::DEFAULT,
+                    )
+                    .await
+                    .unwrap();
                     assert_eq!(data, [0x5A; 32]);
 
                     interface.i2c.done();
@@ -301,26 +327,25 @@ macro_rules! bq40z50_tests {
                         },
                     );
                     for len in [33, 64] {
-                        let data = vec![0xA5; len];
+                        let mut data = vec![0xA5; len];
                         let mut output = data.clone();
-                        let size_bits = u32::try_from(len * 8).unwrap();
 
                         assert_eq!(
-                            AsyncRegisterInterface::write_register(&mut interface, 0x17, size_bits, &data).await,
-                            Err(BQ40Z50Error::DataTooLarge)
-                        );
-                        assert_eq!(
-                            AsyncRegisterInterface::read_register(&mut interface, 0x17, size_bits, &mut output).await,
-                            Err(BQ40Z50Error::DataTooLarge)
-                        );
-                        assert_eq!(
-                            AsyncCommandInterface::dispatch_command(
+                            AsyncRegisterInterface::write_register(
                                 &mut interface,
-                                0x447000,
-                                0,
-                                &[],
-                                size_bits,
+                                0x17,
+                                &mut data,
+                                &FieldsetMetadata::DEFAULT
+                            )
+                            .await,
+                            Err(BQ40Z50Error::DataTooLarge)
+                        );
+                        assert_eq!(
+                            AsyncRegisterInterface::read_register(
+                                &mut interface,
+                                0x17,
                                 &mut output,
+                                &FieldsetMetadata::DEFAULT
                             )
                             .await,
                             Err(BQ40Z50Error::DataTooLarge)
@@ -329,10 +354,22 @@ macro_rules! bq40z50_tests {
                             AsyncCommandInterface::dispatch_command(
                                 &mut interface,
                                 0x447000,
-                                size_bits,
-                                &data,
-                                0,
                                 &mut [],
+                                &FieldsetMetadata::DEFAULT,
+                                &mut output,
+                                &FieldsetMetadata::DEFAULT,
+                            )
+                            .await,
+                            Err(BQ40Z50Error::DataTooLarge)
+                        );
+                        assert_eq!(
+                            AsyncCommandInterface::dispatch_command(
+                                &mut interface,
+                                0x447000,
+                                &mut data,
+                                &FieldsetMetadata::DEFAULT,
+                                &mut [],
+                                &FieldsetMetadata::DEFAULT,
                             )
                             .await,
                             Err(BQ40Z50Error::DataTooLarge)
@@ -397,8 +434,8 @@ macro_rules! bq40z50_tests {
                         bq.read_mfg_info(&mut read).await.unwrap();
                         assert_eq!(read, data[..len]);
 
-                        bq.device.interface.i2c.done();
-                        bq.device.interface.delay.done();
+                        bq.device.interface().i2c.done();
+                        bq.device.interface().delay.done();
                     }
                 }
             }
@@ -433,8 +470,8 @@ macro_rules! bq40z50_tests {
                         .await
                         .unwrap();
 
-                    bq.device.interface.i2c.done();
-                    bq.device.interface.delay.done();
+                    bq.device.interface().i2c.done();
+                    bq.device.interface().delay.done();
                 }
             }
 
@@ -462,22 +499,22 @@ macro_rules! bq40z50_tests {
                     let normal: [u8; 24] = bq
                         .device
                         .mac_output_ccadc_cal()
-                        .dispatch_async()
+                        .dispatch_out_async()
                         .await
                         .unwrap()
                         .into();
                     let shorted: [u8; 24] = bq
                         .device
                         .mac_output_shorted_ccadc_cal()
-                        .dispatch_async()
+                        .dispatch_out_async()
                         .await
                         .unwrap()
                         .into();
                     assert_eq!(normal, [0x5A; 24]);
                     assert_eq!(shorted, [0xA5; 24]);
 
-                    bq.device.interface.i2c.done();
-                    bq.device.interface.delay.done();
+                    bq.device.interface().i2c.done();
+                    bq.device.interface().delay.done();
                 }
             }
 
@@ -511,8 +548,8 @@ macro_rules! bq40z50_tests {
                         Err(BQ40Z50Error::I2c(error))
                     );
 
-                    bq.device.interface.i2c.done();
-                    bq.device.interface.delay.done();
+                    bq.device.interface().i2c.done();
+                    bq.device.interface().delay.done();
                 }
             }
 
@@ -546,7 +583,7 @@ macro_rules! bq40z50_tests {
                 assert_eq!(u16::from_le_bytes([result[2], result[3]]), 0x6060);
                 assert_eq!(u16::from_le_bytes([result[4], result[5]]), 0x0101);
                 assert_eq!(u16::from_le_bytes([result[6], result[7]]), 0x1010);
-                bq.device.interface.i2c.done();
+                bq.device.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -568,7 +605,7 @@ macro_rules! bq40z50_tests {
                 assert!(status.over_temp_alarm());
                 assert!(!status.discharging());
 
-                bq.device.interface.i2c.done();
+                bq.device.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -602,7 +639,7 @@ macro_rules! bq40z50_tests {
                 assert!(status.over_temp_alarm());
                 assert!(!status.discharging());
 
-                bq.device.interface.i2c.done();
+                bq.device.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -626,8 +663,8 @@ macro_rules! bq40z50_tests {
 
                 assert_eq!(status.error_code(), ErrorCode::Ok);
                 assert!(status.discharging());
-                bq.device.interface.i2c.done();
-                bq.device.interface.delay.done();
+                bq.device.interface().i2c.done();
+                bq.device.interface().delay.done();
             }
 
             #[tokio::test]
@@ -651,7 +688,7 @@ macro_rules! bq40z50_tests {
                     bq.write_register_unchecked(0x16, &data).await.unwrap();
                 }
 
-                bq.device.interface.i2c.done();
+                bq.device.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -681,7 +718,7 @@ macro_rules! bq40z50_tests {
                 let rem_cap = bq.remaining_capacity().await.unwrap();
                 assert!(matches!(rem_cap, CapacityModeValue::MilliAmpUnsigned(80)));
 
-                bq.device.interface.i2c.done();
+                bq.device.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -722,8 +759,8 @@ macro_rules! bq40z50_tests {
                     )))
                 );
 
-                bq.device.interface.i2c.done();
-                bq.device.interface.delay.done();
+                bq.device.interface().i2c.done();
+                bq.device.interface().delay.done();
             }
 
             #[tokio::test]
@@ -751,7 +788,7 @@ macro_rules! bq40z50_tests {
                 ];
                 let mut bq = Bq40z50::new(i2c, CheckedDelay::new(&delay_expectations));
 
-                let res = bq.device.mac_pf_status().dispatch_async().await;
+                let res = bq.device.mac_pf_status().dispatch_out_async().await;
 
                 assert_eq!(
                     res,
@@ -760,8 +797,8 @@ macro_rules! bq40z50_tests {
                     )))
                 );
 
-                bq.device.interface.i2c.done();
-                bq.device.interface.delay.done();
+                bq.device.interface().i2c.done();
+                bq.device.interface().delay.done();
             }
 
             #[cfg(not(feature = "r1"))]
@@ -803,7 +840,7 @@ macro_rules! bq40z50_tests {
                 assert_eq!(override_struct.std_hi_temp_chrg_mv, 12600);
                 assert_eq!(override_struct.hi_temp_chrg_mv, 12000);
                 assert_eq!(override_struct.recommended_temp_chrg_mv, 11800);
-                bq.device.interface.i2c.done();
+                bq.device.interface().i2c.done();
             }
 
             #[cfg(not(any(feature = "r1", feature = "r3")))]
@@ -834,7 +871,7 @@ macro_rules! bq40z50_tests {
                     ]
                 );
 
-                bq.device.interface.i2c.done();
+                bq.device.interface().i2c.done();
             }
 
             #[cfg(not(any(feature = "r1", feature = "r3")))]
@@ -873,7 +910,7 @@ macro_rules! bq40z50_tests {
                     ]
                 );
 
-                bq.device.interface.i2c.done();
+                bq.device.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -993,7 +1030,7 @@ macro_rules! bq40z50_tests {
                 let expected = [[0x11; 32], [0x22; 32], [0x33; 32], [0x44; 32]].concat();
                 assert_eq!(read.as_slice(), expected.as_slice());
 
-                bq.device.interface.i2c.done();
+                bq.device.interface().i2c.done();
             }
 
             #[tokio::test]
@@ -1142,7 +1179,7 @@ macro_rules! bq40z50_tests {
                 let expected = [[0x11; 32], [0x22; 32], [0x33; 32], [0x44; 32]].concat();
                 assert_eq!(read.as_slice(), expected.as_slice());
 
-                bq.device.interface.i2c.done();
+                bq.device.interface().i2c.done();
             }
         }
     };
