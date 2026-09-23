@@ -246,6 +246,30 @@ macro_rules! bq40z50_tests {
             }
 
             #[tokio::test]
+            async fn test_battery_status_pec_retry_resets_accumulator() {
+                let expectations = vec![
+                    Transaction::write_read(BQ_ADDR, vec![0x16], vec![0x40, 0x00, 0xFF]),
+                    Transaction::write_read(BQ_ADDR, vec![0x16], vec![0x40, 0x00, 0x85]),
+                ];
+                let delay_expectations = vec![DelayTransaction::delay_ms(10)];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Bq40z50::new_with_config(
+                    i2c,
+                    CheckedDelay::new(&delay_expectations),
+                    Config {
+                        pec_read: true,
+                        ..Default::default()
+                    },
+                );
+
+                let status = bq.battery_status().await.unwrap();
+
+                assert_eq!(status.error_code(), ErrorCode::Ok);
+                bq.device.interface.i2c.done();
+                bq.device.interface.delay.done();
+            }
+
+            #[tokio::test]
             #[allow(unsafe_code)]
             async fn test_read_write_unchecked() {
                 let expectations = vec![

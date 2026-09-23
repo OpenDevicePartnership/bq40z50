@@ -146,17 +146,10 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
         let mut retries = self.config.max_bus_retries;
         // Read buffer with one extra space at the end, in case we use PEC, and one extra space in the front for `mfg_info`
         let mut read_buf = [0u8; 1 + LARGEST_REG_SIZE_BYTES + 1];
-        let mut pec = smbus_pec::Pec::default();
 
         let read_len = read.len();
 
         let read_buf_ref = if use_pec {
-            // Device Addr + Write Bit (0)
-            pec.write_u8(BQ_ADDR << 1);
-            pec.write(write);
-            // Device Addr + Read Bit (1)
-            pec.write_u8(BQ_ADDR << 1 | 0x01);
-
             // Read one more byte (PEC)
             &mut read_buf[..=read_len]
         } else {
@@ -177,6 +170,13 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
             }
 
             if use_pec {
+                let mut pec = smbus_pec::Pec::default();
+                // Device Addr + Write Bit (0)
+                pec.write_u8(BQ_ADDR << 1);
+                pec.write(write);
+                // Device Addr + Read Bit (1)
+                pec.write_u8(BQ_ADDR << 1 | 0x01);
+
                 let recvd_pec = read_buf_ref[read_len];
                 pec.write(&read_buf_ref[..read_len]);
 
@@ -521,17 +521,10 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
         let mut retries = self.config.max_bus_retries;
         // Read buffer with one extra space at the end, in case we use PEC, and one extra space in the front for `mfg_info`
         let mut read_buf = [0u8; 1 + LARGEST_REG_SIZE_BYTES + 1];
-        let mut pec = smbus_pec::Pec::default();
 
         let read_len = read.len();
 
         let read_buf_ref = if use_pec {
-            // Device Addr + Write Bit (0)
-            pec.write_u8(BQ_ADDR << 1);
-            pec.write(write);
-            // Device Addr + Read Bit (1)
-            pec.write_u8(BQ_ADDR << 1 | 0x01);
-
             // Read one more byte (PEC)
             &mut read_buf[..=read_len]
         } else {
@@ -556,6 +549,13 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
             }
 
             if use_pec {
+                let mut pec = smbus_pec::Pec::default();
+                // Device Addr + Write Bit (0)
+                pec.write_u8(BQ_ADDR << 1);
+                pec.write(write);
+                // Device Addr + Read Bit (1)
+                pec.write_u8(BQ_ADDR << 1 | 0x01);
+
                 let recvd_pec = read_buf_ref[read_len];
                 pec.write(&read_buf_ref[..read_len]);
 
