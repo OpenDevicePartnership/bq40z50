@@ -251,7 +251,7 @@ macro_rules! bq40z50_tests {
                     Transaction::write_read(BQ_ADDR, vec![0x16], vec![0x40, 0x00, 0xFF]),
                     Transaction::write_read(BQ_ADDR, vec![0x16], vec![0x40, 0x00, 0x85]),
                 ];
-                let delay_expectations = vec![DelayTransaction::delay_ms(10)];
+                let delay_expectations = vec![DelayTransaction::delay_ms(DEFAULT_ERROR_BACKOFF_DELAY_MS)];
                 let i2c = Mock::new(&expectations);
                 let mut bq = Bq40z50::new_with_config(
                     i2c,
