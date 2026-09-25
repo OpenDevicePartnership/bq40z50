@@ -598,11 +598,11 @@ impl<I> Device<I> {
             address as u32,
         )
     }
-    pub fn no_load_rem_cap(
+    pub fn mac_no_load_rem_cap(
         &mut self,
-    ) -> ::device_driver::CommandOperation<'_, I, u32, (), field_sets::NoLoadRemCapFieldsOut> {
+    ) -> ::device_driver::CommandOperation<'_, I, u32, (), field_sets::MacNoLoadRemCapFieldsOut> {
         let address = self.base_address + 4479488;
-        ::device_driver::CommandOperation::<'_, I, u32, (), field_sets::NoLoadRemCapFieldsOut>::new(
+        ::device_driver::CommandOperation::<'_, I, u32, (), field_sets::MacNoLoadRemCapFieldsOut>::new(
             self.interface(),
             address as u32,
         )
@@ -2495,9 +2495,9 @@ pub mod field_sets {
         pub const fn new_zero() -> Self {
             Self { bits: [0; 2] }
         }
-        ///Read the `static_chem_df_sig` field of the register.
+        ///Read the `all_df_sig` field of the register.
         ///
-        pub fn static_chem_df_sig(&self) -> u16 {
+        pub fn all_df_sig(&self) -> u16 {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u16, ::device_driver::ops::LE>(&self.bits, 0, 15) };
             raw
         }
@@ -2507,9 +2507,9 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 15, 16) };
             raw > 0
         }
-        ///Write the `static_chem_df_sig` field of the register.
+        ///Write the `all_df_sig` field of the register.
         ///
-        pub fn set_static_chem_df_sig(&mut self, value: u16) {
+        pub fn set_all_df_sig(&mut self, value: u16) {
             let raw = value;
             unsafe { ::device_driver::ops::store_lsb0::<u16, ::device_driver::ops::LE>(raw, 0, 15, &mut self.bits) };
         }
@@ -2533,7 +2533,7 @@ pub mod field_sets {
     impl core::fmt::Debug for MacAllDfSignatureFieldsOut {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> Result<(), core::fmt::Error> {
             let mut d = f.debug_struct("MacAllDfSignatureFieldsOut");
-            d.field("static_chem_df_sig", &self.static_chem_df_sig());
+            d.field("all_df_sig", &self.all_df_sig());
             d.field("sig_mismatch", &self.sig_mismatch());
             d.finish()
         }
@@ -2542,7 +2542,7 @@ pub mod field_sets {
     impl defmt::Format for MacAllDfSignatureFieldsOut {
         fn format(&self, f: defmt::Formatter) {
             defmt::write!(f, "MacAllDfSignatureFieldsOut {{ ");
-            defmt::write!(f, "static_chem_df_sig: {=u16}, ", &self.static_chem_df_sig());
+            defmt::write!(f, "all_df_sig: {=u16}, ", &self.all_df_sig());
             defmt::write!(f, "sig_mismatch: {=bool}, ", &self.sig_mismatch());
             defmt::write!(f, "}}");
         }
@@ -3606,9 +3606,9 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 22, 23) };
             raw > 0
         }
-        ///Read the `opnc` field of the register.
+        ///Read the `opncell` field of the register.
         ///
-        pub fn opnc(&self) -> bool {
+        pub fn opncell(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 25, 26) };
             raw > 0
         }
@@ -3744,9 +3744,9 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 22, 23, &mut self.bits) };
         }
-        ///Write the `opnc` field of the register.
+        ///Write the `opncell` field of the register.
         ///
-        pub fn set_opnc(&mut self, value: bool) {
+        pub fn set_opncell(&mut self, value: bool) {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 25, 26, &mut self.bits) };
         }
@@ -3806,7 +3806,7 @@ pub mod field_sets {
             d.field("afer", &self.afer());
             d.field("afec", &self.afec());
             d.field("second_lvl", &self.second_lvl());
-            d.field("opnc", &self.opnc());
+            d.field("opncell", &self.opncell());
             d.field("ts_1", &self.ts_1());
             d.field("ts_2", &self.ts_2());
             d.field("ts_3", &self.ts_3());
@@ -3836,7 +3836,7 @@ pub mod field_sets {
             defmt::write!(f, "afer: {=bool}, ", &self.afer());
             defmt::write!(f, "afec: {=bool}, ", &self.afec());
             defmt::write!(f, "second_lvl: {=bool}, ", &self.second_lvl());
-            defmt::write!(f, "opnc: {=bool}, ", &self.opnc());
+            defmt::write!(f, "opncell: {=bool}, ", &self.opncell());
             defmt::write!(f, "ts_1: {=bool}, ", &self.ts_1());
             defmt::write!(f, "ts_2: {=bool}, ", &self.ts_2());
             defmt::write!(f, "ts_3: {=bool}, ", &self.ts_3());
@@ -6268,11 +6268,11 @@ pub mod field_sets {
         }
     }
     #[derive(Copy, Clone, Eq, PartialEq)]
-    pub struct NoLoadRemCapFieldsOut {
+    pub struct MacNoLoadRemCapFieldsOut {
         /// The internal bits
         bits: [u8; 2],
     }
-    impl ::device_driver::FieldSet for NoLoadRemCapFieldsOut {
+    impl ::device_driver::FieldSet for MacNoLoadRemCapFieldsOut {
         const SIZE_BITS: u32 = 16;
         fn new_with_zero() -> Self {
             Self::new_zero()
@@ -6284,7 +6284,7 @@ pub mod field_sets {
             &mut self.bits
         }
     }
-    impl NoLoadRemCapFieldsOut {
+    impl MacNoLoadRemCapFieldsOut {
         /// Create a new instance, loaded with the reset value (if any)
         pub const fn new() -> Self {
             Self { bits: [0, 0] }
@@ -6306,74 +6306,74 @@ pub mod field_sets {
             unsafe { ::device_driver::ops::store_lsb0::<u16, ::device_driver::ops::LE>(raw, 0, 16, &mut self.bits) };
         }
     }
-    impl From<[u8; 2]> for NoLoadRemCapFieldsOut {
+    impl From<[u8; 2]> for MacNoLoadRemCapFieldsOut {
         fn from(bits: [u8; 2]) -> Self {
             Self { bits }
         }
     }
-    impl From<NoLoadRemCapFieldsOut> for [u8; 2] {
-        fn from(val: NoLoadRemCapFieldsOut) -> Self {
+    impl From<MacNoLoadRemCapFieldsOut> for [u8; 2] {
+        fn from(val: MacNoLoadRemCapFieldsOut) -> Self {
             val.bits
         }
     }
-    impl core::fmt::Debug for NoLoadRemCapFieldsOut {
+    impl core::fmt::Debug for MacNoLoadRemCapFieldsOut {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> Result<(), core::fmt::Error> {
-            let mut d = f.debug_struct("NoLoadRemCapFieldsOut");
+            let mut d = f.debug_struct("MacNoLoadRemCapFieldsOut");
             d.field("remaining_capacity", &self.remaining_capacity());
             d.finish()
         }
     }
     #[cfg(feature = "defmt-03")]
-    impl defmt::Format for NoLoadRemCapFieldsOut {
+    impl defmt::Format for MacNoLoadRemCapFieldsOut {
         fn format(&self, f: defmt::Formatter) {
-            defmt::write!(f, "NoLoadRemCapFieldsOut {{ ");
+            defmt::write!(f, "MacNoLoadRemCapFieldsOut {{ ");
             defmt::write!(f, "remaining_capacity: {=u16}, ", &self.remaining_capacity());
             defmt::write!(f, "}}");
         }
     }
-    impl core::ops::BitAnd for NoLoadRemCapFieldsOut {
+    impl core::ops::BitAnd for MacNoLoadRemCapFieldsOut {
         type Output = Self;
         fn bitand(mut self, rhs: Self) -> Self::Output {
             self &= rhs;
             self
         }
     }
-    impl core::ops::BitAndAssign for NoLoadRemCapFieldsOut {
+    impl core::ops::BitAndAssign for MacNoLoadRemCapFieldsOut {
         fn bitand_assign(&mut self, rhs: Self) {
             for (l, r) in self.bits.iter_mut().zip(&rhs.bits) {
                 *l &= *r;
             }
         }
     }
-    impl core::ops::BitOr for NoLoadRemCapFieldsOut {
+    impl core::ops::BitOr for MacNoLoadRemCapFieldsOut {
         type Output = Self;
         fn bitor(mut self, rhs: Self) -> Self::Output {
             self |= rhs;
             self
         }
     }
-    impl core::ops::BitOrAssign for NoLoadRemCapFieldsOut {
+    impl core::ops::BitOrAssign for MacNoLoadRemCapFieldsOut {
         fn bitor_assign(&mut self, rhs: Self) {
             for (l, r) in self.bits.iter_mut().zip(&rhs.bits) {
                 *l |= *r;
             }
         }
     }
-    impl core::ops::BitXor for NoLoadRemCapFieldsOut {
+    impl core::ops::BitXor for MacNoLoadRemCapFieldsOut {
         type Output = Self;
         fn bitxor(mut self, rhs: Self) -> Self::Output {
             self ^= rhs;
             self
         }
     }
-    impl core::ops::BitXorAssign for NoLoadRemCapFieldsOut {
+    impl core::ops::BitXorAssign for MacNoLoadRemCapFieldsOut {
         fn bitxor_assign(&mut self, rhs: Self) {
             for (l, r) in self.bits.iter_mut().zip(&rhs.bits) {
                 *l ^= *r;
             }
         }
     }
-    impl core::ops::Not for NoLoadRemCapFieldsOut {
+    impl core::ops::Not for MacNoLoadRemCapFieldsOut {
         type Output = Self;
         fn not(mut self) -> Self::Output {
             for val in self.bits.iter_mut() {
@@ -10499,12 +10499,6 @@ pub mod field_sets {
         pub fn set_state_time(&mut self, value: u32) {
             let raw = value;
             unsafe { ::device_driver::ops::store_lsb0::<u32, ::device_driver::ops::LE>(raw, 48, 80, &mut self.bits) };
-        }
-        ///Write the `dod_0_0` field of the register.
-        ///
-        pub fn set_dod_0_0(&mut self, value: u16) {
-            let raw = value;
-            unsafe { ::device_driver::ops::store_lsb0::<u16, ::device_driver::ops::LE>(raw, 80, 96, &mut self.bits) };
         }
         ///Write the `dod_0_1` field of the register.
         ///
@@ -16979,9 +16973,9 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 22, 23) };
             raw > 0
         }
-        ///Read the `opnc` field of the register.
+        ///Read the `opncell` field of the register.
         ///
-        pub fn opnc(&self) -> bool {
+        pub fn opncell(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 25, 26) };
             raw > 0
         }
@@ -17041,7 +17035,7 @@ pub mod field_sets {
             d.field("afer", &self.afer());
             d.field("afec", &self.afec());
             d.field("second_lvl", &self.second_lvl());
-            d.field("opnc", &self.opnc());
+            d.field("opncell", &self.opncell());
             d.field("ts_1", &self.ts_1());
             d.field("ts_2", &self.ts_2());
             d.field("ts_3", &self.ts_3());
@@ -17071,7 +17065,7 @@ pub mod field_sets {
             defmt::write!(f, "afer: {=bool}, ", &self.afer());
             defmt::write!(f, "afec: {=bool}, ", &self.afec());
             defmt::write!(f, "second_lvl: {=bool}, ", &self.second_lvl());
-            defmt::write!(f, "opnc: {=bool}, ", &self.opnc());
+            defmt::write!(f, "opncell: {=bool}, ", &self.opncell());
             defmt::write!(f, "ts_1: {=bool}, ", &self.ts_1());
             defmt::write!(f, "ts_2: {=bool}, ", &self.ts_2());
             defmt::write!(f, "ts_3: {=bool}, ", &self.ts_3());
@@ -22396,12 +22390,6 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u16, ::device_driver::ops::LE>(&self.bits, 240, 256) };
             raw
         }
-        ///Write the `dod_0_0` field of the register.
-        ///
-        pub fn set_dod_0_0(&mut self, value: u16) {
-            let raw = value;
-            unsafe { ::device_driver::ops::store_lsb0::<u16, ::device_driver::ops::LE>(raw, 80, 96, &mut self.bits) };
-        }
     }
     impl From<[u8; 32]> for GaugeStatus2 {
         fn from(bits: [u8; 32]) -> Self {
@@ -22616,6 +22604,12 @@ pub mod field_sets {
         pub fn temp_a_factor(&self) -> u16 {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u16, ::device_driver::ops::LE>(&self.bits, 176, 192) };
             raw
+        }
+        ///Write the `qmax_dod_0_0` field of the register.
+        ///
+        pub fn set_qmax_dod_0_0(&mut self, value: u16) {
+            let raw = value;
+            unsafe { ::device_driver::ops::store_lsb0::<u16, ::device_driver::ops::LE>(raw, 64, 80, &mut self.bits) };
         }
     }
     impl From<[u8; 24]> for GaugeStatus3 {
@@ -23172,7 +23166,7 @@ pub mod field_sets {
         MacGaugingStatusFieldsOut(MacGaugingStatusFieldsOut),
         MacManufacturingStatusFieldsOut(MacManufacturingStatusFieldsOut),
         MacAfeRegFieldsOut(MacAfeRegFieldsOut),
-        NoLoadRemCapFieldsOut(NoLoadRemCapFieldsOut),
+        MacNoLoadRemCapFieldsOut(MacNoLoadRemCapFieldsOut),
         MacLifetimeDataBlock1FieldsOut(MacLifetimeDataBlock1FieldsOut),
         MacLifetimeDataBlock2FieldsOut(MacLifetimeDataBlock2FieldsOut),
         MacLifetimeDataBlock3FieldsOut(MacLifetimeDataBlock3FieldsOut),
@@ -23291,7 +23285,7 @@ pub mod field_sets {
                 Self::MacGaugingStatusFieldsOut(val) => core::fmt::Debug::fmt(val, f),
                 Self::MacManufacturingStatusFieldsOut(val) => core::fmt::Debug::fmt(val, f),
                 Self::MacAfeRegFieldsOut(val) => core::fmt::Debug::fmt(val, f),
-                Self::NoLoadRemCapFieldsOut(val) => core::fmt::Debug::fmt(val, f),
+                Self::MacNoLoadRemCapFieldsOut(val) => core::fmt::Debug::fmt(val, f),
                 Self::MacLifetimeDataBlock1FieldsOut(val) => core::fmt::Debug::fmt(val, f),
                 Self::MacLifetimeDataBlock2FieldsOut(val) => core::fmt::Debug::fmt(val, f),
                 Self::MacLifetimeDataBlock3FieldsOut(val) => core::fmt::Debug::fmt(val, f),
@@ -23413,7 +23407,7 @@ pub mod field_sets {
                 Self::MacGaugingStatusFieldsOut(val) => defmt::Format::format(val, f),
                 Self::MacManufacturingStatusFieldsOut(val) => defmt::Format::format(val, f),
                 Self::MacAfeRegFieldsOut(val) => defmt::Format::format(val, f),
-                Self::NoLoadRemCapFieldsOut(val) => defmt::Format::format(val, f),
+                Self::MacNoLoadRemCapFieldsOut(val) => defmt::Format::format(val, f),
                 Self::MacLifetimeDataBlock1FieldsOut(val) => defmt::Format::format(val, f),
                 Self::MacLifetimeDataBlock2FieldsOut(val) => defmt::Format::format(val, f),
                 Self::MacLifetimeDataBlock3FieldsOut(val) => defmt::Format::format(val, f),
@@ -23597,9 +23591,9 @@ pub mod field_sets {
             Self::MacAfeRegFieldsOut(val)
         }
     }
-    impl From<NoLoadRemCapFieldsOut> for FieldSetValue {
-        fn from(val: NoLoadRemCapFieldsOut) -> Self {
-            Self::NoLoadRemCapFieldsOut(val)
+    impl From<MacNoLoadRemCapFieldsOut> for FieldSetValue {
+        fn from(val: MacNoLoadRemCapFieldsOut) -> Self {
+            Self::MacNoLoadRemCapFieldsOut(val)
         }
     }
     impl From<MacLifetimeDataBlock1FieldsOut> for FieldSetValue {
