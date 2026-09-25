@@ -803,7 +803,7 @@ MAC_MANUFACTURING_STATUS:
     LT_TEST:
       base: bool
       start: 14
-    CAL_TEST:
+    CAL_EN:
       base: bool
       start: 15
 
@@ -3719,7 +3719,7 @@ MANUFACTURING_STATUS:
       base: bool
       access: RO
       start: 14
-    CAL_TEST:
+    CAL_EN:
       base: bool
       access: RO
       start: 15

@@ -5743,9 +5743,9 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 14, 15) };
             raw > 0
         }
-        ///Read the `cal_test` field of the register.
+        ///Read the `cal_en` field of the register.
         ///
-        pub fn cal_test(&self) -> bool {
+        pub fn cal_en(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 15, 16) };
             raw > 0
         }
@@ -5815,9 +5815,9 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 14, 15, &mut self.bits) };
         }
-        ///Write the `cal_test` field of the register.
+        ///Write the `cal_en` field of the register.
         ///
-        pub fn set_cal_test(&mut self, value: bool) {
+        pub fn set_cal_en(&mut self, value: bool) {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 15, 16, &mut self.bits) };
         }
@@ -5846,7 +5846,7 @@ pub mod field_sets {
             d.field("fuse_en", &self.fuse_en());
             d.field("led_en", &self.led_en());
             d.field("lt_test", &self.lt_test());
-            d.field("cal_test", &self.cal_test());
+            d.field("cal_en", &self.cal_en());
             d.finish()
         }
     }
@@ -5865,7 +5865,7 @@ pub mod field_sets {
             defmt::write!(f, "fuse_en: {=bool}, ", &self.fuse_en());
             defmt::write!(f, "led_en: {=bool}, ", &self.led_en());
             defmt::write!(f, "lt_test: {=bool}, ", &self.lt_test());
-            defmt::write!(f, "cal_test: {=bool}, ", &self.cal_test());
+            defmt::write!(f, "cal_en: {=bool}, ", &self.cal_en());
             defmt::write!(f, "}}");
         }
     }
@@ -20304,9 +20304,9 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 14, 15) };
             raw > 0
         }
-        ///Read the `cal_test` field of the register.
+        ///Read the `cal_en` field of the register.
         ///
-        pub fn cal_test(&self) -> bool {
+        pub fn cal_en(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 15, 16) };
             raw > 0
         }
@@ -20335,7 +20335,7 @@ pub mod field_sets {
             d.field("fuse_en", &self.fuse_en());
             d.field("led_en", &self.led_en());
             d.field("lt_test", &self.lt_test());
-            d.field("cal_test", &self.cal_test());
+            d.field("cal_en", &self.cal_en());
             d.finish()
         }
     }
@@ -20354,7 +20354,7 @@ pub mod field_sets {
             defmt::write!(f, "fuse_en: {=bool}, ", &self.fuse_en());
             defmt::write!(f, "led_en: {=bool}, ", &self.led_en());
             defmt::write!(f, "lt_test: {=bool}, ", &self.lt_test());
-            defmt::write!(f, "cal_test: {=bool}, ", &self.cal_test());
+            defmt::write!(f, "cal_en: {=bool}, ", &self.cal_en());
             defmt::write!(f, "}}");
         }
     }
