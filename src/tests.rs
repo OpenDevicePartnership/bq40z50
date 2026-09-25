@@ -62,6 +62,51 @@ macro_rules! bq40z50_tests {
                 bq.device.interface.i2c.done();
             }
 
+            /// Regression for #66: the disable/exit calibration MAC must emit
+            /// subcommand 0xF080 (little-endian 80 F0). The deleted
+            /// `MAC_STOP_OUTPUT_*` aliases previously pointed at the *enable*
+            /// subcommands 0xF081 / 0xF082; callers must use
+            /// `mac_exit_calibration_output_mode` instead.
+            #[tokio::test]
+            async fn mac_exit_calibration_output_mode_sends_subcommand_f080() {
+                let expectations = vec![
+                    // SLUUCN4B §14.2: 0xF080 disables raw ADC output.
+                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x80, 0xF0]),
+                ];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Device::new(DeviceInterface::new(i2c, NoopDelay::new()));
+
+                bq.mac_exit_calibration_output_mode()
+                    .dispatch_async()
+                    .await
+                    .unwrap();
+
+                bq.interface.i2c.done();
+            }
+
+            /// Companion to #66: enabling CCADC cal output must still send 0xF081,
+            /// distinct from the exit/disable subcommand above.
+            #[tokio::test]
+            async fn mac_output_ccadc_cal_sends_subcommand_f081() {
+                let expectations = vec![
+                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x81, 0xF0]),
+                    Transaction::write_read(
+                        BQ_ADDR,
+                        vec![0x44],
+                        vec![
+                            0x1A, 0x81, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                        ],
+                    ),
+                ];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Device::new(DeviceInterface::new(i2c, NoopDelay::new()));
+
+                bq.mac_output_ccadc_cal().dispatch_async().await.unwrap();
+
+                bq.interface.i2c.done();
+            }
+
             #[tokio::test]
             async fn read_chip_id() {
                 let expectations = vec![Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x21, 0x00])];
