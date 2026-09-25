@@ -973,7 +973,7 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> device_driver::AsyncBufferInterface for D
         data[0] = address;
         data[1..=buf.len()].copy_from_slice(buf);
 
-        self.write_with_retries(&data, self.config.pec_write)
+        self.write_with_retries(&data[..=buf.len()], self.config.pec_write)
             .await
             .map(|()| buf.len())
     }
