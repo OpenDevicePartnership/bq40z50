@@ -107,7 +107,7 @@ MAC_ALL_DF_SIGNATURE:
   address: 0x440900
   size_bits_out: 16
   fields_out:
-    STATIC_CHEM_DF_SIG:
+    ALL_DF_SIG:
       base: uint
       start: 0
       end: 15
@@ -429,7 +429,7 @@ MAC_PF_ALERT:
     SECOND_LVL:
       base: bool
       start: 22
-    OPNC:
+    OPNCELL:
       base: bool
       start: 25
     TS1:
@@ -897,7 +897,7 @@ MAC_AFE_REG:
       start: 160
       end: 168
 
-NO_LOAD_REM_CAP:
+MAC_NO_LOAD_REM_CAP:
   type: command
   address: 0x445A00
   size_bits_out: 16
@@ -2078,6 +2078,7 @@ MAC_GAUGE_STATUS_2:
       end: 80
     DOD0_0:
       base: uint
+      access: RO
       start: 80
       end: 96
     DOD0_1:
@@ -3235,7 +3236,7 @@ PF_ALERT:
       base: bool
       access: RO
       start: 22
-    OPNC:
+    OPNCELL:
       base: bool
       access: RO
       start: 25
@@ -4360,7 +4361,7 @@ TURBO_RHF_EFFECTIVE:
   reset_value: 0
   access: RO
   fields:
-    TURBO_RHF_EFFECTIVE :
+    TURBO_RHF_EFFECTIVE:
       base: int
       access: RO
       start: 0
@@ -4773,6 +4774,7 @@ GAUGE_STATUS_2:
       end: 80
     DOD0_0:
       base: uint
+      access: RO
       start: 80
       end: 96
     DOD0_1:
@@ -4854,7 +4856,6 @@ GAUGE_STATUS_3:
       end: 64
     QMAX_DOD0_0:
       base: uint
-      access: RO
       start: 64
       end: 80
     QMAX_DOD0_1:
