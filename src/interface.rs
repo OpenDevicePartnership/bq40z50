@@ -55,6 +55,11 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
 
         let use_pec = self.config.pec_write;
 
+        // Number of caller payload bytes the gauge has accepted so far. Data flash is committed
+        // one chunk at a time and the driver cannot roll a committed chunk back, so if a later
+        // chunk fails this count is handed to the caller via `PartialDataFlashWrite`.
+        let mut committed = 0usize;
+
         let mut bytes_left_to_write = write.len();
         while bytes_left_to_write > 0 {
             // Largest single write block is 1 byte MAC command + 1 byte size + 2 bytes starting address + 32 bytes data + 1 PEC byte.
@@ -80,7 +85,7 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
             output_buf[3] = starting_address_chunk[1];
             output_buf[4..output_buf_end_idx].copy_from_slice(&write[start_idx..end_idx]);
 
-            if use_pec {
+            let res = if use_pec {
                 // Add PEC at the end.
                 let mut pec = smbus_pec::Pec::new();
                 pec.write(&[BQ_ADDR << 1]);
@@ -88,12 +93,24 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
                 // Safe cast as SMBUS PEC is a u8, returned value is u64 because of the Hasher trait.
                 output_buf[output_buf_end_idx] = pec.finish() as u8;
                 self.write_with_retries_internal(&output_buf[..=output_buf_end_idx])
-                    .await?;
+                    .await
             } else {
                 self.write_with_retries_internal(&output_buf[..output_buf_end_idx])
-                    .await?;
+                    .await
+            };
+
+            if let Err(e) = res {
+                // Nothing was committed, so there is no partial state to describe and the caller
+                // is better served by the underlying cause. Only report a partial write once at
+                // least one chunk has actually reached flash.
+                return Err(if committed == 0 {
+                    e
+                } else {
+                    BQ40Z50Error::PartialDataFlashWrite { committed }
+                });
             }
 
+            committed += end_idx - start_idx;
             bytes_left_to_write = bytes_left_to_write.saturating_sub(LARGEST_DF_BLOCK_SIZE_BYTES);
         }
 
@@ -133,6 +150,7 @@ fn check_df_range<E>(starting_address: u16, len: usize) -> Result<(), BQ40Z50Err
 
     Ok(())
 }
+
 /// Performs a single I2C bus operation, bounded by `config.timeout`.
 ///
 /// Expands to a `Result<(), BQ40Z50Error<I2C::Error>>`: a bus error becomes

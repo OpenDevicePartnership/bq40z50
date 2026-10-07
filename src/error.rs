@@ -17,6 +17,22 @@ pub enum BQ40Z50Error<I2cError> {
     /// address is inside it but the transfer would run past the end. No bus traffic is
     /// generated for a rejected transfer.
     DataFlashAddressOutOfRange,
+    /// A multi-chunk data flash write failed part way through, after at least one chunk
+    /// had already been committed to flash.
+    ///
+    /// Data flash is committed one 32-byte chunk at a time, so a failed multi-chunk write
+    /// cannot be rolled back by the driver. `committed` is the number of **caller payload**
+    /// bytes the gauge accepted, counted from the start of the `write` slice and excluding
+    /// the command, address and PEC framing. The remaining `write.len() - committed` bytes
+    /// were not written, and recovery is the caller's decision.
+    ///
+    /// This variant is only produced when `committed > 0`. If the very first chunk fails
+    /// nothing was committed, there is no partial state to describe, and the underlying
+    /// cause ([`BQ40Z50Error::I2c`], [`BQ40Z50Error::Timeout`]) is returned instead.
+    PartialDataFlashWrite {
+        /// Number of caller payload bytes successfully committed to data flash.
+        committed: usize,
+    },
 }
 
 #[cfg(feature = "embassy-timeout")]
@@ -35,7 +51,8 @@ impl<E: embedded_hal_async::i2c::Error> embedded_batteries_async::smart_battery:
             | Self::Pec
             | Self::DataTooLarge
             | Self::CapacityModeMismatch
-            | Self::DataFlashAddressOutOfRange => embedded_batteries_async::smart_battery::ErrorKind::Other,
+            | Self::DataFlashAddressOutOfRange
+            | Self::PartialDataFlashWrite { .. } => embedded_batteries_async::smart_battery::ErrorKind::Other,
         }
     }
 }

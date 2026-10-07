@@ -433,7 +433,8 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R5<I2C, DELAY> {
 
     /// Read from the data flash (DF). Refer to the datasheet for the data flash table.
     ///
-    /// Starting address should be between 0x4000 and 0x5FFF.
+    /// The whole transfer must lie inside the data flash window, that is `starting_address` and
+    /// `starting_address + read.len() - 1` must both be between 0x4000 and 0x5FFF.
     /// The input argument `read` slice size should reflect the desired number of bytes to be read.
     ///
     /// # Note
@@ -442,7 +443,14 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R5<I2C, DELAY> {
     /// Thus, the input argument `read` slice length can be larger than 32 bytes.
     /// # Errors
     ///
-    /// Will return `Err` if an I2C bus error occurs.
+    /// Will return [`BQ40Z50Error::DataFlashAddressOutOfRange`] if the transfer does not lie
+    /// entirely inside the 0x4000-0x5FFF window. The address is checked before any bus traffic is
+    /// generated, so a rejected read leaves `read` untouched.
+    ///
+    /// Will return `Err` if an I2C bus error occurs, or [`BQ40Z50Error::Pec`] if PEC checking is
+    /// enabled and a block still fails its check after all retries are exhausted. A block that
+    /// fails its PEC check is always re-read from its own address, so a successful call never
+    /// returns data from a neighbouring block.
     pub async fn read_dataflash(
         &mut self,
         starting_address: u16,
@@ -463,7 +471,8 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R5<I2C, DELAY> {
 
     /// Write to the data flash (DF). Refer to the datasheet for the data flash table.
     ///
-    /// Starting address should be between 0x4000 and 0x5FFF.
+    /// The whole transfer must lie inside the data flash window, that is `starting_address` and
+    /// `starting_address + write.len() - 1` must both be between 0x4000 and 0x5FFF.
     /// The input argument `write` slice size should reflect the desired number of bytes to be written.
     ///
     /// # Note
@@ -471,15 +480,24 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R5<I2C, DELAY> {
     /// handle writes of larger than 32 bytes. On the physical bus, the writes will be chunked into 32 byte blocks.
     /// Thus, the input argument `write` slice length can be larger than 32 bytes.
     ///
-    /// # Partial writes
-    ///
-    /// Writes are not atomic: each chunk is committed independently. On error, earlier chunks are not rolled back,
-    /// and the failing chunk may also have been accepted by the gauge. The error does not report write progress.
-    /// Retrying the whole operation rewrites earlier chunks. Callers must verify the affected data and handle recovery.
+    /// Each 32 byte chunk is committed to flash as it is sent. This write is therefore **not
+    /// atomic**: if a later chunk fails, the earlier chunks have already been written and the
+    /// driver cannot roll them back.
     ///
     /// # Errors
     ///
-    /// Will return `Err` if an I2C bus error occurs.
+    /// Will return [`BQ40Z50Error::DataFlashAddressOutOfRange`] if the transfer does not lie
+    /// entirely inside the 0x4000-0x5FFF window. The address is checked before any bus traffic is
+    /// generated, so a rejected write modifies no data flash.
+    ///
+    /// Will return [`BQ40Z50Error::PartialDataFlashWrite`] if a chunk fails after at least one
+    /// earlier chunk was committed. Its `committed` field is the number of bytes from the start of
+    /// `write` that reached data flash; the remaining `write.len() - committed` bytes did not.
+    /// Deciding how to recover, for example by retrying from `committed`, is left to the caller.
+    ///
+    /// Will return `Err` if an I2C bus error occurs. If the very first chunk fails then nothing was
+    /// committed and the underlying error is returned rather than
+    /// [`BQ40Z50Error::PartialDataFlashWrite`].
     pub async fn write_dataflash(
         &mut self,
         starting_address: u16,
