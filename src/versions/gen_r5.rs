@@ -5809,30 +5809,30 @@ impl LifetimeDataBlock1 {
     ///
     #[doc(alias = "MAX_DISCHARGE_A")]
     #[must_use]
-    pub fn max_discharge_a(&self) -> u16 {
+    pub fn max_discharge_a(&self) -> i16 {
         let start = 160;
         let end = 175;
-        let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
+        let raw = unsafe { ::device_driver::ops::load::<i16, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
     }
     /// `191:176` - Read the `max_avg_discharge_a` field.
     ///
     #[doc(alias = "MAX_AVG_DISCHARGE_A")]
     #[must_use]
-    pub fn max_avg_discharge_a(&self) -> u16 {
+    pub fn max_avg_discharge_a(&self) -> i16 {
         let start = 176;
         let end = 191;
-        let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
+        let raw = unsafe { ::device_driver::ops::load::<i16, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
     }
     /// `207:192` - Read the `max_avg_discharge_pwr` field.
     ///
     #[doc(alias = "MAX_AVG_DISCHARGE_PWR")]
     #[must_use]
-    pub fn max_avg_discharge_pwr(&self) -> u16 {
+    pub fn max_avg_discharge_pwr(&self) -> i16 {
         let start = 192;
         let end = 207;
-        let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
+        let raw = unsafe { ::device_driver::ops::load::<i16, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
     }
 }
@@ -5884,9 +5884,9 @@ impl defmt::Format for LifetimeDataBlock1 {
         defmt::write!(f, "cell_4_min_v: {=u16}, ", &self.cell_4_min_v());
         defmt::write!(f, "max_delta_cell_v: {=u16}, ", &self.max_delta_cell_v());
         defmt::write!(f, "max_charge_a: {=u16}, ", &self.max_charge_a());
-        defmt::write!(f, "max_discharge_a: {=u16}, ", &self.max_discharge_a());
-        defmt::write!(f, "max_avg_discharge_a: {=u16}, ", &self.max_avg_discharge_a());
-        defmt::write!(f, "max_avg_discharge_pwr: {=u16}, ", &self.max_avg_discharge_pwr());
+        defmt::write!(f, "max_discharge_a: {=i16}, ", &self.max_discharge_a());
+        defmt::write!(f, "max_avg_discharge_a: {=i16}, ", &self.max_avg_discharge_a());
+        defmt::write!(f, "max_avg_discharge_pwr: {=i16}, ", &self.max_avg_discharge_pwr());
         defmt::write!(f, "}}");
     }
 }
@@ -24277,30 +24277,30 @@ impl MacLifetimeDataBlock1 {
     ///
     #[doc(alias = "MAX_DISCHARGE_A")]
     #[must_use]
-    pub fn max_discharge_a(&self) -> u16 {
+    pub fn max_discharge_a(&self) -> i16 {
         let start = 160;
         let end = 175;
-        let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
+        let raw = unsafe { ::device_driver::ops::load::<i16, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
     }
     /// `191:176` - Read the `max_avg_discharge_a` field.
     ///
     #[doc(alias = "MAX_AVG_DISCHARGE_A")]
     #[must_use]
-    pub fn max_avg_discharge_a(&self) -> u16 {
+    pub fn max_avg_discharge_a(&self) -> i16 {
         let start = 176;
         let end = 191;
-        let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
+        let raw = unsafe { ::device_driver::ops::load::<i16, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
     }
     /// `207:192` - Read the `max_avg_discharge_pwr` field.
     ///
     #[doc(alias = "MAX_AVG_DISCHARGE_PWR")]
     #[must_use]
-    pub fn max_avg_discharge_pwr(&self) -> u16 {
+    pub fn max_avg_discharge_pwr(&self) -> i16 {
         let start = 192;
         let end = 207;
-        let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
+        let raw = unsafe { ::device_driver::ops::load::<i16, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
     }
     /// `15:0` - Set the `cell_1_max_v` field.
@@ -24396,29 +24396,29 @@ impl MacLifetimeDataBlock1 {
     /// `175:160` - Set the `max_discharge_a` field.
     ///
     #[doc(alias = "MAX_DISCHARGE_A")]
-    pub fn set_max_discharge_a(&mut self, value: u16) {
+    pub fn set_max_discharge_a(&mut self, value: i16) {
         let start = 160;
         let end = 175;
         let raw = value;
-        unsafe { ::device_driver::ops::store::<u16, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
+        unsafe { ::device_driver::ops::store::<i16, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
     /// `191:176` - Set the `max_avg_discharge_a` field.
     ///
     #[doc(alias = "MAX_AVG_DISCHARGE_A")]
-    pub fn set_max_avg_discharge_a(&mut self, value: u16) {
+    pub fn set_max_avg_discharge_a(&mut self, value: i16) {
         let start = 176;
         let end = 191;
         let raw = value;
-        unsafe { ::device_driver::ops::store::<u16, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
+        unsafe { ::device_driver::ops::store::<i16, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
     /// `207:192` - Set the `max_avg_discharge_pwr` field.
     ///
     #[doc(alias = "MAX_AVG_DISCHARGE_PWR")]
-    pub fn set_max_avg_discharge_pwr(&mut self, value: u16) {
+    pub fn set_max_avg_discharge_pwr(&mut self, value: i16) {
         let start = 192;
         let end = 207;
         let raw = value;
-        unsafe { ::device_driver::ops::store::<u16, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
+        unsafe { ::device_driver::ops::store::<i16, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
 }
 impl Default for MacLifetimeDataBlock1 {
@@ -24469,9 +24469,9 @@ impl defmt::Format for MacLifetimeDataBlock1 {
         defmt::write!(f, "cell_4_min_v: {=u16}, ", &self.cell_4_min_v());
         defmt::write!(f, "max_delta_cell_v: {=u16}, ", &self.max_delta_cell_v());
         defmt::write!(f, "max_charge_a: {=u16}, ", &self.max_charge_a());
-        defmt::write!(f, "max_discharge_a: {=u16}, ", &self.max_discharge_a());
-        defmt::write!(f, "max_avg_discharge_a: {=u16}, ", &self.max_avg_discharge_a());
-        defmt::write!(f, "max_avg_discharge_pwr: {=u16}, ", &self.max_avg_discharge_pwr());
+        defmt::write!(f, "max_discharge_a: {=i16}, ", &self.max_discharge_a());
+        defmt::write!(f, "max_avg_discharge_a: {=i16}, ", &self.max_avg_discharge_a());
+        defmt::write!(f, "max_avg_discharge_pwr: {=i16}, ", &self.max_avg_discharge_pwr());
         defmt::write!(f, "}}");
     }
 }

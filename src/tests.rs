@@ -1391,6 +1391,48 @@ macro_rules! bq40z50_tests {
 
                 bq.interface().i2c.done();
             }
+
+            #[tokio::test]
+            async fn test_lifetime_data_block_1_discharge_is_signed() {
+                // SLUUCN4B 17.17 Data Flash Summary types Max Discharge Current, Max Avg Dsg
+                // Current and Max Avg Dsg Power as I2 with range -32768..0, while the adjacent
+                // Max Charge Current row is I2 with range 0..32767. A raw 0xFC18 must therefore
+                // decode as -1000, not 64536.
+                // r1 and r3 carry six extra temperature bytes at the end of this block.
+                #[cfg(any(feature = "r1", feature = "r3"))]
+                let block = vec![
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0xE8, 0x03, 0x18, 0xFC, 0x7C, 0xFD, 0x9C, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                ];
+                #[cfg(not(any(feature = "r1", feature = "r3")))]
+                let block = vec![
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0xE8, 0x03, 0x18, 0xFC, 0x7C, 0xFD, 0x9C, 0xFF,
+                ];
+                let mut mac_block = vec![(block.len() + 2) as u8, 0x60, 0x00];
+                mac_block.extend_from_slice(&block);
+                let expectations = vec![
+                    Transaction::write_read(BQ_ADDR, vec![0x60], block.clone()),
+                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x60, 0x00]),
+                    Transaction::write_read(BQ_ADDR, vec![0x44], mac_block),
+                ];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Device::new(DeviceInterface::new(i2c, NoopDelay::new()));
+
+                let reg = bq.lifetime_data_block_1().read_async().await.unwrap();
+                assert_eq!(reg.max_charge_a(), 1000);
+                assert_eq!(reg.max_discharge_a(), -1000);
+                assert_eq!(reg.max_avg_discharge_a(), -644);
+                assert_eq!(reg.max_avg_discharge_pwr(), -100);
+
+                let mac = bq.mac_lifetime_data_block_1().dispatch_out_async().await.unwrap();
+                assert_eq!(mac.max_charge_a(), 1000);
+                assert_eq!(mac.max_discharge_a(), -1000);
+                assert_eq!(mac.max_avg_discharge_a(), -644);
+                assert_eq!(mac.max_avg_discharge_pwr(), -100);
+
+                bq.interface().i2c.done();
+            }
         }
     };
 }
