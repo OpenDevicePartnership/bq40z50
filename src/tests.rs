@@ -722,6 +722,76 @@ macro_rules! bq40z50_tests {
             }
 
             #[tokio::test]
+            async fn test_capacity_mode_not_cached_on_failed_write() {
+                // SLUUCN4B 16.4 0x03 BatteryMode(): the reporting unit follows CAPM as latched in the
+                // part. A write that never completes latches nothing, so the cache must not move.
+                let expectations = vec![
+                    Transaction::write(BQ_ADDR, vec![0x03, 0x00, 0x80]).with_error(
+                        embedded_hal::i2c::ErrorKind::NoAcknowledge(embedded_hal::i2c::NoAcknowledgeSource::Address),
+                    ),
+                    Transaction::write(BQ_ADDR, vec![0x03, 0x00, 0x80]).with_error(
+                        embedded_hal::i2c::ErrorKind::NoAcknowledge(embedded_hal::i2c::NoAcknowledgeSource::Address),
+                    ),
+                    Transaction::write(BQ_ADDR, vec![0x03, 0x00, 0x80]).with_error(
+                        embedded_hal::i2c::ErrorKind::NoAcknowledge(embedded_hal::i2c::NoAcknowledgeSource::Address),
+                    ),
+                    Transaction::write(BQ_ADDR, vec![0x03, 0x00, 0x80]).with_error(
+                        embedded_hal::i2c::ErrorKind::NoAcknowledge(embedded_hal::i2c::NoAcknowledgeSource::Address),
+                    ),
+                    Transaction::write_read(BQ_ADDR, vec![0x0F], vec![80, 0x00]),
+                ];
+                let i2c = Mock::new(&expectations);
+                let delay_expectations = vec![
+                    DelayTransaction::delay_ms(DEFAULT_ERROR_BACKOFF_DELAY_MS),
+                    DelayTransaction::delay_ms(DEFAULT_ERROR_BACKOFF_DELAY_MS),
+                    DelayTransaction::delay_ms(DEFAULT_ERROR_BACKOFF_DELAY_MS),
+                ];
+                let mut bq = Bq40z50::new(i2c, CheckedDelay::new(&delay_expectations));
+
+                assert_eq!(bq.capacity_mode_state.get(), CapacityModeState::Milliamps);
+
+                let mode = BatteryModeFields::new().with_capacity_mode(true);
+                let res = bq.set_battery_mode(mode).await;
+                assert_eq!(
+                    res,
+                    Err(BQ40Z50Error::I2c(embedded_hal::i2c::ErrorKind::NoAcknowledge(
+                        embedded_hal::i2c::NoAcknowledgeSource::Address
+                    )))
+                );
+
+                // The write failed, so the part is still in mA mode and so is the cache.
+                assert_eq!(bq.capacity_mode_state.get(), CapacityModeState::Milliamps);
+                let rem_cap = bq.remaining_capacity().await.unwrap();
+                assert!(matches!(rem_cap, CapacityModeValue::MilliAmpUnsigned(80)));
+
+                bq.device.interface().i2c.done();
+                bq.device.interface().delay.done();
+            }
+
+            #[tokio::test]
+            async fn test_battery_mode_read_refreshes_capacity_mode() {
+                // SLUUCN4B 16.4 0x03 BatteryMode(): a read returns the authoritative CAPM, so the
+                // cached reporting unit must follow it.
+                let expectations = vec![
+                    Transaction::write_read(BQ_ADDR, vec![0x03], vec![0x00, 0x80]),
+                    Transaction::write_read(BQ_ADDR, vec![0x0F], vec![100, 0x00]),
+                ];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Bq40z50::new(i2c, NoopDelay::new());
+
+                assert_eq!(bq.capacity_mode_state.get(), CapacityModeState::Milliamps);
+
+                let mode = bq.battery_mode().await.unwrap();
+                assert!(mode.capacity_mode());
+                assert_eq!(bq.capacity_mode_state.get(), CapacityModeState::Centiwatt);
+
+                let rem_cap = bq.remaining_capacity().await.unwrap();
+                assert!(matches!(rem_cap, CapacityModeValue::CentiWattUnsigned(100)));
+
+                bq.device.interface().i2c.done();
+            }
+
+            #[tokio::test]
             async fn test_reg_retries() {
                 // Should have 3 retries
                 let expectations = vec![

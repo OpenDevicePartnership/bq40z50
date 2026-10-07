@@ -150,15 +150,20 @@ macro_rules! implement_embedded_batteries {
             }
 
             async fn battery_mode(&mut self) -> Result<BatteryModeFields, Self::Error> {
-                Ok(self.device.battery_mode().read_async().await?.into())
+                let flags: BatteryModeFields = self.device.battery_mode().read_async().await?.into();
+                // A read returns the CAPACITY_MODE actually latched in the part, so refresh the cache.
+                self.set_capacity_mode_state(flags);
+                Ok(flags)
             }
 
             async fn set_battery_mode(&mut self, flags: BatteryModeFields) -> Result<(), Self::Error> {
-                self.set_capacity_mode_state(flags);
                 self.device
                     .battery_mode()
                     .write_async(|f| *f = flags.into())
-                    .await
+                    .await?;
+                // Only latch the new reporting unit once the part has actually accepted the write.
+                self.set_capacity_mode_state(flags);
+                Ok(())
             }
 
             async fn at_rate(&mut self) -> Result<smart_battery::CapacityModeSignedValue, Self::Error> {
