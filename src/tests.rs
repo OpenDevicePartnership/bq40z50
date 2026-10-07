@@ -792,6 +792,85 @@ macro_rules! bq40z50_tests {
             }
 
             #[tokio::test]
+            async fn test_set_remaining_capacity_alarm_unit_mismatch() {
+                // SLUUCN4B 16.2 0x01 RemainingCapacityAlarm(): the register unit is selected by
+                // BatteryMode()[CAPM], not by the caller, so a mismatched tag must be rejected.
+                let expectations = vec![
+                    Transaction::write(BQ_ADDR, vec![0x01, 0x2C, 0x01]),
+                    Transaction::write(BQ_ADDR, vec![0x03, 0x00, 0x80]),
+                    Transaction::write(BQ_ADDR, vec![0x01, 0x2C, 0x01]),
+                ];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Bq40z50::new(i2c, NoopDelay::new());
+
+                // Cache defaults to mA: the matching tag is accepted.
+                bq.set_remaining_capacity_alarm(CapacityModeValue::MilliAmpUnsigned(300))
+                    .await
+                    .unwrap();
+
+                // The mismatched tag is rejected without touching the bus.
+                assert_eq!(
+                    bq.set_remaining_capacity_alarm(CapacityModeValue::CentiWattUnsigned(300))
+                        .await,
+                    Err(BQ40Z50Error::CapacityModeMismatch)
+                );
+
+                bq.set_battery_mode(BatteryModeFields::new().with_capacity_mode(true))
+                    .await
+                    .unwrap();
+
+                // Now in cWh mode, the units swap over.
+                assert_eq!(
+                    bq.set_remaining_capacity_alarm(CapacityModeValue::MilliAmpUnsigned(300))
+                        .await,
+                    Err(BQ40Z50Error::CapacityModeMismatch)
+                );
+                bq.set_remaining_capacity_alarm(CapacityModeValue::CentiWattUnsigned(300))
+                    .await
+                    .unwrap();
+
+                bq.device.interface().i2c.done();
+            }
+
+            #[tokio::test]
+            async fn test_set_at_rate_unit_mismatch() {
+                // SLUUCN4B 16.5 0x04 AtRate(): the register unit is selected by BatteryMode()[CAPM],
+                // not by the caller, so a mismatched tag must be rejected.
+                let expectations = vec![
+                    Transaction::write(BQ_ADDR, vec![0x04, 0x9C, 0xFF]),
+                    Transaction::write(BQ_ADDR, vec![0x03, 0x00, 0x80]),
+                    Transaction::write(BQ_ADDR, vec![0x04, 0x9C, 0xFF]),
+                ];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Bq40z50::new(i2c, NoopDelay::new());
+
+                bq.set_at_rate(CapacityModeSignedValue::MilliAmpSigned(-100))
+                    .await
+                    .unwrap();
+
+                assert_eq!(
+                    bq.set_at_rate(CapacityModeSignedValue::CentiWattSigned(-100))
+                        .await,
+                    Err(BQ40Z50Error::CapacityModeMismatch)
+                );
+
+                bq.set_battery_mode(BatteryModeFields::new().with_capacity_mode(true))
+                    .await
+                    .unwrap();
+
+                assert_eq!(
+                    bq.set_at_rate(CapacityModeSignedValue::MilliAmpSigned(-100))
+                        .await,
+                    Err(BQ40Z50Error::CapacityModeMismatch)
+                );
+                bq.set_at_rate(CapacityModeSignedValue::CentiWattSigned(-100))
+                    .await
+                    .unwrap();
+
+                bq.device.interface().i2c.done();
+            }
+
+            #[tokio::test]
             async fn test_reg_retries() {
                 // Should have 3 retries
                 let expectations = vec![

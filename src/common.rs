@@ -122,14 +122,18 @@ macro_rules! implement_embedded_batteries {
                 &mut self,
                 capacity: smart_battery::CapacityModeValue,
             ) -> Result<(), Self::Error> {
+                // The register unit is selected by BatteryMode()[CAPACITY_MODE], not by the caller.
+                // Converting between mA and cW needs the pack voltage, so a mismatch is an error.
+                let ((CapacityModeValue::MilliAmpUnsigned(capacity), CapacityModeState::Milliamps)
+                | (CapacityModeValue::CentiWattUnsigned(capacity), CapacityModeState::Centiwatt)) =
+                    (capacity, self.capacity_mode_state.get())
+                else {
+                    return Err(BQ40Z50Error::CapacityModeMismatch);
+                };
+
                 self.device
                     .remaining_capacity_alarm()
-                    .write_async(|d| {
-                        d.set_remaining_capacity_alarm(match capacity {
-                            CapacityModeValue::MilliAmpUnsigned(value)
-                            | CapacityModeValue::CentiWattUnsigned(value) => value,
-                        });
-                    })
+                    .write_async(|d| d.set_remaining_capacity_alarm(capacity))
                     .await
             }
 
@@ -178,15 +182,16 @@ macro_rules! implement_embedded_batteries {
             }
 
             async fn set_at_rate(&mut self, rate: smart_battery::CapacityModeSignedValue) -> Result<(), Self::Error> {
-                self.device
-                    .at_rate()
-                    .write_async(|f| {
-                        f.set_at_rate(match rate {
-                            CapacityModeSignedValue::MilliAmpSigned(value)
-                            | CapacityModeSignedValue::CentiWattSigned(value) => value,
-                        });
-                    })
-                    .await
+                // The register unit is selected by BatteryMode()[CAPACITY_MODE], not by the caller.
+                // Converting between mA and cW needs the pack voltage, so a mismatch is an error.
+                let ((CapacityModeSignedValue::MilliAmpSigned(rate), CapacityModeState::Milliamps)
+                | (CapacityModeSignedValue::CentiWattSigned(rate), CapacityModeState::Centiwatt)) =
+                    (rate, self.capacity_mode_state.get())
+                else {
+                    return Err(BQ40Z50Error::CapacityModeMismatch);
+                };
+
+                self.device.at_rate().write_async(|f| f.set_at_rate(rate)).await
             }
 
             async fn at_rate_time_to_full(&mut self) -> Result<smart_battery::Minutes, Self::Error> {
