@@ -255,6 +255,9 @@ MAC_SAFETY_ALERT:
     CUVC:
       base: bool
       start: 14
+    DCOT:
+      base: bool
+      start: 15
     OTF:
       base: bool
       start: 16
@@ -288,6 +291,12 @@ MAC_SAFETY_ALERT:
     UTD:
       base: bool
       start: 27
+    COVL:
+      base: bool
+      start: 28
+    OCDL:
+      base: bool
+      start: 29
 
 MAC_SAFETY_STATUS:
   type: command
@@ -339,15 +348,18 @@ MAC_SAFETY_STATUS:
     CUVC:
       base: bool
       start: 14
+    DCOT:
+      base: bool
+      start: 15
     OTF:
       base: bool
       start: 16
+    HWDF:
+      base: bool
+      start: 17
     PTO:
       base: bool
       start: 18
-    PTOS:
-      base: bool
-      start: 19
     CTO:
       base: bool
       start: 20
@@ -369,6 +381,12 @@ MAC_SAFETY_STATUS:
     UTD:
       base: bool
       start: 27
+    COVL:
+      base: bool
+      start: 28
+    OCDL:
+      base: bool
+      start: 29
 
 MAC_PF_ALERT:
   type: command
@@ -390,6 +408,9 @@ MAC_PF_ALERT:
     SOT:
       base: bool
       start: 4
+    COVL:
+      base: bool
+      start: 5
     SOTF:
       base: bool
       start: 6
@@ -411,12 +432,24 @@ MAC_PF_ALERT:
     VIMA:
       base: bool
       start: 12
+    AOLDL:
+      base: bool
+      start: 13
+    ASCCL:
+      base: bool
+      start: 14
+    ASCDL:
+      base: bool
+      start: 15
     CFETF:
       base: bool
       start: 16
     DFETF:
       base: bool
       start: 17
+    OCDL:
+      base: bool
+      start: 18
     FUSE:
       base: bool
       start: 19
@@ -429,9 +462,9 @@ MAC_PF_ALERT:
     SECOND_LVL:
       base: bool
       start: 22
-    OPNC:
+    TMPC:
       base: bool
-      start: 25
+      start: 27
     TS1:
       base: bool
       start: 28
@@ -465,6 +498,9 @@ MAC_PF_STATUS:
     SOT:
       base: bool
       start: 4
+    COVL:
+      base: bool
+      start: 5
     SOTF:
       base: bool
       start: 6
@@ -486,12 +522,24 @@ MAC_PF_STATUS:
     VIMA:
       base: bool
       start: 12
+    AOLDL:
+      base: bool
+      start: 13
+    ASCCL:
+      base: bool
+      start: 14
+    ASCDL:
+      base: bool
+      start: 15
     CFETF:
       base: bool
       start: 16
     DFETF:
       base: bool
       start: 17
+    OCDL:
+      base: bool
+      start: 18
     FUSE:
       base: bool
       start: 19
@@ -510,12 +558,15 @@ MAC_PF_STATUS:
     IFC:
       base: bool
       start: 24
-    OPNCELL:
+    FORCE:
       base: bool
       start: 25
     DFW:
       base: bool
       start: 26
+    TMPC:
+      base: bool
+      start: 27
     TS1:
       base: bool
       start: 28
@@ -546,9 +597,15 @@ MAC_OPERATION_STATUS:
     PCHG:
       base: bool
       start: 3
+    ACTHR:
+      base: bool
+      start: 4
     FUSE:
       base: bool
       start: 5
+    EMSHUT:
+      base: bool
+      start: 6
     BTP_INT:
       base: bool
       start: 7
@@ -610,7 +667,7 @@ MAC_OPERATION_STATUS:
     SMBLCAL:
       base: bool
       start: 25
-    SLPAD:
+    STORAGEM:
       base: bool
       start: 26
     SLPCC:
@@ -619,9 +676,15 @@ MAC_OPERATION_STATUS:
     CB:
       base: bool
       start: 28
-    EMSHUT:
+    DISCONN:
       base: bool
       start: 29
+    PSSHUT:
+      base: bool
+      start: 30
+    IOSHUT:
+      base: bool
+      start: 31
 
 MAC_CHARGING_STATUS:
   type: command
@@ -794,6 +857,9 @@ MAC_GAUGING_STATUS:
     SLPQMAX:
       base: bool
       start: 13
+    OCVPRED:
+      base: bool
+      start: 14
     NSFM:
       base: bool
       start: 15
@@ -812,6 +878,9 @@ MAC_GAUGING_STATUS:
     OCVFR:
       base: bool
       start: 20
+    VLB:
+      base: bool
+      start: 21
 
 MAC_MANUFACTURING_STATUS:
   type: command
@@ -3091,6 +3160,10 @@ SAFETY_ALERT:
       base: bool
       access: RO
       start: 14
+    DCOT:
+      base: bool
+      access: RO
+      start: 15
     OTF:
       base: bool
       access: RO
@@ -3135,6 +3208,14 @@ SAFETY_ALERT:
       base: bool
       access: RO
       start: 27
+    COVL:
+      base: bool
+      access: RO
+      start: 28
+    OCDL:
+      base: bool
+      access: RO
+      start: 29
 
 SAFETY_STATUS:
   type: register
@@ -3202,18 +3283,22 @@ SAFETY_STATUS:
       base: bool
       access: RO
       start: 14
+    DCOT:
+      base: bool
+      access: RO
+      start: 15
     OTF:
       base: bool
       access: RO
       start: 16
+    HWDF:
+      base: bool
+      access: RO
+      start: 17
     PTO:
       base: bool
       access: RO
       start: 18
-    PTOS:
-      base: bool
-      access: RO
-      start: 19
     CTO:
       base: bool
       access: RO
@@ -3242,6 +3327,14 @@ SAFETY_STATUS:
       base: bool
       access: RO
       start: 27
+    COVL:
+      base: bool
+      access: RO
+      start: 28
+    OCDL:
+      base: bool
+      access: RO
+      start: 29
 
 PF_ALERT:
   type: register
@@ -3269,6 +3362,10 @@ PF_ALERT:
       base: bool
       access: RO
       start: 4
+    COVL:
+      base: bool
+      access: RO
+      start: 5
     SOTF:
       base: bool
       access: RO
@@ -3297,6 +3394,18 @@ PF_ALERT:
       base: bool
       access: RO
       start: 12
+    AOLDL:
+      base: bool
+      access: RO
+      start: 13
+    ASCCL:
+      base: bool
+      access: RO
+      start: 14
+    ASCDL:
+      base: bool
+      access: RO
+      start: 15
     CFETF:
       base: bool
       access: RO
@@ -3305,6 +3414,10 @@ PF_ALERT:
       base: bool
       access: RO
       start: 17
+    OCDL:
+      base: bool
+      access: RO
+      start: 18
     FUSE:
       base: bool
       access: RO
@@ -3321,10 +3434,10 @@ PF_ALERT:
       base: bool
       access: RO
       start: 22
-    OPNC:
+    TMPC:
       base: bool
       access: RO
-      start: 25
+      start: 27
     TS1:
       base: bool
       access: RO
@@ -3368,6 +3481,10 @@ PF_STATUS:
       base: bool
       access: RO
       start: 4
+    COVL:
+      base: bool
+      access: RO
+      start: 5
     SOTF:
       base: bool
       access: RO
@@ -3396,6 +3513,18 @@ PF_STATUS:
       base: bool
       access: RO
       start: 12
+    AOLDL:
+      base: bool
+      access: RO
+      start: 13
+    ASCCL:
+      base: bool
+      access: RO
+      start: 14
+    ASCDL:
+      base: bool
+      access: RO
+      start: 15
     CFETF:
       base: bool
       access: RO
@@ -3404,6 +3533,10 @@ PF_STATUS:
       base: bool
       access: RO
       start: 17
+    OCDL:
+      base: bool
+      access: RO
+      start: 18
     FUSE:
       base: bool
       access: RO
@@ -3428,7 +3561,7 @@ PF_STATUS:
       base: bool
       access: RO
       start: 24
-    OPNCELL:
+    FORCE:
       base: bool
       access: RO
       start: 25
@@ -3436,6 +3569,10 @@ PF_STATUS:
       base: bool
       access: RO
       start: 26
+    TMPC:
+      base: bool
+      access: RO
+      start: 27
     TS1:
       base: bool
       access: RO
@@ -3475,10 +3612,18 @@ OPERATION_STATUS:
       base: bool
       access: RO
       start: 3
+    ACTHR:
+      base: bool
+      access: RO
+      start: 4
     FUSE:
       base: bool
       access: RO
       start: 5
+    EMSHUT:
+      base: bool
+      access: RO
+      start: 6
     BTP_INT:
       base: bool
       access: RO
@@ -3558,7 +3703,7 @@ OPERATION_STATUS:
       base: bool
       access: RO
       start: 25
-    SLPAD:
+    STORAGEM:
       base: bool
       access: RO
       start: 26
@@ -3570,10 +3715,18 @@ OPERATION_STATUS:
       base: bool
       access: RO
       start: 28
-    EMSHUT:
+    DISCONN:
       base: bool
       access: RO
       start: 29
+    PSSHUT:
+      base: bool
+      access: RO
+      start: 30
+    IOSHUT:
+      base: bool
+      access: RO
+      start: 31
 
 CHARGING_STATUS:
   type: register
@@ -3794,6 +3947,10 @@ GAUGING_STATUS:
       base: bool
       access: RO
       start: 13
+    OCVPRED:
+      base: bool
+      access: RO
+      start: 14
     NSFM:
       base: bool
       access: RO
@@ -3818,6 +3975,10 @@ GAUGING_STATUS:
       base: bool
       access: RO
       start: 20
+    VLB:
+      base: bool
+      access: RO
+      start: 21
 
 MANUFACTURING_STATUS:
   type: register

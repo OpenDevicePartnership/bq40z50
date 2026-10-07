@@ -2741,6 +2741,12 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 14, 15) };
             raw > 0
         }
+        ///Read the `dcot` field of the register.
+        ///
+        pub fn dcot(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 15, 16) };
+            raw > 0
+        }
         ///Read the `otf` field of the register.
         ///
         pub fn otf(&self) -> bool {
@@ -2805,6 +2811,18 @@ pub mod field_sets {
         ///
         pub fn utd(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 27, 28) };
+            raw > 0
+        }
+        ///Read the `covl` field of the register.
+        ///
+        pub fn covl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 28, 29) };
+            raw > 0
+        }
+        ///Read the `ocdl` field of the register.
+        ///
+        pub fn ocdl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 29, 30) };
             raw > 0
         }
         ///Write the `cuv` field of the register.
@@ -2879,6 +2897,12 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 14, 15, &mut self.bits) };
         }
+        ///Write the `dcot` field of the register.
+        ///
+        pub fn set_dcot(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 15, 16, &mut self.bits) };
+        }
         ///Write the `otf` field of the register.
         ///
         pub fn set_otf(&mut self, value: bool) {
@@ -2945,6 +2969,18 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 27, 28, &mut self.bits) };
         }
+        ///Write the `covl` field of the register.
+        ///
+        pub fn set_covl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 28, 29, &mut self.bits) };
+        }
+        ///Write the `ocdl` field of the register.
+        ///
+        pub fn set_ocdl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 29, 30, &mut self.bits) };
+        }
     }
     impl From<[u8; 4]> for MacSafetyAlertFieldsOut {
         fn from(bits: [u8; 4]) -> Self {
@@ -2971,6 +3007,7 @@ pub mod field_sets {
             d.field("otc", &self.otc());
             d.field("otd", &self.otd());
             d.field("cuvc", &self.cuvc());
+            d.field("dcot", &self.dcot());
             d.field("otf", &self.otf());
             d.field("pto", &self.pto());
             d.field("ptos", &self.ptos());
@@ -2982,6 +3019,8 @@ pub mod field_sets {
             d.field("pchgc", &self.pchgc());
             d.field("utc", &self.utc());
             d.field("utd", &self.utd());
+            d.field("covl", &self.covl());
+            d.field("ocdl", &self.ocdl());
             d.finish()
         }
     }
@@ -3001,6 +3040,7 @@ pub mod field_sets {
             defmt::write!(f, "otc: {=bool}, ", &self.otc());
             defmt::write!(f, "otd: {=bool}, ", &self.otd());
             defmt::write!(f, "cuvc: {=bool}, ", &self.cuvc());
+            defmt::write!(f, "dcot: {=bool}, ", &self.dcot());
             defmt::write!(f, "otf: {=bool}, ", &self.otf());
             defmt::write!(f, "pto: {=bool}, ", &self.pto());
             defmt::write!(f, "ptos: {=bool}, ", &self.ptos());
@@ -3012,6 +3052,8 @@ pub mod field_sets {
             defmt::write!(f, "pchgc: {=bool}, ", &self.pchgc());
             defmt::write!(f, "utc: {=bool}, ", &self.utc());
             defmt::write!(f, "utd: {=bool}, ", &self.utd());
+            defmt::write!(f, "covl: {=bool}, ", &self.covl());
+            defmt::write!(f, "ocdl: {=bool}, ", &self.ocdl());
             defmt::write!(f, "}}");
         }
     }
@@ -3182,22 +3224,28 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 14, 15) };
             raw > 0
         }
+        ///Read the `dcot` field of the register.
+        ///
+        pub fn dcot(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 15, 16) };
+            raw > 0
+        }
         ///Read the `otf` field of the register.
         ///
         pub fn otf(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 16, 17) };
             raw > 0
         }
+        ///Read the `hwdf` field of the register.
+        ///
+        pub fn hwdf(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 17, 18) };
+            raw > 0
+        }
         ///Read the `pto` field of the register.
         ///
         pub fn pto(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 18, 19) };
-            raw > 0
-        }
-        ///Read the `ptos` field of the register.
-        ///
-        pub fn ptos(&self) -> bool {
-            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 19, 20) };
             raw > 0
         }
         ///Read the `cto` field of the register.
@@ -3240,6 +3288,18 @@ pub mod field_sets {
         ///
         pub fn utd(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 27, 28) };
+            raw > 0
+        }
+        ///Read the `covl` field of the register.
+        ///
+        pub fn covl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 28, 29) };
+            raw > 0
+        }
+        ///Read the `ocdl` field of the register.
+        ///
+        pub fn ocdl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 29, 30) };
             raw > 0
         }
         ///Write the `cuv` field of the register.
@@ -3332,23 +3392,29 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 14, 15, &mut self.bits) };
         }
+        ///Write the `dcot` field of the register.
+        ///
+        pub fn set_dcot(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 15, 16, &mut self.bits) };
+        }
         ///Write the `otf` field of the register.
         ///
         pub fn set_otf(&mut self, value: bool) {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 16, 17, &mut self.bits) };
         }
+        ///Write the `hwdf` field of the register.
+        ///
+        pub fn set_hwdf(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 17, 18, &mut self.bits) };
+        }
         ///Write the `pto` field of the register.
         ///
         pub fn set_pto(&mut self, value: bool) {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 18, 19, &mut self.bits) };
-        }
-        ///Write the `ptos` field of the register.
-        ///
-        pub fn set_ptos(&mut self, value: bool) {
-            let raw = value as _;
-            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 19, 20, &mut self.bits) };
         }
         ///Write the `cto` field of the register.
         ///
@@ -3392,6 +3458,18 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 27, 28, &mut self.bits) };
         }
+        ///Write the `covl` field of the register.
+        ///
+        pub fn set_covl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 28, 29, &mut self.bits) };
+        }
+        ///Write the `ocdl` field of the register.
+        ///
+        pub fn set_ocdl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 29, 30, &mut self.bits) };
+        }
     }
     impl From<[u8; 4]> for MacSafetyStatusFieldsOut {
         fn from(bits: [u8; 4]) -> Self {
@@ -3421,9 +3499,10 @@ pub mod field_sets {
             d.field("otc", &self.otc());
             d.field("otd", &self.otd());
             d.field("cuvc", &self.cuvc());
+            d.field("dcot", &self.dcot());
             d.field("otf", &self.otf());
+            d.field("hwdf", &self.hwdf());
             d.field("pto", &self.pto());
-            d.field("ptos", &self.ptos());
             d.field("cto", &self.cto());
             d.field("oc", &self.oc());
             d.field("chgc", &self.chgc());
@@ -3431,6 +3510,8 @@ pub mod field_sets {
             d.field("pchgc", &self.pchgc());
             d.field("utc", &self.utc());
             d.field("utd", &self.utd());
+            d.field("covl", &self.covl());
+            d.field("ocdl", &self.ocdl());
             d.finish()
         }
     }
@@ -3453,9 +3534,10 @@ pub mod field_sets {
             defmt::write!(f, "otc: {=bool}, ", &self.otc());
             defmt::write!(f, "otd: {=bool}, ", &self.otd());
             defmt::write!(f, "cuvc: {=bool}, ", &self.cuvc());
+            defmt::write!(f, "dcot: {=bool}, ", &self.dcot());
             defmt::write!(f, "otf: {=bool}, ", &self.otf());
+            defmt::write!(f, "hwdf: {=bool}, ", &self.hwdf());
             defmt::write!(f, "pto: {=bool}, ", &self.pto());
-            defmt::write!(f, "ptos: {=bool}, ", &self.ptos());
             defmt::write!(f, "cto: {=bool}, ", &self.cto());
             defmt::write!(f, "oc: {=bool}, ", &self.oc());
             defmt::write!(f, "chgc: {=bool}, ", &self.chgc());
@@ -3463,6 +3545,8 @@ pub mod field_sets {
             defmt::write!(f, "pchgc: {=bool}, ", &self.pchgc());
             defmt::write!(f, "utc: {=bool}, ", &self.utc());
             defmt::write!(f, "utd: {=bool}, ", &self.utd());
+            defmt::write!(f, "covl: {=bool}, ", &self.covl());
+            defmt::write!(f, "ocdl: {=bool}, ", &self.ocdl());
             defmt::write!(f, "}}");
         }
     }
@@ -3573,6 +3657,12 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 4, 5) };
             raw > 0
         }
+        ///Read the `covl` field of the register.
+        ///
+        pub fn covl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 5, 6) };
+            raw > 0
+        }
         ///Read the `sotf` field of the register.
         ///
         pub fn sotf(&self) -> bool {
@@ -3615,6 +3705,24 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 12, 13) };
             raw > 0
         }
+        ///Read the `aoldl` field of the register.
+        ///
+        pub fn aoldl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 13, 14) };
+            raw > 0
+        }
+        ///Read the `asccl` field of the register.
+        ///
+        pub fn asccl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 14, 15) };
+            raw > 0
+        }
+        ///Read the `ascdl` field of the register.
+        ///
+        pub fn ascdl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 15, 16) };
+            raw > 0
+        }
         ///Read the `cfetf` field of the register.
         ///
         pub fn cfetf(&self) -> bool {
@@ -3625,6 +3733,12 @@ pub mod field_sets {
         ///
         pub fn dfetf(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 17, 18) };
+            raw > 0
+        }
+        ///Read the `ocdl` field of the register.
+        ///
+        pub fn ocdl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 18, 19) };
             raw > 0
         }
         ///Read the `fuse` field of the register.
@@ -3651,10 +3765,10 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 22, 23) };
             raw > 0
         }
-        ///Read the `opnc` field of the register.
+        ///Read the `tmpc` field of the register.
         ///
-        pub fn opnc(&self) -> bool {
-            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 25, 26) };
+        pub fn tmpc(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 27, 28) };
             raw > 0
         }
         ///Read the `ts_1` field of the register.
@@ -3711,6 +3825,12 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 4, 5, &mut self.bits) };
         }
+        ///Write the `covl` field of the register.
+        ///
+        pub fn set_covl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 5, 6, &mut self.bits) };
+        }
         ///Write the `sotf` field of the register.
         ///
         pub fn set_sotf(&mut self, value: bool) {
@@ -3753,6 +3873,24 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 12, 13, &mut self.bits) };
         }
+        ///Write the `aoldl` field of the register.
+        ///
+        pub fn set_aoldl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 13, 14, &mut self.bits) };
+        }
+        ///Write the `asccl` field of the register.
+        ///
+        pub fn set_asccl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 14, 15, &mut self.bits) };
+        }
+        ///Write the `ascdl` field of the register.
+        ///
+        pub fn set_ascdl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 15, 16, &mut self.bits) };
+        }
         ///Write the `cfetf` field of the register.
         ///
         pub fn set_cfetf(&mut self, value: bool) {
@@ -3764,6 +3902,12 @@ pub mod field_sets {
         pub fn set_dfetf(&mut self, value: bool) {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 17, 18, &mut self.bits) };
+        }
+        ///Write the `ocdl` field of the register.
+        ///
+        pub fn set_ocdl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 18, 19, &mut self.bits) };
         }
         ///Write the `fuse` field of the register.
         ///
@@ -3789,11 +3933,11 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 22, 23, &mut self.bits) };
         }
-        ///Write the `opnc` field of the register.
+        ///Write the `tmpc` field of the register.
         ///
-        pub fn set_opnc(&mut self, value: bool) {
+        pub fn set_tmpc(&mut self, value: bool) {
             let raw = value as _;
-            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 25, 26, &mut self.bits) };
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 27, 28, &mut self.bits) };
         }
         ///Write the `ts_1` field of the register.
         ///
@@ -3838,6 +3982,7 @@ pub mod field_sets {
             d.field("socc", &self.socc());
             d.field("socd", &self.socd());
             d.field("sot", &self.sot());
+            d.field("covl", &self.covl());
             d.field("sotf", &self.sotf());
             d.field("qim", &self.qim());
             d.field("cb", &self.cb());
@@ -3845,13 +3990,17 @@ pub mod field_sets {
             d.field("cd", &self.cd());
             d.field("vimr", &self.vimr());
             d.field("vima", &self.vima());
+            d.field("aoldl", &self.aoldl());
+            d.field("asccl", &self.asccl());
+            d.field("ascdl", &self.ascdl());
             d.field("cfetf", &self.cfetf());
             d.field("dfetf", &self.dfetf());
+            d.field("ocdl", &self.ocdl());
             d.field("fuse", &self.fuse());
             d.field("afer", &self.afer());
             d.field("afec", &self.afec());
             d.field("second_lvl", &self.second_lvl());
-            d.field("opnc", &self.opnc());
+            d.field("tmpc", &self.tmpc());
             d.field("ts_1", &self.ts_1());
             d.field("ts_2", &self.ts_2());
             d.field("ts_3", &self.ts_3());
@@ -3868,6 +4017,7 @@ pub mod field_sets {
             defmt::write!(f, "socc: {=bool}, ", &self.socc());
             defmt::write!(f, "socd: {=bool}, ", &self.socd());
             defmt::write!(f, "sot: {=bool}, ", &self.sot());
+            defmt::write!(f, "covl: {=bool}, ", &self.covl());
             defmt::write!(f, "sotf: {=bool}, ", &self.sotf());
             defmt::write!(f, "qim: {=bool}, ", &self.qim());
             defmt::write!(f, "cb: {=bool}, ", &self.cb());
@@ -3875,13 +4025,17 @@ pub mod field_sets {
             defmt::write!(f, "cd: {=bool}, ", &self.cd());
             defmt::write!(f, "vimr: {=bool}, ", &self.vimr());
             defmt::write!(f, "vima: {=bool}, ", &self.vima());
+            defmt::write!(f, "aoldl: {=bool}, ", &self.aoldl());
+            defmt::write!(f, "asccl: {=bool}, ", &self.asccl());
+            defmt::write!(f, "ascdl: {=bool}, ", &self.ascdl());
             defmt::write!(f, "cfetf: {=bool}, ", &self.cfetf());
             defmt::write!(f, "dfetf: {=bool}, ", &self.dfetf());
+            defmt::write!(f, "ocdl: {=bool}, ", &self.ocdl());
             defmt::write!(f, "fuse: {=bool}, ", &self.fuse());
             defmt::write!(f, "afer: {=bool}, ", &self.afer());
             defmt::write!(f, "afec: {=bool}, ", &self.afec());
             defmt::write!(f, "second_lvl: {=bool}, ", &self.second_lvl());
-            defmt::write!(f, "opnc: {=bool}, ", &self.opnc());
+            defmt::write!(f, "tmpc: {=bool}, ", &self.tmpc());
             defmt::write!(f, "ts_1: {=bool}, ", &self.ts_1());
             defmt::write!(f, "ts_2: {=bool}, ", &self.ts_2());
             defmt::write!(f, "ts_3: {=bool}, ", &self.ts_3());
@@ -3996,6 +4150,12 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 4, 5) };
             raw > 0
         }
+        ///Read the `covl` field of the register.
+        ///
+        pub fn covl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 5, 6) };
+            raw > 0
+        }
         ///Read the `sotf` field of the register.
         ///
         pub fn sotf(&self) -> bool {
@@ -4038,6 +4198,24 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 12, 13) };
             raw > 0
         }
+        ///Read the `aoldl` field of the register.
+        ///
+        pub fn aoldl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 13, 14) };
+            raw > 0
+        }
+        ///Read the `asccl` field of the register.
+        ///
+        pub fn asccl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 14, 15) };
+            raw > 0
+        }
+        ///Read the `ascdl` field of the register.
+        ///
+        pub fn ascdl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 15, 16) };
+            raw > 0
+        }
         ///Read the `cfetf` field of the register.
         ///
         pub fn cfetf(&self) -> bool {
@@ -4048,6 +4226,12 @@ pub mod field_sets {
         ///
         pub fn dfetf(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 17, 18) };
+            raw > 0
+        }
+        ///Read the `ocdl` field of the register.
+        ///
+        pub fn ocdl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 18, 19) };
             raw > 0
         }
         ///Read the `fuse` field of the register.
@@ -4086,9 +4270,9 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 24, 25) };
             raw > 0
         }
-        ///Read the `opncell` field of the register.
+        ///Read the `force` field of the register.
         ///
-        pub fn opncell(&self) -> bool {
+        pub fn force(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 25, 26) };
             raw > 0
         }
@@ -4096,6 +4280,12 @@ pub mod field_sets {
         ///
         pub fn dfw(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 26, 27) };
+            raw > 0
+        }
+        ///Read the `tmpc` field of the register.
+        ///
+        pub fn tmpc(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 27, 28) };
             raw > 0
         }
         ///Read the `ts_1` field of the register.
@@ -4152,6 +4342,12 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 4, 5, &mut self.bits) };
         }
+        ///Write the `covl` field of the register.
+        ///
+        pub fn set_covl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 5, 6, &mut self.bits) };
+        }
         ///Write the `sotf` field of the register.
         ///
         pub fn set_sotf(&mut self, value: bool) {
@@ -4194,6 +4390,24 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 12, 13, &mut self.bits) };
         }
+        ///Write the `aoldl` field of the register.
+        ///
+        pub fn set_aoldl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 13, 14, &mut self.bits) };
+        }
+        ///Write the `asccl` field of the register.
+        ///
+        pub fn set_asccl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 14, 15, &mut self.bits) };
+        }
+        ///Write the `ascdl` field of the register.
+        ///
+        pub fn set_ascdl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 15, 16, &mut self.bits) };
+        }
         ///Write the `cfetf` field of the register.
         ///
         pub fn set_cfetf(&mut self, value: bool) {
@@ -4205,6 +4419,12 @@ pub mod field_sets {
         pub fn set_dfetf(&mut self, value: bool) {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 17, 18, &mut self.bits) };
+        }
+        ///Write the `ocdl` field of the register.
+        ///
+        pub fn set_ocdl(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 18, 19, &mut self.bits) };
         }
         ///Write the `fuse` field of the register.
         ///
@@ -4242,9 +4462,9 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 24, 25, &mut self.bits) };
         }
-        ///Write the `opncell` field of the register.
+        ///Write the `force` field of the register.
         ///
-        pub fn set_opncell(&mut self, value: bool) {
+        pub fn set_force(&mut self, value: bool) {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 25, 26, &mut self.bits) };
         }
@@ -4253,6 +4473,12 @@ pub mod field_sets {
         pub fn set_dfw(&mut self, value: bool) {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 26, 27, &mut self.bits) };
+        }
+        ///Write the `tmpc` field of the register.
+        ///
+        pub fn set_tmpc(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 27, 28, &mut self.bits) };
         }
         ///Write the `ts_1` field of the register.
         ///
@@ -4297,6 +4523,7 @@ pub mod field_sets {
             d.field("socc", &self.socc());
             d.field("socd", &self.socd());
             d.field("sot", &self.sot());
+            d.field("covl", &self.covl());
             d.field("sotf", &self.sotf());
             d.field("qim", &self.qim());
             d.field("cb", &self.cb());
@@ -4304,16 +4531,21 @@ pub mod field_sets {
             d.field("cd", &self.cd());
             d.field("vimr", &self.vimr());
             d.field("vima", &self.vima());
+            d.field("aoldl", &self.aoldl());
+            d.field("asccl", &self.asccl());
+            d.field("ascdl", &self.ascdl());
             d.field("cfetf", &self.cfetf());
             d.field("dfetf", &self.dfetf());
+            d.field("ocdl", &self.ocdl());
             d.field("fuse", &self.fuse());
             d.field("afer", &self.afer());
             d.field("afec", &self.afec());
             d.field("second_lvl", &self.second_lvl());
             d.field("ptc", &self.ptc());
             d.field("ifc", &self.ifc());
-            d.field("opncell", &self.opncell());
+            d.field("force", &self.force());
             d.field("dfw", &self.dfw());
+            d.field("tmpc", &self.tmpc());
             d.field("ts_1", &self.ts_1());
             d.field("ts_2", &self.ts_2());
             d.field("ts_3", &self.ts_3());
@@ -4330,6 +4562,7 @@ pub mod field_sets {
             defmt::write!(f, "socc: {=bool}, ", &self.socc());
             defmt::write!(f, "socd: {=bool}, ", &self.socd());
             defmt::write!(f, "sot: {=bool}, ", &self.sot());
+            defmt::write!(f, "covl: {=bool}, ", &self.covl());
             defmt::write!(f, "sotf: {=bool}, ", &self.sotf());
             defmt::write!(f, "qim: {=bool}, ", &self.qim());
             defmt::write!(f, "cb: {=bool}, ", &self.cb());
@@ -4337,16 +4570,21 @@ pub mod field_sets {
             defmt::write!(f, "cd: {=bool}, ", &self.cd());
             defmt::write!(f, "vimr: {=bool}, ", &self.vimr());
             defmt::write!(f, "vima: {=bool}, ", &self.vima());
+            defmt::write!(f, "aoldl: {=bool}, ", &self.aoldl());
+            defmt::write!(f, "asccl: {=bool}, ", &self.asccl());
+            defmt::write!(f, "ascdl: {=bool}, ", &self.ascdl());
             defmt::write!(f, "cfetf: {=bool}, ", &self.cfetf());
             defmt::write!(f, "dfetf: {=bool}, ", &self.dfetf());
+            defmt::write!(f, "ocdl: {=bool}, ", &self.ocdl());
             defmt::write!(f, "fuse: {=bool}, ", &self.fuse());
             defmt::write!(f, "afer: {=bool}, ", &self.afer());
             defmt::write!(f, "afec: {=bool}, ", &self.afec());
             defmt::write!(f, "second_lvl: {=bool}, ", &self.second_lvl());
             defmt::write!(f, "ptc: {=bool}, ", &self.ptc());
             defmt::write!(f, "ifc: {=bool}, ", &self.ifc());
-            defmt::write!(f, "opncell: {=bool}, ", &self.opncell());
+            defmt::write!(f, "force: {=bool}, ", &self.force());
             defmt::write!(f, "dfw: {=bool}, ", &self.dfw());
+            defmt::write!(f, "tmpc: {=bool}, ", &self.tmpc());
             defmt::write!(f, "ts_1: {=bool}, ", &self.ts_1());
             defmt::write!(f, "ts_2: {=bool}, ", &self.ts_2());
             defmt::write!(f, "ts_3: {=bool}, ", &self.ts_3());
@@ -4455,10 +4693,22 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 3, 4) };
             raw > 0
         }
+        ///Read the `acthr` field of the register.
+        ///
+        pub fn acthr(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 4, 5) };
+            raw > 0
+        }
         ///Read the `fuse` field of the register.
         ///
         pub fn fuse(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 5, 6) };
+            raw > 0
+        }
+        ///Read the `emshut` field of the register.
+        ///
+        pub fn emshut(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 6, 7) };
             raw > 0
         }
         ///Read the `btp_int` field of the register.
@@ -4569,9 +4819,9 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 25, 26) };
             raw > 0
         }
-        ///Read the `slpad` field of the register.
+        ///Read the `storagem` field of the register.
         ///
-        pub fn slpad(&self) -> bool {
+        pub fn storagem(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 26, 27) };
             raw > 0
         }
@@ -4587,10 +4837,22 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 28, 29) };
             raw > 0
         }
-        ///Read the `emshut` field of the register.
+        ///Read the `disconn` field of the register.
         ///
-        pub fn emshut(&self) -> bool {
+        pub fn disconn(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 29, 30) };
+            raw > 0
+        }
+        ///Read the `psshut` field of the register.
+        ///
+        pub fn psshut(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 30, 31) };
+            raw > 0
+        }
+        ///Read the `ioshut` field of the register.
+        ///
+        pub fn ioshut(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 31, 32) };
             raw > 0
         }
         ///Write the `pres` field of the register.
@@ -4617,11 +4879,23 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 3, 4, &mut self.bits) };
         }
+        ///Write the `acthr` field of the register.
+        ///
+        pub fn set_acthr(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 4, 5, &mut self.bits) };
+        }
         ///Write the `fuse` field of the register.
         ///
         pub fn set_fuse(&mut self, value: bool) {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 5, 6, &mut self.bits) };
+        }
+        ///Write the `emshut` field of the register.
+        ///
+        pub fn set_emshut(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 6, 7, &mut self.bits) };
         }
         ///Write the `btp_int` field of the register.
         ///
@@ -4731,9 +5005,9 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 25, 26, &mut self.bits) };
         }
-        ///Write the `slpad` field of the register.
+        ///Write the `storagem` field of the register.
         ///
-        pub fn set_slpad(&mut self, value: bool) {
+        pub fn set_storagem(&mut self, value: bool) {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 26, 27, &mut self.bits) };
         }
@@ -4749,11 +5023,23 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 28, 29, &mut self.bits) };
         }
-        ///Write the `emshut` field of the register.
+        ///Write the `disconn` field of the register.
         ///
-        pub fn set_emshut(&mut self, value: bool) {
+        pub fn set_disconn(&mut self, value: bool) {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 29, 30, &mut self.bits) };
+        }
+        ///Write the `psshut` field of the register.
+        ///
+        pub fn set_psshut(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 30, 31, &mut self.bits) };
+        }
+        ///Write the `ioshut` field of the register.
+        ///
+        pub fn set_ioshut(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 31, 32, &mut self.bits) };
         }
     }
     impl From<[u8; 4]> for MacOperationStatusFieldsOut {
@@ -4773,7 +5059,9 @@ pub mod field_sets {
             d.field("dsg", &self.dsg());
             d.field("chg", &self.chg());
             d.field("pchg", &self.pchg());
+            d.field("acthr", &self.acthr());
             d.field("fuse", &self.fuse());
+            d.field("emshut", &self.emshut());
             d.field("btp_int", &self.btp_int());
             d.field("sec", &self.sec());
             d.field("sdv", &self.sdv());
@@ -4792,10 +5080,12 @@ pub mod field_sets {
             d.field("sleepm", &self.sleepm());
             d.field("init", &self.init());
             d.field("smblcal", &self.smblcal());
-            d.field("slpad", &self.slpad());
+            d.field("storagem", &self.storagem());
             d.field("slpcc", &self.slpcc());
             d.field("cb", &self.cb());
-            d.field("emshut", &self.emshut());
+            d.field("disconn", &self.disconn());
+            d.field("psshut", &self.psshut());
+            d.field("ioshut", &self.ioshut());
             d.finish()
         }
     }
@@ -4807,7 +5097,9 @@ pub mod field_sets {
             defmt::write!(f, "dsg: {=bool}, ", &self.dsg());
             defmt::write!(f, "chg: {=bool}, ", &self.chg());
             defmt::write!(f, "pchg: {=bool}, ", &self.pchg());
+            defmt::write!(f, "acthr: {=bool}, ", &self.acthr());
             defmt::write!(f, "fuse: {=bool}, ", &self.fuse());
+            defmt::write!(f, "emshut: {=bool}, ", &self.emshut());
             defmt::write!(f, "btp_int: {=bool}, ", &self.btp_int());
             defmt::write!(f, "sec: {}, ", &self.sec());
             defmt::write!(f, "sdv: {=bool}, ", &self.sdv());
@@ -4826,10 +5118,12 @@ pub mod field_sets {
             defmt::write!(f, "sleepm: {=bool}, ", &self.sleepm());
             defmt::write!(f, "init: {=bool}, ", &self.init());
             defmt::write!(f, "smblcal: {=bool}, ", &self.smblcal());
-            defmt::write!(f, "slpad: {=bool}, ", &self.slpad());
+            defmt::write!(f, "storagem: {=bool}, ", &self.storagem());
             defmt::write!(f, "slpcc: {=bool}, ", &self.slpcc());
             defmt::write!(f, "cb: {=bool}, ", &self.cb());
-            defmt::write!(f, "emshut: {=bool}, ", &self.emshut());
+            defmt::write!(f, "disconn: {=bool}, ", &self.disconn());
+            defmt::write!(f, "psshut: {=bool}, ", &self.psshut());
+            defmt::write!(f, "ioshut: {=bool}, ", &self.ioshut());
             defmt::write!(f, "}}");
         }
     }
@@ -5621,6 +5915,12 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 13, 14) };
             raw > 0
         }
+        ///Read the `ocvpred` field of the register.
+        ///
+        pub fn ocvpred(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 14, 15) };
+            raw > 0
+        }
         ///Read the `nsfm` field of the register.
         ///
         pub fn nsfm(&self) -> bool {
@@ -5655,6 +5955,12 @@ pub mod field_sets {
         ///
         pub fn ocvfr(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 20, 21) };
+            raw > 0
+        }
+        ///Read the `vlb` field of the register.
+        ///
+        pub fn vlb(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 21, 22) };
             raw > 0
         }
         ///Write the `fd` field of the register.
@@ -5735,6 +6041,12 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 13, 14, &mut self.bits) };
         }
+        ///Write the `ocvpred` field of the register.
+        ///
+        pub fn set_ocvpred(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 14, 15, &mut self.bits) };
+        }
         ///Write the `nsfm` field of the register.
         ///
         pub fn set_nsfm(&mut self, value: bool) {
@@ -5771,6 +6083,12 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 20, 21, &mut self.bits) };
         }
+        ///Write the `vlb` field of the register.
+        ///
+        pub fn set_vlb(&mut self, value: bool) {
+            let raw = value as _;
+            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 21, 22, &mut self.bits) };
+        }
     }
     impl From<[u8; 4]> for MacGaugingStatusFieldsOut {
         fn from(bits: [u8; 4]) -> Self {
@@ -5798,12 +6116,14 @@ pub mod field_sets {
             d.field("vok", &self.vok());
             d.field("qen", &self.qen());
             d.field("slpqmax", &self.slpqmax());
+            d.field("ocvpred", &self.ocvpred());
             d.field("nsfm", &self.nsfm());
             d.field("vdq", &self.vdq());
             d.field("qmax", &self.qmax());
             d.field("rx", &self.rx());
             d.field("ldmd", &self.ldmd());
             d.field("ocvfr", &self.ocvfr());
+            d.field("vlb", &self.vlb());
             d.finish()
         }
     }
@@ -5824,12 +6144,14 @@ pub mod field_sets {
             defmt::write!(f, "vok: {=bool}, ", &self.vok());
             defmt::write!(f, "qen: {=bool}, ", &self.qen());
             defmt::write!(f, "slpqmax: {=bool}, ", &self.slpqmax());
+            defmt::write!(f, "ocvpred: {=bool}, ", &self.ocvpred());
             defmt::write!(f, "nsfm: {=bool}, ", &self.nsfm());
             defmt::write!(f, "vdq: {=bool}, ", &self.vdq());
             defmt::write!(f, "qmax: {=bool}, ", &self.qmax());
             defmt::write!(f, "rx: {=bool}, ", &self.rx());
             defmt::write!(f, "ldmd: {=bool}, ", &self.ldmd());
             defmt::write!(f, "ocvfr: {=bool}, ", &self.ocvfr());
+            defmt::write!(f, "vlb: {=bool}, ", &self.vlb());
             defmt::write!(f, "}}");
         }
     }
@@ -18767,6 +19089,12 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 14, 15) };
             raw > 0
         }
+        ///Read the `dcot` field of the register.
+        ///
+        pub fn dcot(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 15, 16) };
+            raw > 0
+        }
         ///Read the `otf` field of the register.
         ///
         pub fn otf(&self) -> bool {
@@ -18833,6 +19161,18 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 27, 28) };
             raw > 0
         }
+        ///Read the `covl` field of the register.
+        ///
+        pub fn covl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 28, 29) };
+            raw > 0
+        }
+        ///Read the `ocdl` field of the register.
+        ///
+        pub fn ocdl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 29, 30) };
+            raw > 0
+        }
     }
     impl From<[u8; 4]> for SafetyAlert {
         fn from(bits: [u8; 4]) -> Self {
@@ -18859,6 +19199,7 @@ pub mod field_sets {
             d.field("otc", &self.otc());
             d.field("otd", &self.otd());
             d.field("cuvc", &self.cuvc());
+            d.field("dcot", &self.dcot());
             d.field("otf", &self.otf());
             d.field("pto", &self.pto());
             d.field("ptos", &self.ptos());
@@ -18870,6 +19211,8 @@ pub mod field_sets {
             d.field("pchgc", &self.pchgc());
             d.field("utc", &self.utc());
             d.field("utd", &self.utd());
+            d.field("covl", &self.covl());
+            d.field("ocdl", &self.ocdl());
             d.finish()
         }
     }
@@ -18889,6 +19232,7 @@ pub mod field_sets {
             defmt::write!(f, "otc: {=bool}, ", &self.otc());
             defmt::write!(f, "otd: {=bool}, ", &self.otd());
             defmt::write!(f, "cuvc: {=bool}, ", &self.cuvc());
+            defmt::write!(f, "dcot: {=bool}, ", &self.dcot());
             defmt::write!(f, "otf: {=bool}, ", &self.otf());
             defmt::write!(f, "pto: {=bool}, ", &self.pto());
             defmt::write!(f, "ptos: {=bool}, ", &self.ptos());
@@ -18900,6 +19244,8 @@ pub mod field_sets {
             defmt::write!(f, "pchgc: {=bool}, ", &self.pchgc());
             defmt::write!(f, "utc: {=bool}, ", &self.utc());
             defmt::write!(f, "utd: {=bool}, ", &self.utd());
+            defmt::write!(f, "covl: {=bool}, ", &self.covl());
+            defmt::write!(f, "ocdl: {=bool}, ", &self.ocdl());
             defmt::write!(f, "}}");
         }
     }
@@ -19070,22 +19416,28 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 14, 15) };
             raw > 0
         }
+        ///Read the `dcot` field of the register.
+        ///
+        pub fn dcot(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 15, 16) };
+            raw > 0
+        }
         ///Read the `otf` field of the register.
         ///
         pub fn otf(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 16, 17) };
             raw > 0
         }
+        ///Read the `hwdf` field of the register.
+        ///
+        pub fn hwdf(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 17, 18) };
+            raw > 0
+        }
         ///Read the `pto` field of the register.
         ///
         pub fn pto(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 18, 19) };
-            raw > 0
-        }
-        ///Read the `ptos` field of the register.
-        ///
-        pub fn ptos(&self) -> bool {
-            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 19, 20) };
             raw > 0
         }
         ///Read the `cto` field of the register.
@@ -19130,6 +19482,18 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 27, 28) };
             raw > 0
         }
+        ///Read the `covl` field of the register.
+        ///
+        pub fn covl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 28, 29) };
+            raw > 0
+        }
+        ///Read the `ocdl` field of the register.
+        ///
+        pub fn ocdl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 29, 30) };
+            raw > 0
+        }
     }
     impl From<[u8; 4]> for SafetyStatus {
         fn from(bits: [u8; 4]) -> Self {
@@ -19159,9 +19523,10 @@ pub mod field_sets {
             d.field("otc", &self.otc());
             d.field("otd", &self.otd());
             d.field("cuvc", &self.cuvc());
+            d.field("dcot", &self.dcot());
             d.field("otf", &self.otf());
+            d.field("hwdf", &self.hwdf());
             d.field("pto", &self.pto());
-            d.field("ptos", &self.ptos());
             d.field("cto", &self.cto());
             d.field("oc", &self.oc());
             d.field("chgc", &self.chgc());
@@ -19169,6 +19534,8 @@ pub mod field_sets {
             d.field("pchgc", &self.pchgc());
             d.field("utc", &self.utc());
             d.field("utd", &self.utd());
+            d.field("covl", &self.covl());
+            d.field("ocdl", &self.ocdl());
             d.finish()
         }
     }
@@ -19191,9 +19558,10 @@ pub mod field_sets {
             defmt::write!(f, "otc: {=bool}, ", &self.otc());
             defmt::write!(f, "otd: {=bool}, ", &self.otd());
             defmt::write!(f, "cuvc: {=bool}, ", &self.cuvc());
+            defmt::write!(f, "dcot: {=bool}, ", &self.dcot());
             defmt::write!(f, "otf: {=bool}, ", &self.otf());
+            defmt::write!(f, "hwdf: {=bool}, ", &self.hwdf());
             defmt::write!(f, "pto: {=bool}, ", &self.pto());
-            defmt::write!(f, "ptos: {=bool}, ", &self.ptos());
             defmt::write!(f, "cto: {=bool}, ", &self.cto());
             defmt::write!(f, "oc: {=bool}, ", &self.oc());
             defmt::write!(f, "chgc: {=bool}, ", &self.chgc());
@@ -19201,6 +19569,8 @@ pub mod field_sets {
             defmt::write!(f, "pchgc: {=bool}, ", &self.pchgc());
             defmt::write!(f, "utc: {=bool}, ", &self.utc());
             defmt::write!(f, "utd: {=bool}, ", &self.utd());
+            defmt::write!(f, "covl: {=bool}, ", &self.covl());
+            defmt::write!(f, "ocdl: {=bool}, ", &self.ocdl());
             defmt::write!(f, "}}");
         }
     }
@@ -19311,6 +19681,12 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 4, 5) };
             raw > 0
         }
+        ///Read the `covl` field of the register.
+        ///
+        pub fn covl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 5, 6) };
+            raw > 0
+        }
         ///Read the `sotf` field of the register.
         ///
         pub fn sotf(&self) -> bool {
@@ -19353,6 +19729,24 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 12, 13) };
             raw > 0
         }
+        ///Read the `aoldl` field of the register.
+        ///
+        pub fn aoldl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 13, 14) };
+            raw > 0
+        }
+        ///Read the `asccl` field of the register.
+        ///
+        pub fn asccl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 14, 15) };
+            raw > 0
+        }
+        ///Read the `ascdl` field of the register.
+        ///
+        pub fn ascdl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 15, 16) };
+            raw > 0
+        }
         ///Read the `cfetf` field of the register.
         ///
         pub fn cfetf(&self) -> bool {
@@ -19363,6 +19757,12 @@ pub mod field_sets {
         ///
         pub fn dfetf(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 17, 18) };
+            raw > 0
+        }
+        ///Read the `ocdl` field of the register.
+        ///
+        pub fn ocdl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 18, 19) };
             raw > 0
         }
         ///Read the `fuse` field of the register.
@@ -19389,10 +19789,10 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 22, 23) };
             raw > 0
         }
-        ///Read the `opnc` field of the register.
+        ///Read the `tmpc` field of the register.
         ///
-        pub fn opnc(&self) -> bool {
-            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 25, 26) };
+        pub fn tmpc(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 27, 28) };
             raw > 0
         }
         ///Read the `ts_1` field of the register.
@@ -19438,6 +19838,7 @@ pub mod field_sets {
             d.field("socc", &self.socc());
             d.field("socd", &self.socd());
             d.field("sot", &self.sot());
+            d.field("covl", &self.covl());
             d.field("sotf", &self.sotf());
             d.field("qim", &self.qim());
             d.field("cb", &self.cb());
@@ -19445,13 +19846,17 @@ pub mod field_sets {
             d.field("cd", &self.cd());
             d.field("vimr", &self.vimr());
             d.field("vima", &self.vima());
+            d.field("aoldl", &self.aoldl());
+            d.field("asccl", &self.asccl());
+            d.field("ascdl", &self.ascdl());
             d.field("cfetf", &self.cfetf());
             d.field("dfetf", &self.dfetf());
+            d.field("ocdl", &self.ocdl());
             d.field("fuse", &self.fuse());
             d.field("afer", &self.afer());
             d.field("afec", &self.afec());
             d.field("second_lvl", &self.second_lvl());
-            d.field("opnc", &self.opnc());
+            d.field("tmpc", &self.tmpc());
             d.field("ts_1", &self.ts_1());
             d.field("ts_2", &self.ts_2());
             d.field("ts_3", &self.ts_3());
@@ -19468,6 +19873,7 @@ pub mod field_sets {
             defmt::write!(f, "socc: {=bool}, ", &self.socc());
             defmt::write!(f, "socd: {=bool}, ", &self.socd());
             defmt::write!(f, "sot: {=bool}, ", &self.sot());
+            defmt::write!(f, "covl: {=bool}, ", &self.covl());
             defmt::write!(f, "sotf: {=bool}, ", &self.sotf());
             defmt::write!(f, "qim: {=bool}, ", &self.qim());
             defmt::write!(f, "cb: {=bool}, ", &self.cb());
@@ -19475,13 +19881,17 @@ pub mod field_sets {
             defmt::write!(f, "cd: {=bool}, ", &self.cd());
             defmt::write!(f, "vimr: {=bool}, ", &self.vimr());
             defmt::write!(f, "vima: {=bool}, ", &self.vima());
+            defmt::write!(f, "aoldl: {=bool}, ", &self.aoldl());
+            defmt::write!(f, "asccl: {=bool}, ", &self.asccl());
+            defmt::write!(f, "ascdl: {=bool}, ", &self.ascdl());
             defmt::write!(f, "cfetf: {=bool}, ", &self.cfetf());
             defmt::write!(f, "dfetf: {=bool}, ", &self.dfetf());
+            defmt::write!(f, "ocdl: {=bool}, ", &self.ocdl());
             defmt::write!(f, "fuse: {=bool}, ", &self.fuse());
             defmt::write!(f, "afer: {=bool}, ", &self.afer());
             defmt::write!(f, "afec: {=bool}, ", &self.afec());
             defmt::write!(f, "second_lvl: {=bool}, ", &self.second_lvl());
-            defmt::write!(f, "opnc: {=bool}, ", &self.opnc());
+            defmt::write!(f, "tmpc: {=bool}, ", &self.tmpc());
             defmt::write!(f, "ts_1: {=bool}, ", &self.ts_1());
             defmt::write!(f, "ts_2: {=bool}, ", &self.ts_2());
             defmt::write!(f, "ts_3: {=bool}, ", &self.ts_3());
@@ -19596,6 +20006,12 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 4, 5) };
             raw > 0
         }
+        ///Read the `covl` field of the register.
+        ///
+        pub fn covl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 5, 6) };
+            raw > 0
+        }
         ///Read the `sotf` field of the register.
         ///
         pub fn sotf(&self) -> bool {
@@ -19638,6 +20054,24 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 12, 13) };
             raw > 0
         }
+        ///Read the `aoldl` field of the register.
+        ///
+        pub fn aoldl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 13, 14) };
+            raw > 0
+        }
+        ///Read the `asccl` field of the register.
+        ///
+        pub fn asccl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 14, 15) };
+            raw > 0
+        }
+        ///Read the `ascdl` field of the register.
+        ///
+        pub fn ascdl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 15, 16) };
+            raw > 0
+        }
         ///Read the `cfetf` field of the register.
         ///
         pub fn cfetf(&self) -> bool {
@@ -19648,6 +20082,12 @@ pub mod field_sets {
         ///
         pub fn dfetf(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 17, 18) };
+            raw > 0
+        }
+        ///Read the `ocdl` field of the register.
+        ///
+        pub fn ocdl(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 18, 19) };
             raw > 0
         }
         ///Read the `fuse` field of the register.
@@ -19686,9 +20126,9 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 24, 25) };
             raw > 0
         }
-        ///Read the `opncell` field of the register.
+        ///Read the `force` field of the register.
         ///
-        pub fn opncell(&self) -> bool {
+        pub fn force(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 25, 26) };
             raw > 0
         }
@@ -19696,6 +20136,12 @@ pub mod field_sets {
         ///
         pub fn dfw(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 26, 27) };
+            raw > 0
+        }
+        ///Read the `tmpc` field of the register.
+        ///
+        pub fn tmpc(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 27, 28) };
             raw > 0
         }
         ///Read the `ts_1` field of the register.
@@ -19741,6 +20187,7 @@ pub mod field_sets {
             d.field("socc", &self.socc());
             d.field("socd", &self.socd());
             d.field("sot", &self.sot());
+            d.field("covl", &self.covl());
             d.field("sotf", &self.sotf());
             d.field("qim", &self.qim());
             d.field("cb", &self.cb());
@@ -19748,16 +20195,21 @@ pub mod field_sets {
             d.field("cd", &self.cd());
             d.field("vimr", &self.vimr());
             d.field("vima", &self.vima());
+            d.field("aoldl", &self.aoldl());
+            d.field("asccl", &self.asccl());
+            d.field("ascdl", &self.ascdl());
             d.field("cfetf", &self.cfetf());
             d.field("dfetf", &self.dfetf());
+            d.field("ocdl", &self.ocdl());
             d.field("fuse", &self.fuse());
             d.field("afer", &self.afer());
             d.field("afec", &self.afec());
             d.field("second_lvl", &self.second_lvl());
             d.field("ptc", &self.ptc());
             d.field("ifc", &self.ifc());
-            d.field("opncell", &self.opncell());
+            d.field("force", &self.force());
             d.field("dfw", &self.dfw());
+            d.field("tmpc", &self.tmpc());
             d.field("ts_1", &self.ts_1());
             d.field("ts_2", &self.ts_2());
             d.field("ts_3", &self.ts_3());
@@ -19774,6 +20226,7 @@ pub mod field_sets {
             defmt::write!(f, "socc: {=bool}, ", &self.socc());
             defmt::write!(f, "socd: {=bool}, ", &self.socd());
             defmt::write!(f, "sot: {=bool}, ", &self.sot());
+            defmt::write!(f, "covl: {=bool}, ", &self.covl());
             defmt::write!(f, "sotf: {=bool}, ", &self.sotf());
             defmt::write!(f, "qim: {=bool}, ", &self.qim());
             defmt::write!(f, "cb: {=bool}, ", &self.cb());
@@ -19781,16 +20234,21 @@ pub mod field_sets {
             defmt::write!(f, "cd: {=bool}, ", &self.cd());
             defmt::write!(f, "vimr: {=bool}, ", &self.vimr());
             defmt::write!(f, "vima: {=bool}, ", &self.vima());
+            defmt::write!(f, "aoldl: {=bool}, ", &self.aoldl());
+            defmt::write!(f, "asccl: {=bool}, ", &self.asccl());
+            defmt::write!(f, "ascdl: {=bool}, ", &self.ascdl());
             defmt::write!(f, "cfetf: {=bool}, ", &self.cfetf());
             defmt::write!(f, "dfetf: {=bool}, ", &self.dfetf());
+            defmt::write!(f, "ocdl: {=bool}, ", &self.ocdl());
             defmt::write!(f, "fuse: {=bool}, ", &self.fuse());
             defmt::write!(f, "afer: {=bool}, ", &self.afer());
             defmt::write!(f, "afec: {=bool}, ", &self.afec());
             defmt::write!(f, "second_lvl: {=bool}, ", &self.second_lvl());
             defmt::write!(f, "ptc: {=bool}, ", &self.ptc());
             defmt::write!(f, "ifc: {=bool}, ", &self.ifc());
-            defmt::write!(f, "opncell: {=bool}, ", &self.opncell());
+            defmt::write!(f, "force: {=bool}, ", &self.force());
             defmt::write!(f, "dfw: {=bool}, ", &self.dfw());
+            defmt::write!(f, "tmpc: {=bool}, ", &self.tmpc());
             defmt::write!(f, "ts_1: {=bool}, ", &self.ts_1());
             defmt::write!(f, "ts_2: {=bool}, ", &self.ts_2());
             defmt::write!(f, "ts_3: {=bool}, ", &self.ts_3());
@@ -19899,10 +20357,22 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 3, 4) };
             raw > 0
         }
+        ///Read the `acthr` field of the register.
+        ///
+        pub fn acthr(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 4, 5) };
+            raw > 0
+        }
         ///Read the `fuse` field of the register.
         ///
         pub fn fuse(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 5, 6) };
+            raw > 0
+        }
+        ///Read the `emshut` field of the register.
+        ///
+        pub fn emshut(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 6, 7) };
             raw > 0
         }
         ///Read the `btp_int` field of the register.
@@ -20013,9 +20483,9 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 25, 26) };
             raw > 0
         }
-        ///Read the `slpad` field of the register.
+        ///Read the `storagem` field of the register.
         ///
-        pub fn slpad(&self) -> bool {
+        pub fn storagem(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 26, 27) };
             raw > 0
         }
@@ -20031,10 +20501,22 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 28, 29) };
             raw > 0
         }
-        ///Read the `emshut` field of the register.
+        ///Read the `disconn` field of the register.
         ///
-        pub fn emshut(&self) -> bool {
+        pub fn disconn(&self) -> bool {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 29, 30) };
+            raw > 0
+        }
+        ///Read the `psshut` field of the register.
+        ///
+        pub fn psshut(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 30, 31) };
+            raw > 0
+        }
+        ///Read the `ioshut` field of the register.
+        ///
+        pub fn ioshut(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 31, 32) };
             raw > 0
         }
     }
@@ -20055,7 +20537,9 @@ pub mod field_sets {
             d.field("dsg", &self.dsg());
             d.field("chg", &self.chg());
             d.field("pchg", &self.pchg());
+            d.field("acthr", &self.acthr());
             d.field("fuse", &self.fuse());
+            d.field("emshut", &self.emshut());
             d.field("btp_int", &self.btp_int());
             d.field("sec", &self.sec());
             d.field("sdv", &self.sdv());
@@ -20074,10 +20558,12 @@ pub mod field_sets {
             d.field("sleepm", &self.sleepm());
             d.field("init", &self.init());
             d.field("smblcal", &self.smblcal());
-            d.field("slpad", &self.slpad());
+            d.field("storagem", &self.storagem());
             d.field("slpcc", &self.slpcc());
             d.field("cb", &self.cb());
-            d.field("emshut", &self.emshut());
+            d.field("disconn", &self.disconn());
+            d.field("psshut", &self.psshut());
+            d.field("ioshut", &self.ioshut());
             d.finish()
         }
     }
@@ -20089,7 +20575,9 @@ pub mod field_sets {
             defmt::write!(f, "dsg: {=bool}, ", &self.dsg());
             defmt::write!(f, "chg: {=bool}, ", &self.chg());
             defmt::write!(f, "pchg: {=bool}, ", &self.pchg());
+            defmt::write!(f, "acthr: {=bool}, ", &self.acthr());
             defmt::write!(f, "fuse: {=bool}, ", &self.fuse());
+            defmt::write!(f, "emshut: {=bool}, ", &self.emshut());
             defmt::write!(f, "btp_int: {=bool}, ", &self.btp_int());
             defmt::write!(f, "sec: {}, ", &self.sec());
             defmt::write!(f, "sdv: {=bool}, ", &self.sdv());
@@ -20108,10 +20596,12 @@ pub mod field_sets {
             defmt::write!(f, "sleepm: {=bool}, ", &self.sleepm());
             defmt::write!(f, "init: {=bool}, ", &self.init());
             defmt::write!(f, "smblcal: {=bool}, ", &self.smblcal());
-            defmt::write!(f, "slpad: {=bool}, ", &self.slpad());
+            defmt::write!(f, "storagem: {=bool}, ", &self.storagem());
             defmt::write!(f, "slpcc: {=bool}, ", &self.slpcc());
             defmt::write!(f, "cb: {=bool}, ", &self.cb());
-            defmt::write!(f, "emshut: {=bool}, ", &self.emshut());
+            defmt::write!(f, "disconn: {=bool}, ", &self.disconn());
+            defmt::write!(f, "psshut: {=bool}, ", &self.psshut());
+            defmt::write!(f, "ioshut: {=bool}, ", &self.ioshut());
             defmt::write!(f, "}}");
         }
     }
@@ -20675,6 +21165,12 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 13, 14) };
             raw > 0
         }
+        ///Read the `ocvpred` field of the register.
+        ///
+        pub fn ocvpred(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 14, 15) };
+            raw > 0
+        }
         ///Read the `nsfm` field of the register.
         ///
         pub fn nsfm(&self) -> bool {
@@ -20711,6 +21207,12 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 20, 21) };
             raw > 0
         }
+        ///Read the `vlb` field of the register.
+        ///
+        pub fn vlb(&self) -> bool {
+            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 21, 22) };
+            raw > 0
+        }
     }
     impl From<[u8; 4]> for GaugingStatus {
         fn from(bits: [u8; 4]) -> Self {
@@ -20738,12 +21240,14 @@ pub mod field_sets {
             d.field("vok", &self.vok());
             d.field("qen", &self.qen());
             d.field("slpqmax", &self.slpqmax());
+            d.field("ocvpred", &self.ocvpred());
             d.field("nsfm", &self.nsfm());
             d.field("vdq", &self.vdq());
             d.field("qmax", &self.qmax());
             d.field("rx", &self.rx());
             d.field("ldmd", &self.ldmd());
             d.field("ocvfr", &self.ocvfr());
+            d.field("vlb", &self.vlb());
             d.finish()
         }
     }
@@ -20764,12 +21268,14 @@ pub mod field_sets {
             defmt::write!(f, "vok: {=bool}, ", &self.vok());
             defmt::write!(f, "qen: {=bool}, ", &self.qen());
             defmt::write!(f, "slpqmax: {=bool}, ", &self.slpqmax());
+            defmt::write!(f, "ocvpred: {=bool}, ", &self.ocvpred());
             defmt::write!(f, "nsfm: {=bool}, ", &self.nsfm());
             defmt::write!(f, "vdq: {=bool}, ", &self.vdq());
             defmt::write!(f, "qmax: {=bool}, ", &self.qmax());
             defmt::write!(f, "rx: {=bool}, ", &self.rx());
             defmt::write!(f, "ldmd: {=bool}, ", &self.ldmd());
             defmt::write!(f, "ocvfr: {=bool}, ", &self.ocvfr());
+            defmt::write!(f, "vlb: {=bool}, ", &self.vlb());
             defmt::write!(f, "}}");
         }
     }

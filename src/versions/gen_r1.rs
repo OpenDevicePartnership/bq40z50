@@ -2960,12 +2960,6 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 18, 19) };
             raw > 0
         }
-        ///Read the `ptos` field of the register.
-        ///
-        pub fn ptos(&self) -> bool {
-            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 19, 20) };
-            raw > 0
-        }
         ///Read the `cto` field of the register.
         ///
         pub fn cto(&self) -> bool {
@@ -3110,12 +3104,6 @@ pub mod field_sets {
             let raw = value as _;
             unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 18, 19, &mut self.bits) };
         }
-        ///Write the `ptos` field of the register.
-        ///
-        pub fn set_ptos(&mut self, value: bool) {
-            let raw = value as _;
-            unsafe { ::device_driver::ops::store_lsb0::<u8, ::device_driver::ops::LE>(raw, 19, 20, &mut self.bits) };
-        }
         ///Write the `cto` field of the register.
         ///
         pub fn set_cto(&mut self, value: bool) {
@@ -3189,7 +3177,6 @@ pub mod field_sets {
             d.field("cuvc", &self.cuvc());
             d.field("otf", &self.otf());
             d.field("pto", &self.pto());
-            d.field("ptos", &self.ptos());
             d.field("cto", &self.cto());
             d.field("oc", &self.oc());
             d.field("chgc", &self.chgc());
@@ -3221,7 +3208,6 @@ pub mod field_sets {
             defmt::write!(f, "cuvc: {=bool}, ", &self.cuvc());
             defmt::write!(f, "otf: {=bool}, ", &self.otf());
             defmt::write!(f, "pto: {=bool}, ", &self.pto());
-            defmt::write!(f, "ptos: {=bool}, ", &self.ptos());
             defmt::write!(f, "cto: {=bool}, ", &self.cto());
             defmt::write!(f, "oc: {=bool}, ", &self.oc());
             defmt::write!(f, "chgc: {=bool}, ", &self.chgc());
@@ -14678,12 +14664,6 @@ pub mod field_sets {
             let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 18, 19) };
             raw > 0
         }
-        ///Read the `ptos` field of the register.
-        ///
-        pub fn ptos(&self) -> bool {
-            let raw = unsafe { ::device_driver::ops::load_lsb0::<u8, ::device_driver::ops::LE>(&self.bits, 19, 20) };
-            raw > 0
-        }
         ///Read the `cto` field of the register.
         ///
         pub fn cto(&self) -> bool {
@@ -14757,7 +14737,6 @@ pub mod field_sets {
             d.field("cuvc", &self.cuvc());
             d.field("otf", &self.otf());
             d.field("pto", &self.pto());
-            d.field("ptos", &self.ptos());
             d.field("cto", &self.cto());
             d.field("oc", &self.oc());
             d.field("chgc", &self.chgc());
@@ -14789,7 +14768,6 @@ pub mod field_sets {
             defmt::write!(f, "cuvc: {=bool}, ", &self.cuvc());
             defmt::write!(f, "otf: {=bool}, ", &self.otf());
             defmt::write!(f, "pto: {=bool}, ", &self.pto());
-            defmt::write!(f, "ptos: {=bool}, ", &self.ptos());
             defmt::write!(f, "cto: {=bool}, ", &self.cto());
             defmt::write!(f, "oc: {=bool}, ", &self.oc());
             defmt::write!(f, "chgc: {=bool}, ", &self.chgc());
