@@ -55,9 +55,9 @@ device Device {
     command MAC_CHEM_ID {
         address: 0x440600,
         fields-out: fieldset _ {
-            size-bytes: 1,
+            size-bytes: 2,
         
-            field CHEM_ID 7:0,
+            field CHEM_ID 15:0,
         },
     },
     command MAC_STATIC_CHEM_DF_SIG {

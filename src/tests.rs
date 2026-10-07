@@ -1374,6 +1374,23 @@ macro_rules! bq40z50_tests {
 
                 bq.device.interface().i2c.done();
             }
+
+            #[tokio::test]
+            async fn test_read_chem_id() {
+                // SLUUCN4B 16.1: "The second 2 bytes, "00 01", is the chem ID returning in little
+                // endian. That is 0x0100, chem ID 100." ChemID is therefore a 16-bit value.
+                let expectations = vec![
+                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x06, 0x00]),
+                    Transaction::write_read(BQ_ADDR, vec![0x44], vec![0x04, 0x06, 0x00, 0x00, 0x01]),
+                ];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Device::new(DeviceInterface::new(i2c, NoopDelay::new()));
+
+                let chem_id = bq.mac_chem_id().dispatch_out_async().await.unwrap();
+                assert_eq!(chem_id.chem_id(), 0x0100);
+
+                bq.interface().i2c.done();
+            }
         }
     };
 }

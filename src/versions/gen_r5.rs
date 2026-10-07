@@ -30742,32 +30742,32 @@ impl core::ops::Not for MacStaticChemDfSig {
 pub struct MacChemId {
     #[doc(hidden)]
     /// The internal bits
-    bits: [u8; 1],
+    bits: [u8; 2],
 }
 unsafe impl ::device_driver::Fieldset for MacChemId {
     const METADATA: ::device_driver::FieldsetMetadata =
         ::device_driver::FieldsetMetadata::new().with_byte_order(::device_driver::ByteOrder::LE);
-    const ZERO: Self = Self { bits: [0; 1] };
+    const ZERO: Self = Self { bits: [0; 2] };
 }
 impl MacChemId {
-    /// `7:0` - Read the `chem_id` field.
+    /// `15:0` - Read the `chem_id` field.
     ///
     #[doc(alias = "CHEM_ID")]
     #[must_use]
-    pub fn chem_id(&self) -> u8 {
+    pub fn chem_id(&self) -> u16 {
         let start = 0;
-        let end = 7;
-        let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
+        let end = 15;
+        let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
     }
-    /// `7:0` - Set the `chem_id` field.
+    /// `15:0` - Set the `chem_id` field.
     ///
     #[doc(alias = "CHEM_ID")]
-    pub fn set_chem_id(&mut self, value: u8) {
+    pub fn set_chem_id(&mut self, value: u16) {
         let start = 0;
-        let end = 7;
+        let end = 15;
         let raw = value;
-        unsafe { ::device_driver::ops::store::<u8, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
+        unsafe { ::device_driver::ops::store::<u16, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
 }
 impl Default for MacChemId {
@@ -30775,12 +30775,12 @@ impl Default for MacChemId {
         <Self as ::device_driver::Fieldset>::ZERO
     }
 }
-impl From<[u8; 1]> for MacChemId {
-    fn from(bits: [u8; 1]) -> Self {
+impl From<[u8; 2]> for MacChemId {
+    fn from(bits: [u8; 2]) -> Self {
         Self { bits }
     }
 }
-impl From<MacChemId> for [u8; 1] {
+impl From<MacChemId> for [u8; 2] {
     fn from(val: MacChemId) -> Self {
         val.bits
     }
@@ -30796,7 +30796,7 @@ impl core::fmt::Debug for MacChemId {
 impl defmt::Format for MacChemId {
     fn format(&self, f: defmt::Formatter) {
         defmt::write!(f, "MacChemId {{ ");
-        defmt::write!(f, "chem_id: {=u8}, ", &self.chem_id());
+        defmt::write!(f, "chem_id: {=u16}, ", &self.chem_id());
         defmt::write!(f, "}}");
     }
 }
