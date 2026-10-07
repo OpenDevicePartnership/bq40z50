@@ -1,10 +1,14 @@
 macro_rules! bq40z50_tests {
+    // `$security_keys_len` is the length of the Security Keys block for this revision, taken
+    // from the worked example in that revision's TRM. It is passed in rather than read from
+    // `consts` so the test pins the TRM value independently of the driver constant.
+    //
     // `$lifetime_block_1_len` is the length of LIFETIME_DATA_BLOCK_1 for this revision. r1 and
     // r3 carry six extra temperature bytes at the end of the block. It is a macro parameter
     // rather than a `cfg` because this macro is expanded once per revision module while a `cfg`
     // is evaluated once for the whole build, so a multi-revision build would otherwise give
     // every module the same length.
-    ($revision:ident, $lifetime_block_1_len:literal) => {
+    ($revision:ident, $security_keys_len:literal, $lifetime_block_1_len:literal) => {
         #[cfg(test)]
         mod tests {
             use device_driver::{
@@ -562,34 +566,35 @@ macro_rules! bq40z50_tests {
 
             #[tokio::test]
             async fn write_unseal_keys() {
+                // The Security Keys block grew with each silicon revision, so its length is taken
+                // from the worked example in this revision's TRM section: SLUUA43A 12.1.33,
+                // SLUUBU5A 15.1.33, SLUUCH2 16.1.33 or SLUUCN4B 16.1.34.
+                const LEN: usize = $security_keys_len;
+
+                let security_keys: [u8; LEN] = core::array::from_fn(|i| u8::try_from(i).unwrap());
+
+                // [ 0x44 | 2 command bytes + key bytes | 0x35 | 0x00 | keys ]
+                let mut write_frame = vec![0x44, u8::try_from(LEN + 2).unwrap(), 0x35, 0x00];
+                write_frame.extend_from_slice(&security_keys);
+
+                // [ 2 command bytes + key bytes | 0x35 | 0x00 | keys ]
+                let mut read_frame = vec![u8::try_from(LEN + 2).unwrap(), 0x35, 0x00];
+                read_frame.extend_from_slice(&security_keys);
+
                 let expectations = vec![
-                    Transaction::write(
-                        BQ_ADDR,
-                        vec![
-                            0x44, 0x0A, 0x35, 0x00, 0x30, 0x30, 0x60, 0x60, 0x01, 0x01, 0x10, 0x10,
-                        ],
-                    ),
+                    Transaction::write(BQ_ADDR, write_frame),
                     Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x35, 0x00]),
-                    Transaction::write_read(
-                        BQ_ADDR,
-                        vec![0x44],
-                        vec![0x0A, 0x35, 0x00, 0x30, 0x30, 0x60, 0x60, 0x01, 0x01, 0x10, 0x10],
-                    ),
+                    Transaction::write_read(BQ_ADDR, vec![0x44], read_frame),
                 ];
                 let i2c = Mock::new(&expectations);
                 let mut bq = Bq40z50::new(i2c, NoopDelay::new());
 
-                let security_keys = [0x30u8, 0x30u8, 0x60u8, 0x60u8, 0x01u8, 0x01u8, 0x10u8, 0x10u8];
-
                 bq.write_security_keys(&security_keys).await.unwrap();
 
-                let mut result = [0u8; 8];
+                let mut result = [0u8; LEN];
                 bq.read_security_keys(&mut result).await.unwrap();
 
-                assert_eq!(u16::from_le_bytes([result[0], result[1]]), 0x3030);
-                assert_eq!(u16::from_le_bytes([result[2], result[3]]), 0x6060);
-                assert_eq!(u16::from_le_bytes([result[4], result[5]]), 0x0101);
-                assert_eq!(u16::from_le_bytes([result[6], result[7]]), 0x1010);
+                assert_eq!(result, security_keys);
                 bq.device.interface().i2c.done();
             }
 

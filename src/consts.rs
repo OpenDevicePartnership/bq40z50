@@ -19,8 +19,36 @@ pub(crate) const DF_LAST_ADDRESS: u16 = 0x5FFF;
 
 // Special case MAC commands
 pub(crate) const SECURITY_KEYS_CMD: [u8; MAC_CMD_ADDR_SIZE_BYTES as usize] = 0x0035u16.to_le_bytes();
-pub(crate) const SECURITY_KEYS_DATA_LEN_BYTES: u8 = 8;
-pub(crate) const SECURITY_KEYS_LEN_BYTES: u8 = SECURITY_KEYS_DATA_LEN_BYTES + MAC_CMD_ADDR_SIZE_BYTES;
+
+// The Security Keys block gained a key pair at each silicon revision, so its length is
+// revision specific. Each value below is the byte count of the worked example in that
+// revision's TRM, counted after the two `35 00` command bytes.
+
+/// R1: UNSEAL and FULL ACCESS keys.
+///
+/// SLUUA43A 12.1.33 `"= 35 00 34 12 78 56 FF FF FF FF"`.
+#[cfg(feature = "r1")]
+pub(crate) const SECURITY_KEYS_R1_DATA_LEN_BYTES: u8 = 8;
+
+/// R3: adds the Manual PF and Lifetimes Reset keys.
+///
+/// SLUUBU5A 15.1.33 `"= 35 00 34 12 78 56 FF FF FF FF 57 28 98 2A 14 2B 8A 2C"`.
+#[cfg(feature = "r3")]
+pub(crate) const SECURITY_KEYS_R3_DATA_LEN_BYTES: u8 = 16;
+
+/// R4: adds the DF Read Only and Override keys.
+///
+/// SLUUCH2 16.1.33
+/// `"= 35 00 34 12 78 56 FF FF FF FF 32 76 12 17 57 28 98 2A 14 2B 8A 2C 18 2C 9B 2E"`.
+#[cfg(feature = "r4")]
+pub(crate) const SECURITY_KEYS_R4_DATA_LEN_BYTES: u8 = 24;
+
+/// R5: adds the `MfgInfoC` Write key.
+///
+/// SLUUCN4B 16.1.34
+/// `"= 35 00 34 12 78 56 FF FF FF FF 32 76 12 17 57 28 98 2A 14 2B 8A 2C 18 2D 9B 2E 45 3C 89 5D"`.
+#[cfg(feature = "r5")]
+pub(crate) const SECURITY_KEYS_R5_DATA_LEN_BYTES: u8 = 28;
 
 pub(crate) const AUTH_KEY_CMD: [u8; MAC_CMD_ADDR_SIZE_BYTES as usize] = 0x0037u16.to_le_bytes();
 /// The authentication key is 128 bits on every revision: SLUUA43A 12.1.34, SLUUBU5A 15.1.34,

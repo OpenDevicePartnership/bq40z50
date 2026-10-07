@@ -8,7 +8,7 @@ use crate::common::{CapacityModeState, ChargingVoltageOverride, Config};
 use crate::consts::{
     AUTH_KEY_CMD, AUTH_KEY_DATA_LEN_BYTES, CHRG_VOLTAGE_OVERRIDE_CMD, CHRG_VOLTAGE_OVERRIDE_SIZE_BYTES,
     LARGEST_CMD_SIZE_BYTES, LARGEST_REG_SIZE_BYTES, MAC_CMD, MAC_CMD_ADDR_SIZE_BYTES, MFG_INFO_CMD, SECURITY_KEYS_CMD,
-    SECURITY_KEYS_DATA_LEN_BYTES, SECURITY_KEYS_LEN_BYTES,
+    SECURITY_KEYS_R4_DATA_LEN_BYTES,
 };
 use crate::error::BQ40Z50Error;
 use crate::interface::DeviceInterface;
@@ -64,7 +64,7 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
     /// Will return `Err` if an I2C bus error occurs.
     pub async fn read_security_keys(
         &mut self,
-        output_buf: &mut [u8; SECURITY_KEYS_DATA_LEN_BYTES as usize],
+        output_buf: &mut [u8; SECURITY_KEYS_R4_DATA_LEN_BYTES as usize],
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
         let mut buf = [0u8; 2 + MAC_CMD_ADDR_SIZE_BYTES as usize];
         buf[0] = MAC_CMD;
@@ -85,11 +85,11 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
     /// Will return `Err` if an I2C bus error occurs.
     pub async fn write_security_keys(
         &mut self,
-        security_keys: &[u8; SECURITY_KEYS_DATA_LEN_BYTES as usize],
+        security_keys: &[u8; SECURITY_KEYS_R4_DATA_LEN_BYTES as usize],
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
-        let mut buf = [0u8; 2 + MAC_CMD_ADDR_SIZE_BYTES as usize + SECURITY_KEYS_DATA_LEN_BYTES as usize];
+        let mut buf = [0u8; 2 + MAC_CMD_ADDR_SIZE_BYTES as usize + SECURITY_KEYS_R4_DATA_LEN_BYTES as usize];
         buf[0] = MAC_CMD;
-        buf[1] = SECURITY_KEYS_LEN_BYTES;
+        buf[1] = SECURITY_KEYS_R4_DATA_LEN_BYTES + MAC_CMD_ADDR_SIZE_BYTES;
         buf[2] = SECURITY_KEYS_CMD[0];
         buf[3] = SECURITY_KEYS_CMD[1];
         buf[4..].copy_from_slice(security_keys);
@@ -505,4 +505,4 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R4<I2C, DELAY> {
 
 crate::common::implement_embedded_batteries!(Bq40z50R4);
 
-crate::tests::bq40z50_tests!(Bq40z50R4, 26);
+crate::tests::bq40z50_tests!(Bq40z50R4, 24, 26);
