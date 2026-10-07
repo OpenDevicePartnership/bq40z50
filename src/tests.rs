@@ -1433,6 +1433,28 @@ macro_rules! bq40z50_tests {
 
                 bq.interface().i2c.done();
             }
+
+            #[tokio::test]
+            async fn test_stop_output_ccadc_cal_sends_disable_subcommand() {
+                // SLUUCN4B 16.1.102 and 16.1.103 both give the Disable condition as
+                // "ManufacturingStatus()[CAL_EN] = 1 AND 0xF080 to ManufacturerAccess()", so both
+                // stop commands must put 0xF080 (little endian on the wire) on the bus, not the
+                // 0xF081/0xF082 enable subcommands.
+                let expectations = vec![
+                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x80, 0xF0]),
+                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x80, 0xF0]),
+                ];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Device::new(DeviceInterface::new(i2c, NoopDelay::new()));
+
+                bq.mac_stop_output_ccadc_cal().dispatch_async().await.unwrap();
+                bq.mac_stop_output_shorted_ccadc_cal()
+                    .dispatch_async()
+                    .await
+                    .unwrap();
+
+                bq.interface().i2c.done();
+            }
         }
     };
 }
