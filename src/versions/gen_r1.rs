@@ -2404,15 +2404,6 @@ impl GaugeStatus2 {
         let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
     }
-    /// `95:80` - Set the `dod_0_0` field.
-    ///
-    #[doc(alias = "DOD0_0")]
-    pub fn set_dod_0_0(&mut self, value: u16) {
-        let start = 80;
-        let end = 95;
-        let raw = value;
-        unsafe { ::device_driver::ops::store::<u16, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
-    }
 }
 impl Default for GaugeStatus2 {
     fn default() -> Self {
@@ -22646,11 +22637,11 @@ unsafe impl ::device_driver::Fieldset for MacAllDfSignature {
     const ZERO: Self = Self { bits: [0; 2] };
 }
 impl MacAllDfSignature {
-    /// `14:0` - Read the `static_chem_df_sig` field.
+    /// `14:0` - Read the `all_df_sig` field.
     ///
-    #[doc(alias = "STATIC_CHEM_DF_SIG")]
+    #[doc(alias = "ALL_DF_SIG")]
     #[must_use]
-    pub fn static_chem_df_sig(&self) -> u16 {
+    pub fn all_df_sig(&self) -> u16 {
         let start = 0;
         let end = 14;
         let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
@@ -22666,10 +22657,10 @@ impl MacAllDfSignature {
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw > 0
     }
-    /// `14:0` - Set the `static_chem_df_sig` field.
+    /// `14:0` - Set the `all_df_sig` field.
     ///
-    #[doc(alias = "STATIC_CHEM_DF_SIG")]
-    pub fn set_static_chem_df_sig(&mut self, value: u16) {
+    #[doc(alias = "ALL_DF_SIG")]
+    pub fn set_all_df_sig(&mut self, value: u16) {
         let start = 0;
         let end = 14;
         let raw = value;
@@ -22703,7 +22694,7 @@ impl From<MacAllDfSignature> for [u8; 2] {
 impl core::fmt::Debug for MacAllDfSignature {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> Result<(), core::fmt::Error> {
         let mut d = f.debug_struct("MacAllDfSignature");
-        d.field("static_chem_df_sig", &self.static_chem_df_sig());
+        d.field("all_df_sig", &self.all_df_sig());
         d.field("sig_mismatch", &self.sig_mismatch());
         d.finish()
     }
@@ -22712,7 +22703,7 @@ impl core::fmt::Debug for MacAllDfSignature {
 impl defmt::Format for MacAllDfSignature {
     fn format(&self, f: defmt::Formatter) {
         defmt::write!(f, "MacAllDfSignature {{ ");
-        defmt::write!(f, "static_chem_df_sig: {=u16}, ", &self.static_chem_df_sig());
+        defmt::write!(f, "all_df_sig: {=u16}, ", &self.all_df_sig());
         defmt::write!(f, "sig_mismatch: {=bool}, ", &self.sig_mismatch());
         defmt::write!(f, "}}");
     }

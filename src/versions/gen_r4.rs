@@ -458,8 +458,8 @@ impl<I> Device<I> {
     }
     /// Command operation:
     /// - Address: `4479488`
-    #[doc(alias = "NO_LOAD_REM_CAP")]
-    pub fn no_load_rem_cap(&mut self) -> ::device_driver::CommandOperation<'_, Self, u32, (), NoLoadRemCap, ()>
+    #[doc(alias = "MAC_NO_LOAD_REM_CAP")]
+    pub fn mac_no_load_rem_cap(&mut self) -> ::device_driver::CommandOperation<'_, Self, u32, (), MacNoLoadRemCap, ()>
     where
         I: ::device_driver::CommandInterfaceBase<AddressType = u32>,
     {
@@ -2721,15 +2721,6 @@ impl GaugeStatus2 {
         let end = 255;
         let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
-    }
-    /// `95:80` - Set the `dod_0_0` field.
-    ///
-    #[doc(alias = "DOD0_0")]
-    pub fn set_dod_0_0(&mut self, value: u16) {
-        let start = 80;
-        let end = 95;
-        let raw = value;
-        unsafe { ::device_driver::ops::store::<u16, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
 }
 impl Default for GaugeStatus2 {
@@ -23956,20 +23947,20 @@ impl core::ops::Not for MacLifetimeDataBlock1 {
         self
     }
 }
-#[doc(alias = "NO_LOAD_REM_CAP")]
+#[doc(alias = "MAC_NO_LOAD_REM_CAP")]
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[repr(transparent)]
-pub struct NoLoadRemCap {
+pub struct MacNoLoadRemCap {
     #[doc(hidden)]
     /// The internal bits
     bits: [u8; 2],
 }
-unsafe impl ::device_driver::Fieldset for NoLoadRemCap {
+unsafe impl ::device_driver::Fieldset for MacNoLoadRemCap {
     const METADATA: ::device_driver::FieldsetMetadata =
         ::device_driver::FieldsetMetadata::new().with_byte_order(::device_driver::ByteOrder::LE);
     const ZERO: Self = Self { bits: [0; 2] };
 }
-impl NoLoadRemCap {
+impl MacNoLoadRemCap {
     /// `15:0` - Read the `remaining_capacity` field.
     ///
     #[doc(alias = "REMAINING_CAPACITY")]
@@ -23990,79 +23981,79 @@ impl NoLoadRemCap {
         unsafe { ::device_driver::ops::store::<u16, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
 }
-impl Default for NoLoadRemCap {
+impl Default for MacNoLoadRemCap {
     fn default() -> Self {
         <Self as ::device_driver::Fieldset>::ZERO
     }
 }
-impl From<[u8; 2]> for NoLoadRemCap {
+impl From<[u8; 2]> for MacNoLoadRemCap {
     fn from(bits: [u8; 2]) -> Self {
         Self { bits }
     }
 }
-impl From<NoLoadRemCap> for [u8; 2] {
-    fn from(val: NoLoadRemCap) -> Self {
+impl From<MacNoLoadRemCap> for [u8; 2] {
+    fn from(val: MacNoLoadRemCap) -> Self {
         val.bits
     }
 }
-impl core::fmt::Debug for NoLoadRemCap {
+impl core::fmt::Debug for MacNoLoadRemCap {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> Result<(), core::fmt::Error> {
-        let mut d = f.debug_struct("NoLoadRemCap");
+        let mut d = f.debug_struct("MacNoLoadRemCap");
         d.field("remaining_capacity", &self.remaining_capacity());
         d.finish()
     }
 }
 #[cfg(feature = "defmt-03")]
-impl defmt::Format for NoLoadRemCap {
+impl defmt::Format for MacNoLoadRemCap {
     fn format(&self, f: defmt::Formatter) {
-        defmt::write!(f, "NoLoadRemCap {{ ");
+        defmt::write!(f, "MacNoLoadRemCap {{ ");
         defmt::write!(f, "remaining_capacity: {=u16}, ", &self.remaining_capacity());
         defmt::write!(f, "}}");
     }
 }
-impl core::ops::BitAnd for NoLoadRemCap {
+impl core::ops::BitAnd for MacNoLoadRemCap {
     type Output = Self;
     fn bitand(mut self, rhs: Self) -> Self::Output {
         self &= rhs;
         self
     }
 }
-impl core::ops::BitAndAssign for NoLoadRemCap {
+impl core::ops::BitAndAssign for MacNoLoadRemCap {
     fn bitand_assign(&mut self, rhs: Self) {
         for (l, r) in self.bits.iter_mut().zip(&rhs.bits) {
             *l &= *r;
         }
     }
 }
-impl core::ops::BitOr for NoLoadRemCap {
+impl core::ops::BitOr for MacNoLoadRemCap {
     type Output = Self;
     fn bitor(mut self, rhs: Self) -> Self::Output {
         self |= rhs;
         self
     }
 }
-impl core::ops::BitOrAssign for NoLoadRemCap {
+impl core::ops::BitOrAssign for MacNoLoadRemCap {
     fn bitor_assign(&mut self, rhs: Self) {
         for (l, r) in self.bits.iter_mut().zip(&rhs.bits) {
             *l |= *r;
         }
     }
 }
-impl core::ops::BitXor for NoLoadRemCap {
+impl core::ops::BitXor for MacNoLoadRemCap {
     type Output = Self;
     fn bitxor(mut self, rhs: Self) -> Self::Output {
         self ^= rhs;
         self
     }
 }
-impl core::ops::BitXorAssign for NoLoadRemCap {
+impl core::ops::BitXorAssign for MacNoLoadRemCap {
     fn bitxor_assign(&mut self, rhs: Self) {
         for (l, r) in self.bits.iter_mut().zip(&rhs.bits) {
             *l ^= *r;
         }
     }
 }
-impl core::ops::Not for NoLoadRemCap {
+impl core::ops::Not for MacNoLoadRemCap {
     type Output = Self;
     fn not(mut self) -> Self::Output {
         for val in self.bits.iter_mut() {
@@ -29446,11 +29437,11 @@ unsafe impl ::device_driver::Fieldset for MacAllDfSignature {
     const ZERO: Self = Self { bits: [0; 2] };
 }
 impl MacAllDfSignature {
-    /// `14:0` - Read the `static_chem_df_sig` field.
+    /// `14:0` - Read the `all_df_sig` field.
     ///
-    #[doc(alias = "STATIC_CHEM_DF_SIG")]
+    #[doc(alias = "ALL_DF_SIG")]
     #[must_use]
-    pub fn static_chem_df_sig(&self) -> u16 {
+    pub fn all_df_sig(&self) -> u16 {
         let start = 0;
         let end = 14;
         let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
@@ -29466,10 +29457,10 @@ impl MacAllDfSignature {
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw > 0
     }
-    /// `14:0` - Set the `static_chem_df_sig` field.
+    /// `14:0` - Set the `all_df_sig` field.
     ///
-    #[doc(alias = "STATIC_CHEM_DF_SIG")]
-    pub fn set_static_chem_df_sig(&mut self, value: u16) {
+    #[doc(alias = "ALL_DF_SIG")]
+    pub fn set_all_df_sig(&mut self, value: u16) {
         let start = 0;
         let end = 14;
         let raw = value;
@@ -29503,7 +29494,7 @@ impl From<MacAllDfSignature> for [u8; 2] {
 impl core::fmt::Debug for MacAllDfSignature {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> Result<(), core::fmt::Error> {
         let mut d = f.debug_struct("MacAllDfSignature");
-        d.field("static_chem_df_sig", &self.static_chem_df_sig());
+        d.field("all_df_sig", &self.all_df_sig());
         d.field("sig_mismatch", &self.sig_mismatch());
         d.finish()
     }
@@ -29512,7 +29503,7 @@ impl core::fmt::Debug for MacAllDfSignature {
 impl defmt::Format for MacAllDfSignature {
     fn format(&self, f: defmt::Formatter) {
         defmt::write!(f, "MacAllDfSignature {{ ");
-        defmt::write!(f, "static_chem_df_sig: {=u16}, ", &self.static_chem_df_sig());
+        defmt::write!(f, "all_df_sig: {=u16}, ", &self.all_df_sig());
         defmt::write!(f, "sig_mismatch: {=bool}, ", &self.sig_mismatch());
         defmt::write!(f, "}}");
     }

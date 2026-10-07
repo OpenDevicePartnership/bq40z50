@@ -74,7 +74,7 @@ device Device {
         fields-out: fieldset _ {
             size-bytes: 2,
         
-            field STATIC_CHEM_DF_SIG 14:0,
+            field ALL_DF_SIG 14:0,
             field SIG_MISMATCH 15,
         },
     },
@@ -440,7 +440,7 @@ device Device {
             field AFE_SCD2 167:160,
         },
     },
-    command NO_LOAD_REM_CAP {
+    command MAC_NO_LOAD_REM_CAP {
         address: 0x445a00,
         fields-out: fieldset _ {
             size-bytes: 2,
@@ -1991,7 +1991,7 @@ device Device {
             field CELL_GRID_2 39:32 RO,
             field CELL_GRID_3 47:40 RO,
             field STATE_TIME 79:48 RO,
-            field DOD0_0 95:80,
+            field DOD0_0 95:80 RO,
             field DOD0_1 111:96 RO,
             field DOD0_2 127:112 RO,
             field DOD0_3 143:128 RO,
