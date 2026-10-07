@@ -43,11 +43,11 @@ pub(crate) enum CapacityModeState {
 /// Charging Voltage Override config struct used in MAC command 0x00B0, not used in R1
 #[derive(Default, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct ChargingVoltageOverride {
-    pub low_temp_chrg_mv: u16,
-    pub std_low_temp_chrg_mv: u16,
-    pub std_hi_temp_chrg_mv: u16,
-    pub hi_temp_chrg_mv: u16,
-    pub recommended_temp_chrg_mv: u16,
+    pub low_temp_chrg_mv: i16,
+    pub std_low_temp_chrg_mv: i16,
+    pub std_hi_temp_chrg_mv: i16,
+    pub hi_temp_chrg_mv: i16,
+    pub recommended_temp_chrg_mv: i16,
 }
 
 macro_rules! implement_embedded_batteries {

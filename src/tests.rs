@@ -843,6 +843,50 @@ macro_rules! bq40z50_tests {
                 bq.device.interface().i2c.done();
             }
 
+            #[cfg(not(feature = "r1"))]
+            #[tokio::test]
+            async fn test_charging_override_voltage_signed() {
+                // SLUUCN4B Table 16-1 types 0x00B0 ChargingVoltageOverride as "Signed Int", so a raw
+                // word with bit 15 set must round-trip as a negative value, not a large positive one.
+                let expectations = vec![
+                    Transaction::write(
+                        BQ_ADDR,
+                        vec![
+                            0x44, 0x0C, 0xB0, 0x00, 0xFF, 0xFF, 0x00, 0x80, 0xFF, 0x7F, 0xE8, 0xD1, 0x18, 0x2E,
+                        ],
+                    ),
+                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0xB0, 0x00]),
+                    Transaction::write_read(
+                        BQ_ADDR,
+                        vec![0x44],
+                        vec![
+                            0x0C, 0xB0, 0x00, 0xFF, 0xFF, 0x00, 0x80, 0xFF, 0x7F, 0xE8, 0xD1, 0x18, 0x2E,
+                        ],
+                    ),
+                ];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Bq40z50::new(i2c, NoopDelay::new());
+
+                bq.write_charging_voltage_override(&ChargingVoltageOverride {
+                    low_temp_chrg_mv: -1,
+                    std_low_temp_chrg_mv: -32768,
+                    std_hi_temp_chrg_mv: 32767,
+                    hi_temp_chrg_mv: -11800,
+                    recommended_temp_chrg_mv: 11800,
+                })
+                .await
+                .unwrap();
+
+                let override_struct = bq.read_charging_voltage_override().await.unwrap();
+
+                assert_eq!(override_struct.low_temp_chrg_mv, -1);
+                assert_eq!(override_struct.std_low_temp_chrg_mv, -32768);
+                assert_eq!(override_struct.std_hi_temp_chrg_mv, 32767);
+                assert_eq!(override_struct.hi_temp_chrg_mv, -11800);
+                assert_eq!(override_struct.recommended_temp_chrg_mv, 11800);
+                bq.device.interface().i2c.done();
+            }
+
             #[cfg(not(any(feature = "r1", feature = "r3")))]
             #[tokio::test]
             async fn test_read_mfg_info_c() {

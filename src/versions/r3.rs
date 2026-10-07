@@ -353,11 +353,11 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R3<I2C, DELAY> {
 
         // Safe from Panics as the buffer is guaranteed to be large enough (10 bytes).
         Ok(ChargingVoltageOverride {
-            low_temp_chrg_mv: u16::from_le_bytes(data[0..2].try_into().unwrap()),
-            std_low_temp_chrg_mv: u16::from_le_bytes(data[2..4].try_into().unwrap()),
-            std_hi_temp_chrg_mv: u16::from_le_bytes(data[4..6].try_into().unwrap()),
-            hi_temp_chrg_mv: u16::from_le_bytes(data[6..8].try_into().unwrap()),
-            recommended_temp_chrg_mv: u16::from_le_bytes(data[8..10].try_into().unwrap()),
+            low_temp_chrg_mv: i16::from_le_bytes(data[0..2].try_into().unwrap()),
+            std_low_temp_chrg_mv: i16::from_le_bytes(data[2..4].try_into().unwrap()),
+            std_hi_temp_chrg_mv: i16::from_le_bytes(data[4..6].try_into().unwrap()),
+            hi_temp_chrg_mv: i16::from_le_bytes(data[6..8].try_into().unwrap()),
+            recommended_temp_chrg_mv: i16::from_le_bytes(data[8..10].try_into().unwrap()),
         })
     }
 
