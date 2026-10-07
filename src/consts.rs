@@ -23,8 +23,10 @@ pub(crate) const SECURITY_KEYS_DATA_LEN_BYTES: u8 = 8;
 pub(crate) const SECURITY_KEYS_LEN_BYTES: u8 = SECURITY_KEYS_DATA_LEN_BYTES + MAC_CMD_ADDR_SIZE_BYTES;
 
 pub(crate) const AUTH_KEY_CMD: [u8; MAC_CMD_ADDR_SIZE_BYTES as usize] = 0x0037u16.to_le_bytes();
+/// The authentication key is 128 bits on every revision: SLUUA43A 12.1.34, SLUUBU5A 15.1.34,
+/// SLUUCH2 16.1.34 and SLUUCN4B 16.1.35 all say `"Send the AuthenticationKey() + the new 128-bit
+/// authentication key to ManufacturerBlockAccess()"`.
 pub(crate) const AUTH_KEY_DATA_LEN_BYTES: u8 = 16;
-pub(crate) const AUTH_KEY_LEN_BYTES: u8 = AUTH_KEY_DATA_LEN_BYTES + MAC_CMD_ADDR_SIZE_BYTES;
 
 pub(crate) const MFG_INFO_CMD: u8 = 0x70;
 

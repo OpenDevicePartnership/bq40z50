@@ -594,6 +594,27 @@ macro_rules! bq40z50_tests {
             }
 
             #[tokio::test]
+            async fn write_authentication_key() {
+                // The authentication key is 128 bits, i.e. 16 bytes, on every revision:
+                // SLUUA43A 12.1.34, SLUUBU5A 15.1.34, SLUUCH2 16.1.34 and SLUUCN4B 16.1.35.
+                let auth_key: [u8; 16] = core::array::from_fn(|i| u8::try_from(i).unwrap());
+
+                // [ 0x44 | 0x12 (18 = 2 command bytes + 16 key bytes) | 0x37 | 0x00 | 16 key bytes ]
+                let mut write_frame = vec![0x44, 0x12, 0x37, 0x00];
+                write_frame.extend_from_slice(&auth_key);
+                // The length byte must agree with what actually goes on the wire after it.
+                assert_eq!(write_frame.len(), 20);
+
+                let expectations = vec![Transaction::write(BQ_ADDR, write_frame)];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Bq40z50::new(i2c, NoopDelay::new());
+
+                bq.write_authentication_key(&auth_key).await.unwrap();
+
+                bq.device.interface().i2c.done();
+            }
+
+            #[tokio::test]
             async fn test_battery_status() {
                 let expectations = vec![Transaction::write_read(BQ_ADDR, vec![0x16], vec![0x30, 0x30])];
                 let i2c = Mock::new(&expectations);

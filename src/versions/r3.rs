@@ -6,9 +6,9 @@ use embedded_hal_async::i2c::I2c as I2cTrait;
 
 use crate::common::{CapacityModeState, ChargingVoltageOverride, Config};
 use crate::consts::{
-    AUTH_KEY_CMD, AUTH_KEY_DATA_LEN_BYTES, AUTH_KEY_LEN_BYTES, CHRG_VOLTAGE_OVERRIDE_CMD,
-    CHRG_VOLTAGE_OVERRIDE_SIZE_BYTES, LARGEST_REG_SIZE_BYTES, MAC_CMD, MAC_CMD_ADDR_SIZE_BYTES, MFG_INFO_CMD,
-    SECURITY_KEYS_CMD, SECURITY_KEYS_DATA_LEN_BYTES, SECURITY_KEYS_LEN_BYTES,
+    AUTH_KEY_CMD, AUTH_KEY_DATA_LEN_BYTES, CHRG_VOLTAGE_OVERRIDE_CMD, CHRG_VOLTAGE_OVERRIDE_SIZE_BYTES,
+    LARGEST_REG_SIZE_BYTES, MAC_CMD, MAC_CMD_ADDR_SIZE_BYTES, MFG_INFO_CMD, SECURITY_KEYS_CMD,
+    SECURITY_KEYS_DATA_LEN_BYTES, SECURITY_KEYS_LEN_BYTES,
 };
 use crate::error::BQ40Z50Error;
 use crate::interface::DeviceInterface;
@@ -128,11 +128,11 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R3<I2C, DELAY> {
     /// Will return `Err` if an I2C bus error occurs.
     pub async fn write_authentication_key(
         &mut self,
-        auth_key: &[u8; AUTH_KEY_LEN_BYTES as usize],
+        auth_key: &[u8; AUTH_KEY_DATA_LEN_BYTES as usize],
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
-        let mut buf = [0u8; 2 + MAC_CMD_ADDR_SIZE_BYTES as usize + AUTH_KEY_LEN_BYTES as usize];
+        let mut buf = [0u8; 2 + MAC_CMD_ADDR_SIZE_BYTES as usize + AUTH_KEY_DATA_LEN_BYTES as usize];
         buf[0] = MAC_CMD;
-        buf[1] = AUTH_KEY_LEN_BYTES;
+        buf[1] = AUTH_KEY_DATA_LEN_BYTES + MAC_CMD_ADDR_SIZE_BYTES;
         buf[2] = AUTH_KEY_CMD[0];
         buf[3] = AUTH_KEY_CMD[1];
         buf[4..].copy_from_slice(auth_key);
