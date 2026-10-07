@@ -9,8 +9,9 @@ use embedded_hal_async::i2c::I2c as I2cTrait;
 
 use crate::common::Config;
 use crate::consts::{
-    BQ_ADDR, DEFAULT_ERROR_BACKOFF_DELAY_MS, LARGEST_BUF_SIZE_BYTES, LARGEST_CMD_SIZE_BYTES,
-    LARGEST_DF_BLOCK_SIZE_BYTES, LARGEST_REG_SIZE_BYTES, MAC_CMD, MAC_CMD_ADDR_SIZE_BITS, MAC_CMD_ADDR_SIZE_BYTES,
+    BQ_ADDR, DEFAULT_ERROR_BACKOFF_DELAY_MS, DF_FIRST_ADDRESS, DF_LAST_ADDRESS, LARGEST_BUF_SIZE_BYTES,
+    LARGEST_CMD_SIZE_BYTES, LARGEST_DF_BLOCK_SIZE_BYTES, LARGEST_REG_SIZE_BYTES, MAC_CMD, MAC_CMD_ADDR_SIZE_BITS,
+    MAC_CMD_ADDR_SIZE_BYTES,
 };
 use crate::error::BQ40Z50Error;
 
@@ -50,6 +51,8 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
         starting_address: u16,
         write: &[u8],
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        check_df_range(starting_address, write.len())?;
+
         let use_pec = self.config.pec_write;
 
         let mut bytes_left_to_write = write.len();
@@ -61,8 +64,15 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
 
             let start_idx = write.len() - bytes_left_to_write;
             let end_idx = start_idx + output_buf_end_idx - 4;
-            // Safe cast as start_idx being higher than u16::MAX is impossible, the register map doesn't even go that high.
-            let starting_address_chunk = (starting_address + start_idx as u16).to_le_bytes();
+            // `check_df_range` has already proven the whole transfer fits inside 0x4000-0x5FFF,
+            // so neither the conversion nor the add can fail here. They are still written as
+            // checked operations so that a chunk address can never silently wrap onto a low data
+            // flash address and clobber calibration data, safety thresholds or the security keys.
+            let starting_address_chunk = u16::try_from(start_idx)
+                .ok()
+                .and_then(|offset| starting_address.checked_add(offset))
+                .ok_or(BQ40Z50Error::DataFlashAddressOutOfRange)?
+                .to_le_bytes();
             output_buf[0] = MAC_CMD;
             // Safe cast as output_buf_end_idx can only be as high as output_buf.len(), which is 36
             output_buf[1] = output_buf_end_idx as u8 - 2;
@@ -91,6 +101,38 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
     }
 }
 
+/// Checks that a data flash transfer of `len` bytes starting at `starting_address` lies entirely
+/// inside the documented data flash window.
+///
+/// All four TRMs title the data flash section with the window itself, for example SLUUCN4B
+/// 16.1.101 `"ManufacturerAccess() 0x4000-0x5FFF DataFlashAccess"`.
+///
+/// The *end* of the transfer is validated, not just the start, so a multi-chunk transfer cannot
+/// begin inside the window and run off the end of it. The end is computed with checked
+/// arithmetic, so an address near the top of the `u16` space is rejected rather than wrapping.
+///
+/// An empty transfer touches no addresses and is accepted as a no-op.
+fn check_df_range<E>(starting_address: u16, len: usize) -> Result<(), BQ40Z50Error<E>> {
+    let Some(last_offset) = len.checked_sub(1) else {
+        // Empty transfer: no addresses are touched.
+        return Ok(());
+    };
+
+    if starting_address < DF_FIRST_ADDRESS {
+        return Err(BQ40Z50Error::DataFlashAddressOutOfRange);
+    }
+
+    let last_address = u16::try_from(last_offset)
+        .ok()
+        .and_then(|offset| starting_address.checked_add(offset))
+        .ok_or(BQ40Z50Error::DataFlashAddressOutOfRange)?;
+
+    if last_address > DF_LAST_ADDRESS {
+        return Err(BQ40Z50Error::DataFlashAddressOutOfRange);
+    }
+
+    Ok(())
+}
 /// Performs a single I2C bus operation, bounded by `config.timeout`.
 ///
 /// Expands to a `Result<(), BQ40Z50Error<I2C::Error>>`: a bus error becomes
@@ -329,6 +371,8 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
         starting_address: u16,
         read: &mut [u8],
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        check_df_range(starting_address, read.len())?;
+
         let mut retries = self.config.max_bus_retries;
         let starting_address = starting_address.to_le_bytes();
 
@@ -403,6 +447,8 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> DeviceInterface<I2C, DELAY> {
         starting_address: u16,
         read: &mut [u8],
     ) -> Result<(), BQ40Z50Error<I2C::Error>> {
+        check_df_range(starting_address, read.len())?;
+
         let mut retries = self.config.max_bus_retries;
         let starting_address = starting_address.to_le_bytes();
 

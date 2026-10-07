@@ -10,6 +10,13 @@ pub enum BQ40Z50Error<I2cError> {
     /// The unit tag of the supplied value disagrees with the capacity mode currently
     /// latched in `BatteryMode()[CAPACITY_MODE]`.
     CapacityModeMismatch,
+    /// The requested data flash transfer does not lie entirely inside the documented
+    /// `0x4000`-`0x5FFF` data flash window.
+    ///
+    /// Returned when the starting address is outside the window, or when the starting
+    /// address is inside it but the transfer would run past the end. No bus traffic is
+    /// generated for a rejected transfer.
+    DataFlashAddressOutOfRange,
 }
 
 #[cfg(feature = "embassy-timeout")]
@@ -24,9 +31,11 @@ impl<E: embedded_hal_async::i2c::Error> embedded_batteries_async::smart_battery:
         match self {
             Self::I2c(_) => embedded_batteries_async::smart_battery::ErrorKind::CommError,
             Self::BatteryStatus(e) => embedded_batteries_async::smart_battery::ErrorKind::BatteryStatus(*e),
-            Self::Timeout | Self::Pec | Self::DataTooLarge | Self::CapacityModeMismatch => {
-                embedded_batteries_async::smart_battery::ErrorKind::Other
-            }
+            Self::Timeout
+            | Self::Pec
+            | Self::DataTooLarge
+            | Self::CapacityModeMismatch
+            | Self::DataFlashAddressOutOfRange => embedded_batteries_async::smart_battery::ErrorKind::Other,
         }
     }
 }

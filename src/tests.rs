@@ -1455,6 +1455,59 @@ macro_rules! bq40z50_tests {
 
                 bq.interface().i2c.done();
             }
+
+            #[tokio::test]
+            async fn test_df_address_bounds() {
+                // No transactions at all: every one of these must be rejected up front.
+                let i2c = Mock::new(&[]);
+                let mut bq = Bq40z50::new(i2c, NoopDelay::new());
+
+                let mut read = [0u8; 4];
+
+                // Below the window.
+                assert_eq!(
+                    bq.read_dataflash(0x3FFF, &mut read).await,
+                    Err(BQ40Z50Error::DataFlashAddressOutOfRange)
+                );
+                assert_eq!(
+                    bq.write_dataflash(0x0000, &[0u8; 4]).await,
+                    Err(BQ40Z50Error::DataFlashAddressOutOfRange)
+                );
+
+                // Above the window.
+                assert_eq!(
+                    bq.read_dataflash(0x6000, &mut read).await,
+                    Err(BQ40Z50Error::DataFlashAddressOutOfRange)
+                );
+                assert_eq!(
+                    bq.write_dataflash(0x6000, &[0u8; 4]).await,
+                    Err(BQ40Z50Error::DataFlashAddressOutOfRange)
+                );
+
+                // Starts inside the window but runs off the end of it.
+                assert_eq!(
+                    bq.read_dataflash(0x5FFE, &mut read).await,
+                    Err(BQ40Z50Error::DataFlashAddressOutOfRange)
+                );
+                assert_eq!(
+                    bq.write_dataflash(0x5FFE, &[0u8; 4]).await,
+                    Err(BQ40Z50Error::DataFlashAddressOutOfRange)
+                );
+
+                // Multi-chunk write whose later chunk addresses would run past the window.
+                assert_eq!(
+                    bq.write_dataflash(0x5FF0, &[0u8; 64]).await,
+                    Err(BQ40Z50Error::DataFlashAddressOutOfRange)
+                );
+
+                // Near the top of the u16 space: the per-chunk address add would wrap.
+                assert_eq!(
+                    bq.write_dataflash(0xFFF0, &[0u8; 64]).await,
+                    Err(BQ40Z50Error::DataFlashAddressOutOfRange)
+                );
+
+                bq.device.interface().i2c.done();
+            }
         }
     };
 }

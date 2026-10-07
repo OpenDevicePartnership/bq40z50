@@ -8,6 +8,15 @@ pub(crate) const MAC_CMD_ADDR_SIZE_BYTES: u8 = 2;
 pub(crate) const MAC_CMD_ADDR_SIZE_BITS: u8 = MAC_CMD_ADDR_SIZE_BYTES * 8;
 pub(crate) const MAC_CMD: u8 = 0x44;
 
+/// First address of the data flash window.
+///
+/// All four TRMs title the data flash section with the window itself: SLUUA43A 12.1.60
+/// `"0x4000-0x5FFF Data Flash Access()"`, SLUUBU5A 15.1.83, SLUUCH2 16.1.98 and SLUUCN4B
+/// 16.1.101 `"ManufacturerAccess() 0x4000-0x5FFF DataFlashAccess"`.
+pub(crate) const DF_FIRST_ADDRESS: u16 = 0x4000;
+/// Last valid (inclusive) address of the data flash window.
+pub(crate) const DF_LAST_ADDRESS: u16 = 0x5FFF;
+
 // Special case MAC commands
 pub(crate) const SECURITY_KEYS_CMD: [u8; MAC_CMD_ADDR_SIZE_BYTES as usize] = 0x0035u16.to_le_bytes();
 pub(crate) const SECURITY_KEYS_DATA_LEN_BYTES: u8 = 8;
