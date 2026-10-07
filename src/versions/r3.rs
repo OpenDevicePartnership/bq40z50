@@ -442,4 +442,4 @@ impl<I2C: I2cTrait, DELAY: DelayTrait> Bq40z50R3<I2C, DELAY> {
 
 crate::common::implement_embedded_batteries!(Bq40z50R3);
 
-crate::tests::bq40z50_tests!(Bq40z50R3);
+crate::tests::bq40z50_tests!(Bq40z50R3, 32);

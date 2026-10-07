@@ -1,5 +1,10 @@
 macro_rules! bq40z50_tests {
-    ($revision:ident) => {
+    // `$lifetime_block_1_len` is the length of LIFETIME_DATA_BLOCK_1 for this revision. r1 and
+    // r3 carry six extra temperature bytes at the end of the block. It is a macro parameter
+    // rather than a `cfg` because this macro is expanded once per revision module while a `cfg`
+    // is evaluated once for the whole build, so a multi-revision build would otherwise give
+    // every module the same length.
+    ($revision:ident, $lifetime_block_1_len:literal) => {
         #[cfg(test)]
         mod tests {
             use device_driver::{
@@ -1674,17 +1679,13 @@ macro_rules! bq40z50_tests {
                 // Current and Max Avg Dsg Power as I2 with range -32768..0, while the adjacent
                 // Max Charge Current row is I2 with range 0..32767. A raw 0xFC18 must therefore
                 // decode as -1000, not 64536.
-                // r1 and r3 carry six extra temperature bytes at the end of this block.
-                #[cfg(any(feature = "r1", feature = "r3"))]
-                let block = vec![
-                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                    0x00, 0x00, 0xE8, 0x03, 0x18, 0xFC, 0x7C, 0xFD, 0x9C, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                ];
-                #[cfg(not(any(feature = "r1", feature = "r3")))]
-                let block = vec![
+                // r1 and r3 carry six extra temperature bytes at the end of this block, so the
+                // length comes in as a macro parameter.
+                let mut block = vec![
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0xE8, 0x03, 0x18, 0xFC, 0x7C, 0xFD, 0x9C, 0xFF,
                 ];
+                block.resize($lifetime_block_1_len, 0x00);
                 let mut mac_block = vec![(block.len() + 2) as u8, 0x60, 0x00];
                 mac_block.extend_from_slice(&block);
                 let expectations = vec![
