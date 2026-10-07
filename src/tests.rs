@@ -1700,6 +1700,98 @@ macro_rules! bq40z50_tests {
             }
 
             #[tokio::test]
+            async fn test_manufacture_info_is_byte_ordered() {
+                // SLUUCN4B 16.1.64 ManufacturerAccess() 0x0070 ManufacturerInfo: "Output 32 bytes
+                // of ManufacturerInfo on ManufacturerBlockAccess() or ManufacturerData() in the
+                // following format:
+                // AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTTUUVVWWXXYYZZ112233445566".
+                // Thirty-two distinct labels means thirty-two independent bytes, so the block must
+                // decode in wire order. Modelled as 4 x little-endian u64 it came back reversed
+                // within each 8-byte group.
+                let data: Vec<u8> = (1..=32).collect();
+                let mut mac_block = vec![(data.len() + 2) as u8, 0x70, 0x00];
+                mac_block.extend_from_slice(&data);
+                let expectations = vec![
+                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x70, 0x00]),
+                    Transaction::write_read(BQ_ADDR, vec![0x44], mac_block),
+                ];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Device::new(DeviceInterface::new(i2c, NoopDelay::new()));
+
+                let mac = bq.mac_manufacture_info().dispatch_out_async().await.unwrap();
+                let got = [
+                    mac.manufacture_info_0(),
+                    mac.manufacture_info_1(),
+                    mac.manufacture_info_2(),
+                    mac.manufacture_info_3(),
+                    mac.manufacture_info_4(),
+                    mac.manufacture_info_5(),
+                    mac.manufacture_info_6(),
+                    mac.manufacture_info_7(),
+                    mac.manufacture_info_8(),
+                    mac.manufacture_info_9(),
+                    mac.manufacture_info_10(),
+                    mac.manufacture_info_11(),
+                    mac.manufacture_info_12(),
+                    mac.manufacture_info_13(),
+                    mac.manufacture_info_14(),
+                    mac.manufacture_info_15(),
+                    mac.manufacture_info_16(),
+                    mac.manufacture_info_17(),
+                    mac.manufacture_info_18(),
+                    mac.manufacture_info_19(),
+                    mac.manufacture_info_20(),
+                    mac.manufacture_info_21(),
+                    mac.manufacture_info_22(),
+                    mac.manufacture_info_23(),
+                    mac.manufacture_info_24(),
+                    mac.manufacture_info_25(),
+                    mac.manufacture_info_26(),
+                    mac.manufacture_info_27(),
+                    mac.manufacture_info_28(),
+                    mac.manufacture_info_29(),
+                    mac.manufacture_info_30(),
+                    mac.manufacture_info_31(),
+                ];
+                assert_eq!(got.as_slice(), data.as_slice());
+
+                bq.interface().i2c.done();
+            }
+
+            #[tokio::test]
+            async fn test_gauge_status_3_reads_documented_length() {
+                // SLUUCN4B 16.1.69 ManufacturerAccess() 0x0075 GaugeStatus3: "Action: Output 24
+                // bytes of IT data values on ManufacturerBlockAccess() or ManufacturerData()".
+                // The MAC entry and the direct 0x75 register describe the same data, so both must
+                // put 24 bytes on the wire. The mock fails the transaction if the driver asks for
+                // any other length.
+                let mut block = vec![0x00u8; 24];
+                block[0] = 0x34;
+                block[1] = 0x12;
+                block[22] = 0x78;
+                block[23] = 0x56;
+                let mut mac_block = vec![(block.len() + 2) as u8, 0x75, 0x00];
+                mac_block.extend_from_slice(&block);
+                let expectations = vec![
+                    Transaction::write_read(BQ_ADDR, vec![0x75], block.clone()),
+                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x75, 0x00]),
+                    Transaction::write_read(BQ_ADDR, vec![0x44], mac_block),
+                ];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Device::new(DeviceInterface::new(i2c, NoopDelay::new()));
+
+                let reg = bq.gauge_status_3().read_async().await.unwrap();
+                assert_eq!(reg.qmax_0(), 0x1234);
+                assert_eq!(reg.temp_a_factor(), 0x5678);
+
+                let mac = bq.mac_gauge_status_3().dispatch_out_async().await.unwrap();
+                assert_eq!(mac.qmax_0(), 0x1234);
+                assert_eq!(mac.temp_a_factor(), 0x5678);
+
+                bq.interface().i2c.done();
+            }
+
+            #[tokio::test]
             async fn test_lifetime_data_block_1_discharge_is_signed() {
                 // SLUUCN4B 17.17 Data Flash Summary types Max Discharge Current, Max Avg Dsg
                 // Current and Max Avg Dsg Power as I2 with range -32768..0, while the adjacent
@@ -1755,39 +1847,6 @@ macro_rules! bq40z50_tests {
                     .dispatch_async()
                     .await
                     .unwrap();
-
-                bq.interface().i2c.done();
-            }
-
-            #[tokio::test]
-            async fn test_gauge_status_3_reads_documented_length() {
-                // SLUUCN4B 16.1.69 ManufacturerAccess() 0x0075 GaugeStatus3: "Action: Output 24
-                // bytes of IT data values on ManufacturerBlockAccess() or ManufacturerData()".
-                // The MAC entry and the direct 0x75 register describe the same data, so both must
-                // put 24 bytes on the wire. The mock fails the transaction if the driver asks for
-                // any other length.
-                let mut block = vec![0x00u8; 24];
-                block[0] = 0x34;
-                block[1] = 0x12;
-                block[22] = 0x78;
-                block[23] = 0x56;
-                let mut mac_block = vec![(block.len() + 2) as u8, 0x75, 0x00];
-                mac_block.extend_from_slice(&block);
-                let expectations = vec![
-                    Transaction::write_read(BQ_ADDR, vec![0x75], block.clone()),
-                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x75, 0x00]),
-                    Transaction::write_read(BQ_ADDR, vec![0x44], mac_block),
-                ];
-                let i2c = Mock::new(&expectations);
-                let mut bq = Device::new(DeviceInterface::new(i2c, NoopDelay::new()));
-
-                let reg = bq.gauge_status_3().read_async().await.unwrap();
-                assert_eq!(reg.qmax_0(), 0x1234);
-                assert_eq!(reg.temp_a_factor(), 0x5678);
-
-                let mac = bq.mac_gauge_status_3().dispatch_out_async().await.unwrap();
-                assert_eq!(mac.qmax_0(), 0x1234);
-                assert_eq!(mac.temp_a_factor(), 0x5678);
 
                 bq.interface().i2c.done();
             }
