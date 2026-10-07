@@ -16372,12 +16372,12 @@ impl core::ops::Not for MacCbStatus {
 pub struct MacGaugeStatus3 {
     #[doc(hidden)]
     /// The internal bits
-    bits: [u8; 32],
+    bits: [u8; 24],
 }
 unsafe impl ::device_driver::Fieldset for MacGaugeStatus3 {
     const METADATA: ::device_driver::FieldsetMetadata =
         ::device_driver::FieldsetMetadata::new().with_byte_order(::device_driver::ByteOrder::LE);
-    const ZERO: Self = Self { bits: [0; 32] };
+    const ZERO: Self = Self { bits: [0; 24] };
 }
 impl MacGaugeStatus3 {
     /// `15:0` - Read the `qmax_0` field.
@@ -16614,12 +16614,12 @@ impl Default for MacGaugeStatus3 {
         <Self as ::device_driver::Fieldset>::ZERO
     }
 }
-impl From<[u8; 32]> for MacGaugeStatus3 {
-    fn from(bits: [u8; 32]) -> Self {
+impl From<[u8; 24]> for MacGaugeStatus3 {
+    fn from(bits: [u8; 24]) -> Self {
         Self { bits }
     }
 }
-impl From<MacGaugeStatus3> for [u8; 32] {
+impl From<MacGaugeStatus3> for [u8; 24] {
     fn from(val: MacGaugeStatus3) -> Self {
         val.bits
     }

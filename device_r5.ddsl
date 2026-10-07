@@ -896,7 +896,7 @@ device Device {
     command MAC_GAUGE_STATUS_3 {
         address: 0x447500,
         fields-out: fieldset _ {
-            size-bytes: 32,
+            size-bytes: 24,
         
             field QMAX_0 15:0,
             field QMAX_1 31:16,
