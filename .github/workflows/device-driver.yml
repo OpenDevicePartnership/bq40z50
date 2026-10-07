@@ -32,7 +32,7 @@ jobs:
         uses: baptiste0928/cargo-install@v3
         with:
           crate: device-driver-cli
-          version: '=1.0.9'
+          version: '=2.1.0'
       - name: Generate files
         run: ddc build rust -s device_${{ matrix.chip-rev }}.ddsl -o ci_gen_${{matrix.chip-rev}}.rs --rust-defmt-feature=defmt-03
       - name: Format generated file with nightly rustfmt
