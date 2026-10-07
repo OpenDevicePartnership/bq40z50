@@ -80,6 +80,41 @@ criteria = "safe-to-deploy"
 version = "1.0.9"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/bq25723/refs/heads/main/supply-chain/audits.toml"
 
+[[audits.OpenDevicePartnership.audits.device-driver]]
+who = "Felipe Balbi <febalbi@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.0.9 -> 2.1.0"
+notes = """
+Runtime crate of the device-driver toolkit. `build = false` in both versions,
+so no build script. The only powerful import is
+`include_str!(concat!("../", env!("CARGO_PKG_README")))` in lib.rs, which is
+rustdoc boilerplate. `#![cfg_attr(not(test), no_std)]` still holds; no fs, net,
+process or env access beyond that one CARGO_PKG_README lookup.
+
+The v2 rewrite reworks the register/command/buffer/fieldset API surface
+(RegisterInterfaceBase supertrait, FieldsetMetadata parameter, bulk and array
+operations) and rewrites the test suite onto the new DDSL front end. The unsafe
+surface got smaller, not larger: ops.rs drops the `load_msb0`/`store_msb0` pair
+outright and keeps only the lsb0 bit-packing helpers, whose two
+`get_unchecked`/`get_unchecked_mut` calls are still guarded by the documented
+`start`/`end` bit-range contract on the callers. The one addition is
+`unsafe trait Fieldset` in fieldset.rs, whose `as_slice_mut` reinterprets
+`&mut Self` as `&mut [u8]` of `size_of::<Self>()` bytes; the trait carries an
+explicit `# Safety` clause requiring a stable ABI and no padding, and the only
+blanket impl is for `[T: Fieldset; N]`, which preserves that property. Generated
+fieldsets are `#[repr(C)]` newtypes over byte arrays, so the obligation is met.
+
+Dependency-wise this is a net reduction for tmp108: the v1 `dsl`/`json`/`yaml`/
+`toml` default features are gone, replaced by opt-in `macros`, `defmt` and
+`embedded-io-07`. tmp108 depends on device-driver with
+`default-features = false` and enables none of them, so `cargo tree -e normal`
+shows device-driver 2.1.0 with zero transitive dependencies -- the whole
+proc-macro and embedded-io subtree that v1 pulled in is gone.
+
+Assisted-by: opencode:claude-opus-5
+"""
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/tmp108/refs/heads/main/supply-chain/audits.toml"
+
 [[audits.OpenDevicePartnership.audits.embassy-executor-timer-queue]]
 who = "Felipe Balbi <febalbi@microsoft.com>"
 criteria = "safe-to-deploy"
@@ -90,7 +125,10 @@ aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embas
 who = "Felipe Balbi <febalbi@microsoft.com>"
 criteria = "safe-to-deploy"
 version = "0.5.0"
-aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/tps6699x/refs/heads/main/supply-chain/audits.toml"
+aggregated-from = [
+    "https://raw.githubusercontent.com/OpenDevicePartnership/tps6699x/refs/heads/main/supply-chain/audits.toml",
+    "https://raw.githubusercontent.com/OpenDevicePartnership/tps6699x/refs/heads/main/supply-chain/audits.toml",
+]
 
 [[audits.OpenDevicePartnership.audits.embassy-time]]
 who = "Billy Price <williamp@microsoft.com>"
@@ -170,11 +208,25 @@ version = "1.0.0"
 notes = "no_std trait-only crate. No unsafe, no build script, no proc macros, no powerful imports. Assisted-by: copilot-cli:claude-opus-4.6"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
 
+[[audits.OpenDevicePartnership.audits.embedded-io]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "0.6.1 -> 0.7.1"
+notes = "Add core::error::Error trait bound (MSRV 1.81). defmt 0.3->1.0. Implement ReadReady/WriteReady for slices and VecDeque. Add seek_relative(). Fix method forwardings. Trusted publisher (Dirbaio from Embedded WG)."
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embassy-imxrt/refs/heads/main/supply-chain/audits.toml"
+
 [[audits.OpenDevicePartnership.audits.embedded-io-async]]
 who = "Jerry Xie <jerryxie@microsoft.com>"
 criteria = "safe-to-deploy"
 version = "0.6.1"
 notes = "No unsafe. Build script only detects nightly via rustc --version. Pure async trait definitions for embedded I/O. Assisted-by: copilot-cli:claude-opus-4.6"
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
+
+[[audits.OpenDevicePartnership.audits.embedded-io-async]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "0.6.1 -> 0.7.0"
+notes = "Delta 0.6.1->0.7.0: No unsafe. Build script removed (AFIT now stable). flush() made required, BufRead requires Read, new VecDeque impls. Assisted-by: copilot-cli:claude-opus-4.6"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.hash32]]
@@ -675,25 +727,25 @@ who = "Alex Franchuk <afranchuk@mozilla.com>"
 criteria = "safe-to-deploy"
 delta = "1.3.2 -> 2.0.2"
 notes = "Removal of some unsafe code/methods. No changes to externals, just some refactoring (mostly internal)."
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.bitflags]]
 who = "Nicolas Silva <nical@fastmail.com>"
 criteria = "safe-to-deploy"
 delta = "2.0.2 -> 2.1.0"
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.bitflags]]
 who = "Teodor Tanasoaia <ttanasoaia@mozilla.com>"
 criteria = "safe-to-deploy"
 delta = "2.2.1 -> 2.3.2"
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.bitflags]]
 who = "Mike Hommey <mh+mozilla@glandium.org>"
 criteria = "safe-to-deploy"
 delta = "2.3.3 -> 2.4.0"
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.bitflags]]
 who = "Jan-Erik Rediger <jrediger@mozilla.com>"
@@ -709,76 +761,76 @@ who = [
 ]
 criteria = "safe-to-deploy"
 delta = "2.6.0 -> 2.7.0"
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.bitflags]]
 who = "Benjamin VanderSloot <bvandersloot@mozilla.com>"
 criteria = "safe-to-deploy"
 delta = "2.9.4 -> 2.10.0"
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.document-features]]
 who = "Erich Gubler <erichdongubler@gmail.com>"
 criteria = "safe-to-deploy"
 version = "0.2.8"
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.document-features]]
 who = "Erich Gubler <erichdongubler@gmail.com>"
 criteria = "safe-to-deploy"
 delta = "0.2.8 -> 0.2.9"
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.document-features]]
 who = "Erich Gubler <erichdongubler@gmail.com>"
 criteria = "safe-to-deploy"
 delta = "0.2.9 -> 0.2.10"
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.document-features]]
 who = "Teodor Tanasoaia <ttanasoaia@mozilla.com>"
 criteria = "safe-to-deploy"
 delta = "0.2.10 -> 0.2.11"
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.futures-core]]
 who = "Mike Hommey <mh+mozilla@glandium.org>"
 criteria = "safe-to-deploy"
 delta = "0.3.27 -> 0.3.28"
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.litrs]]
 who = "Erich Gubler <erichdongubler@gmail.com>"
 criteria = "safe-to-deploy"
 version = "0.4.1"
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.num]]
 who = "Josh Stone <jistone@redhat.com>"
 criteria = "safe-to-deploy"
 version = "0.4.0"
 notes = "All code written or reviewed by Josh Stone."
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.num-complex]]
 who = "Josh Stone <jistone@redhat.com>"
 criteria = "safe-to-deploy"
 version = "0.4.2"
 notes = "All code written or reviewed by Josh Stone."
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.num-rational]]
 who = "Josh Stone <jistone@redhat.com>"
 criteria = "safe-to-deploy"
 version = "0.4.1"
 notes = "All code written or reviewed by Josh Stone."
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.pin-project-lite]]
 who = "Mike Hommey <mh+mozilla@glandium.org>"
 criteria = "safe-to-deploy"
 delta = "0.2.13 -> 0.2.14"
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.pin-project-lite]]
 who = "Nika Layzell <nika@thelayzells.com>"
@@ -813,7 +865,7 @@ also has a large, thorough test suite. The project claims to run tests with
 Miri to have stronger soundness checks, and also claims to use formal
 verification tools to prove correctness.
 """
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.zerocopy]]
 who = "Alex Franchuk <afranchuk@mozilla.com>"
@@ -825,14 +877,14 @@ comparison. The safety properties of unsafe code blocks, traits, and other
 types are thoroughly documented. The new build script is safe. All code is very
 thoroughly tested. I expect their test coverage is quite high.
 """
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.zerocopy-derive]]
 who = "Alex Franchuk <afranchuk@mozilla.com>"
 criteria = "safe-to-deploy"
 version = "0.7.32"
 notes = "Clean, safe macros for zerocopy."
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.zerocopy-derive]]
 who = "Alex Franchuk <afranchuk@mozilla.com>"
@@ -842,4 +894,4 @@ notes = """
 There are a lot of changes here, however they look reasonable. Unsafe code is
 heavily documented, and there are extensive tests for the changes.
 """
-aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+aggregated-from = "https://raw.githubusercontent.com/mozilla-firefox/firefox/main/supply-chain/audits.toml"
