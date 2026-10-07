@@ -12,7 +12,7 @@ macro_rules! bq40z50_tests {
 
             use super::*;
             use crate::common::{CapacityModeState, Config};
-            use crate::consts::{BQ_ADDR, DEFAULT_ERROR_BACKOFF_DELAY_MS};
+            use crate::consts::{BQ_ADDR, DEFAULT_BUS_RETRIES, DEFAULT_ERROR_BACKOFF_DELAY_MS};
 
             fn write_transaction(data: &[u8], use_pec: bool) -> Transaction {
                 let mut frame = data.to_vec();
@@ -1507,6 +1507,151 @@ macro_rules! bq40z50_tests {
                 );
 
                 bq.device.interface().i2c.done();
+            }
+
+            #[tokio::test]
+            async fn test_df_read_pec_retry_resends_address() {
+                const BLOCK_A: [u8; 35] = [
+                    0x22, 0x00, 0x40, 0x00, 0x18, 0x2E, 0xE0, 0x2E, 0x38, 0x31, 0xE0, 0x2E, 0x18, 0x2E, 0x00, 0x18,
+                    0x2E, 0xE0, 0x2E, 0x38, 0x31, 0xE0, 0x2E, 0x18, 0x2E, 0x00, 0x18, 0x2E, 0xE0, 0x2E, 0x38, 0x31,
+                    0xE0, 0x2E, 0x18,
+                ];
+                const BLOCK_B: [u8; 35] = [
+                    0x22, 0x20, 0x40, // length + starting address 0x4020
+                    0xDE, 0xAD, 0xDE, 0xAD, 0xDE, 0xAD, 0xDE, 0xAD, 0xDE, 0xAD, 0xDE, 0xAD, 0xDE, 0xAD, 0xD0, 0x0D,
+                    0xDE, 0xAD, 0xDE, 0xAD, 0xDE, 0xAD, 0xDE, 0xAD, 0xDE, 0xAD, 0xDE, 0xAD, 0xDE, 0xAD, 0xD0, 0x0D,
+                ];
+
+                let mut block_a_good = BLOCK_A.to_vec();
+                block_a_good.push(0x22); // correct PEC
+                let mut block_b_good = BLOCK_B.to_vec();
+                block_b_good.push(0xE0); // correct PEC
+                let mut block_b_bad = BLOCK_B.to_vec();
+                block_b_bad.push(0x00); // corrupted PEC
+
+                let expectations = vec![
+                    // Address write for the whole transfer, starting at 0x4000.
+                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x00, 0x40, 0xAB /* PEC */]),
+                    // Chunk 1 at 0x4000, good PEC.
+                    Transaction::write_read(BQ_ADDR, vec![0x44], block_a_good),
+                    // Chunk 2 at 0x4020, corrupted PEC.
+                    Transaction::write_read(BQ_ADDR, vec![0x44], block_b_bad),
+                    // The retry MUST re-send chunk 2's own starting address (0x4020), not rely on
+                    // the auto-increment, which would otherwise serve up the block at 0x4040.
+                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x20, 0x40, 0x05 /* PEC */]),
+                    Transaction::write_read(BQ_ADDR, vec![0x44], block_b_good),
+                ];
+                let i2c = Mock::new(&expectations);
+                let mut bq = Bq40z50::new_with_config(
+                    i2c,
+                    NoopDelay::new(),
+                    Config {
+                        pec_read: true,
+                        pec_write: true,
+                        ..Default::default()
+                    },
+                );
+
+                let mut read = [0u8; 64];
+                bq.read_dataflash(0x4000, &mut read).await.unwrap();
+
+                let mut expected = [0u8; 64];
+                expected[..32].copy_from_slice(&BLOCK_A[3..]);
+                expected[32..].copy_from_slice(&BLOCK_B[3..]);
+                assert_eq!(read, expected);
+
+                bq.device.interface().i2c.done();
+            }
+
+            #[tokio::test]
+            async fn test_df_read_pec_retries_exhausted() {
+                const BLOCK_A: [u8; 35] = [
+                    0x22, 0x00, 0x40, 0x00, 0x18, 0x2E, 0xE0, 0x2E, 0x38, 0x31, 0xE0, 0x2E, 0x18, 0x2E, 0x00, 0x18,
+                    0x2E, 0xE0, 0x2E, 0x38, 0x31, 0xE0, 0x2E, 0x18, 0x2E, 0x00, 0x18, 0x2E, 0xE0, 0x2E, 0x38, 0x31,
+                    0xE0, 0x2E, 0x18,
+                ];
+                let mut block_a_bad = BLOCK_A.to_vec();
+                block_a_bad.push(0x00); // corrupted PEC
+
+                let mut expectations = vec![Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x00, 0x40, 0xAB])];
+                // Initial attempt plus DEFAULT_BUS_RETRIES retries, each re-addressing 0x4000.
+                for i in 0..=DEFAULT_BUS_RETRIES {
+                    if i > 0 {
+                        expectations.push(Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x00, 0x40, 0xAB]));
+                    }
+                    expectations.push(Transaction::write_read(BQ_ADDR, vec![0x44], block_a_bad.clone()));
+                }
+
+                let i2c = Mock::new(&expectations);
+                let mut bq = Bq40z50::new_with_config(
+                    i2c,
+                    NoopDelay::new(),
+                    Config {
+                        pec_read: true,
+                        pec_write: true,
+                        ..Default::default()
+                    },
+                );
+
+                let mut read = [0u8; 32];
+                assert_eq!(bq.read_dataflash(0x4000, &mut read).await, Err(BQ40Z50Error::Pec));
+
+                bq.device.interface().i2c.done();
+            }
+
+            #[tokio::test]
+            async fn test_df_read_bus_error_retry_resends_address() {
+                // The non-PEC read path retries bus errors. SLUUCN4B 16.1.101 DataFlashAccess
+                // specifies a read as an address write followed by a block read, and the gauge
+                // auto-increments its read pointer afterwards. After a failed block read the
+                // pointer's position is not defined by the TRM, so the retry must re-send this
+                // chunk's own starting address rather than rely on the auto-increment.
+                const BLOCK_A: [u8; 35] = [
+                    0x22, 0x00, 0x40, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
+                    0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
+                    0x11, 0x11, 0x11,
+                ];
+                const BLOCK_B: [u8; 35] = [
+                    0x22, 0x20, 0x40, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22,
+                    0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22,
+                    0x22, 0x22, 0x22,
+                ];
+
+                let expectations = vec![
+                    // Address write for the whole transfer, starting at 0x4000.
+                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x00, 0x40]),
+                    // Chunk 1 at 0x4000 succeeds; the pointer auto-increments to 0x4020.
+                    Transaction::write_read(BQ_ADDR, vec![0x44], BLOCK_A.to_vec()),
+                    // Chunk 2 fails on the bus.
+                    Transaction::write_read(BQ_ADDR, vec![0x44], BLOCK_B.to_vec()).with_error(
+                        embedded_hal::i2c::ErrorKind::NoAcknowledge(embedded_hal::i2c::NoAcknowledgeSource::Address),
+                    ),
+                    // The retry MUST re-address 0x4020. Without this the next block read would
+                    // return whatever the pointer now refers to, and the driver would hand that
+                    // back as the block the caller asked for.
+                    Transaction::write(BQ_ADDR, vec![0x44, 0x02, 0x20, 0x40]),
+                    Transaction::write_read(BQ_ADDR, vec![0x44], BLOCK_B.to_vec()),
+                ];
+                let i2c = Mock::new(&expectations);
+                let delay_expectations = vec![DelayTransaction::delay_ms(10)];
+                let mut bq = Bq40z50::new_with_config(
+                    i2c,
+                    CheckedDelay::new(&delay_expectations),
+                    Config {
+                        pec_read: false,
+                        pec_write: false,
+                        ..Default::default()
+                    },
+                );
+
+                let mut buf = [0u8; 64];
+                bq.read_dataflash(0x4000, &mut buf).await.unwrap();
+
+                assert_eq!(buf[..32], [0x11u8; 32]);
+                assert_eq!(buf[32..], [0x22u8; 32]);
+
+                bq.device.interface().i2c.done();
+                bq.device.interface().delay.done();
             }
         }
     };
