@@ -402,7 +402,7 @@ device Device {
             field FUSE_EN 8,
             field LED_EN 9,
             field LT_TEST 14,
-            field CAL_TEST 15,
+            field CAL_EN 15,
         },
     },
     command MAC_AFE_REG {
@@ -1497,7 +1497,7 @@ device Device {
             field FUSE_EN 8 RO,
             field LED_EN 9 RO,
             field LT_TEST 14 RO,
-            field CAL_TEST 15 RO,
+            field CAL_EN 15 RO,
         },
     },
     register AFE_REG {

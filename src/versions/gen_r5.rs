@@ -7216,11 +7216,11 @@ impl ManufacturingStatus {
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw > 0
     }
-    /// `bit 15` - Read the `cal_test` field.
+    /// `bit 15` - Read the `cal_en` field.
     ///
-    #[doc(alias = "CAL_TEST")]
+    #[doc(alias = "CAL_EN")]
     #[must_use]
-    pub fn cal_test(&self) -> bool {
+    pub fn cal_en(&self) -> bool {
         let start = 15;
         let end = 15;
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
@@ -7256,7 +7256,7 @@ impl core::fmt::Debug for ManufacturingStatus {
         d.field("fuse_en", &self.fuse_en());
         d.field("led_en", &self.led_en());
         d.field("lt_test", &self.lt_test());
-        d.field("cal_test", &self.cal_test());
+        d.field("cal_en", &self.cal_en());
         d.finish()
     }
 }
@@ -7275,7 +7275,7 @@ impl defmt::Format for ManufacturingStatus {
         defmt::write!(f, "fuse_en: {=bool}, ", &self.fuse_en());
         defmt::write!(f, "led_en: {=bool}, ", &self.led_en());
         defmt::write!(f, "lt_test: {=bool}, ", &self.lt_test());
-        defmt::write!(f, "cal_test: {=bool}, ", &self.cal_test());
+        defmt::write!(f, "cal_en: {=bool}, ", &self.cal_en());
         defmt::write!(f, "}}");
     }
 }
@@ -25300,11 +25300,11 @@ impl MacManufacturingStatus {
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw > 0
     }
-    /// `bit 15` - Read the `cal_test` field.
+    /// `bit 15` - Read the `cal_en` field.
     ///
-    #[doc(alias = "CAL_TEST")]
+    #[doc(alias = "CAL_EN")]
     #[must_use]
-    pub fn cal_test(&self) -> bool {
+    pub fn cal_en(&self) -> bool {
         let start = 15;
         let end = 15;
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
@@ -25409,10 +25409,10 @@ impl MacManufacturingStatus {
         let raw = value as _;
         unsafe { ::device_driver::ops::store::<u8, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
-    /// `bit 15` - Set the `cal_test` field.
+    /// `bit 15` - Set the `cal_en` field.
     ///
-    #[doc(alias = "CAL_TEST")]
-    pub fn set_cal_test(&mut self, value: bool) {
+    #[doc(alias = "CAL_EN")]
+    pub fn set_cal_en(&mut self, value: bool) {
         let start = 15;
         let end = 15;
         let raw = value as _;
@@ -25448,7 +25448,7 @@ impl core::fmt::Debug for MacManufacturingStatus {
         d.field("fuse_en", &self.fuse_en());
         d.field("led_en", &self.led_en());
         d.field("lt_test", &self.lt_test());
-        d.field("cal_test", &self.cal_test());
+        d.field("cal_en", &self.cal_en());
         d.finish()
     }
 }
@@ -25467,7 +25467,7 @@ impl defmt::Format for MacManufacturingStatus {
         defmt::write!(f, "fuse_en: {=bool}, ", &self.fuse_en());
         defmt::write!(f, "led_en: {=bool}, ", &self.led_en());
         defmt::write!(f, "lt_test: {=bool}, ", &self.lt_test());
-        defmt::write!(f, "cal_test: {=bool}, ", &self.cal_test());
+        defmt::write!(f, "cal_en: {=bool}, ", &self.cal_en());
         defmt::write!(f, "}}");
     }
 }
