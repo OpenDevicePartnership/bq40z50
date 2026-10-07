@@ -1598,7 +1598,7 @@ impl<I> Device<I> {
     #[doc(alias = "LIFETIME_DATA_BLOCK_6")]
     pub fn lifetime_data_block_6(
         &mut self,
-    ) -> ::device_driver::RegisterOperation<'_, Self, LifetimeDataBlock6, u8, ::device_driver::RW, ()>
+    ) -> ::device_driver::RegisterOperation<'_, Self, LifetimeDataBlock6, u8, ::device_driver::RO, ()>
     where
         I: ::device_driver::RegisterInterfaceBase<AddressType = u8>,
     {
@@ -1611,7 +1611,7 @@ impl<I> Device<I> {
     #[doc(alias = "LIFETIME_DATA_BLOCK_7")]
     pub fn lifetime_data_block_7(
         &mut self,
-    ) -> ::device_driver::RegisterOperation<'_, Self, LifetimeDataBlock7, u8, ::device_driver::RW, ()>
+    ) -> ::device_driver::RegisterOperation<'_, Self, LifetimeDataBlock7, u8, ::device_driver::RO, ()>
     where
         I: ::device_driver::RegisterInterfaceBase<AddressType = u8>,
     {
@@ -1624,7 +1624,7 @@ impl<I> Device<I> {
     #[doc(alias = "LIFETIME_DATA_BLOCK_8")]
     pub fn lifetime_data_block_8(
         &mut self,
-    ) -> ::device_driver::RegisterOperation<'_, Self, LifetimeDataBlock8, u8, ::device_driver::RW, ()>
+    ) -> ::device_driver::RegisterOperation<'_, Self, LifetimeDataBlock8, u8, ::device_driver::RO, ()>
     where
         I: ::device_driver::RegisterInterfaceBase<AddressType = u8>,
     {
@@ -1663,7 +1663,7 @@ impl<I> Device<I> {
     #[doc(alias = "LIFETIME_DATA_BLOCK_11")]
     pub fn lifetime_data_block_11(
         &mut self,
-    ) -> ::device_driver::RegisterOperation<'_, Self, LifetimeDataBlock11, u8, ::device_driver::RW, ()>
+    ) -> ::device_driver::RegisterOperation<'_, Self, LifetimeDataBlock11, u8, ::device_driver::RO, ()>
     where
         I: ::device_driver::RegisterInterfaceBase<AddressType = u8>,
     {
@@ -1676,7 +1676,7 @@ impl<I> Device<I> {
     #[doc(alias = "LIFETIME_DATA_BLOCK_12")]
     pub fn lifetime_data_block_12(
         &mut self,
-    ) -> ::device_driver::RegisterOperation<'_, Self, LifetimeDataBlock12, u8, ::device_driver::RW, ()>
+    ) -> ::device_driver::RegisterOperation<'_, Self, LifetimeDataBlock12, u8, ::device_driver::RO, ()>
     where
         I: ::device_driver::RegisterInterfaceBase<AddressType = u8>,
     {
@@ -1728,7 +1728,7 @@ impl<I> Device<I> {
     #[doc(alias = "GAUGE_STATUS_2")]
     pub fn gauge_status_2(
         &mut self,
-    ) -> ::device_driver::RegisterOperation<'_, Self, GaugeStatus2, u8, ::device_driver::RW, ()>
+    ) -> ::device_driver::RegisterOperation<'_, Self, GaugeStatus2, u8, ::device_driver::RO, ()>
     where
         I: ::device_driver::RegisterInterfaceBase<AddressType = u8>,
     {

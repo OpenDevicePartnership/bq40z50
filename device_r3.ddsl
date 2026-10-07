@@ -1687,6 +1687,7 @@ device Device {
     },
     register LIFETIME_DATA_BLOCK_6 {
         address: 0x65,
+        access: RO,
         fields: fieldset _ {
             size-bytes: 32,
         
@@ -1702,6 +1703,7 @@ device Device {
     },
     register LIFETIME_DATA_BLOCK_7 {
         address: 0x66,
+        access: RO,
         fields: fieldset _ {
             size-bytes: 32,
         
@@ -1717,6 +1719,7 @@ device Device {
     },
     register LIFETIME_DATA_BLOCK_8 {
         address: 0x67,
+        access: RO,
         fields: fieldset _ {
             size-bytes: 32,
         
@@ -1752,6 +1755,7 @@ device Device {
     },
     register LIFETIME_DATA_BLOCK_11 {
         address: 0x6a,
+        access: RO,
         fields: fieldset _ {
             size-bytes: 32,
         
@@ -1767,6 +1771,7 @@ device Device {
     },
     register LIFETIME_DATA_BLOCK_12 {
         address: 0x6b,
+        access: RO,
         fields: fieldset _ {
             size-bytes: 32,
         
@@ -1846,6 +1851,7 @@ device Device {
     },
     register GAUGE_STATUS_2 {
         address: 0x74,
+        access: RO,
         fields: fieldset _ {
             size-bytes: 32,
         

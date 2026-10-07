@@ -1589,6 +1589,7 @@ device Device {
     },
     register GAUGE_STATUS_2 {
         address: 0x74,
+        access: RO,
         fields: fieldset _ {
             size-bytes: 32,
         

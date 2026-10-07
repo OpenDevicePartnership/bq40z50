@@ -1482,7 +1482,7 @@ impl<I> Device<I> {
     #[doc(alias = "GAUGE_STATUS_2")]
     pub fn gauge_status_2(
         &mut self,
-    ) -> ::device_driver::RegisterOperation<'_, Self, GaugeStatus2, u8, ::device_driver::RW, ()>
+    ) -> ::device_driver::RegisterOperation<'_, Self, GaugeStatus2, u8, ::device_driver::RO, ()>
     where
         I: ::device_driver::RegisterInterfaceBase<AddressType = u8>,
     {
