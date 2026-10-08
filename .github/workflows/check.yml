@@ -139,7 +139,6 @@ jobs:
                        # bitfield-struct requires 1.83
                        #
                        # device-driver v2 requires 1.94
-        toolchain: [stable]
     name: ubuntu / ${{ matrix.msrv }}
     steps:
       - uses: actions/checkout@v4
@@ -148,9 +147,9 @@ jobs:
       - name: Install ${{ matrix.msrv }}
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: ${{ matrix.toolchain }}
-      - name: cargo +${{ matrix.toolchain }} check ${{ matrix.chip-rev }}
-        run: cargo check --locked --features ${{ matrix.chip-rev }}
+          toolchain: ${{ matrix.msrv }}
+      - name: cargo +${{ matrix.msrv }} check ${{ matrix.chip-rev }}
+        run: cargo +${{ matrix.msrv }} check --locked --features ${{ matrix.chip-rev }}
 
   hack-clippy:
     # cargo-hack checks combinations of feature flags to ensure that features are all additive
