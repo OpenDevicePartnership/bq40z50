@@ -7460,11 +7460,11 @@ impl PfAlert {
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw > 0
     }
-    /// `bit 25` - Read the `opnc` field.
+    /// `bit 25` - Read the `opncell` field.
     ///
-    #[doc(alias = "OPNC")]
+    #[doc(alias = "OPNCELL")]
     #[must_use]
-    pub fn opnc(&self) -> bool {
+    pub fn opncell(&self) -> bool {
         let start = 25;
         let end = 25;
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
@@ -7547,7 +7547,7 @@ impl core::fmt::Debug for PfAlert {
         d.field("afer", &self.afer());
         d.field("afec", &self.afec());
         d.field("second_lvl", &self.second_lvl());
-        d.field("opnc", &self.opnc());
+        d.field("opncell", &self.opncell());
         d.field("ts_1", &self.ts_1());
         d.field("ts_2", &self.ts_2());
         d.field("ts_3", &self.ts_3());
@@ -7577,7 +7577,7 @@ impl defmt::Format for PfAlert {
         defmt::write!(f, "afer: {=bool}, ", &self.afer());
         defmt::write!(f, "afec: {=bool}, ", &self.afec());
         defmt::write!(f, "second_lvl: {=bool}, ", &self.second_lvl());
-        defmt::write!(f, "opnc: {=bool}, ", &self.opnc());
+        defmt::write!(f, "opncell: {=bool}, ", &self.opncell());
         defmt::write!(f, "ts_1: {=bool}, ", &self.ts_1());
         defmt::write!(f, "ts_2: {=bool}, ", &self.ts_2());
         defmt::write!(f, "ts_3: {=bool}, ", &self.ts_3());
@@ -21653,11 +21653,11 @@ impl MacPfAlert {
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw > 0
     }
-    /// `bit 25` - Read the `opnc` field.
+    /// `bit 25` - Read the `opncell` field.
     ///
-    #[doc(alias = "OPNC")]
+    #[doc(alias = "OPNCELL")]
     #[must_use]
-    pub fn opnc(&self) -> bool {
+    pub fn opncell(&self) -> bool {
         let start = 25;
         let end = 25;
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
@@ -21865,10 +21865,10 @@ impl MacPfAlert {
         let raw = value as _;
         unsafe { ::device_driver::ops::store::<u8, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
-    /// `bit 25` - Set the `opnc` field.
+    /// `bit 25` - Set the `opncell` field.
     ///
-    #[doc(alias = "OPNC")]
-    pub fn set_opnc(&mut self, value: bool) {
+    #[doc(alias = "OPNCELL")]
+    pub fn set_opncell(&mut self, value: bool) {
         let start = 25;
         let end = 25;
         let raw = value as _;
@@ -21947,7 +21947,7 @@ impl core::fmt::Debug for MacPfAlert {
         d.field("afer", &self.afer());
         d.field("afec", &self.afec());
         d.field("second_lvl", &self.second_lvl());
-        d.field("opnc", &self.opnc());
+        d.field("opncell", &self.opncell());
         d.field("ts_1", &self.ts_1());
         d.field("ts_2", &self.ts_2());
         d.field("ts_3", &self.ts_3());
@@ -21977,7 +21977,7 @@ impl defmt::Format for MacPfAlert {
         defmt::write!(f, "afer: {=bool}, ", &self.afer());
         defmt::write!(f, "afec: {=bool}, ", &self.afec());
         defmt::write!(f, "second_lvl: {=bool}, ", &self.second_lvl());
-        defmt::write!(f, "opnc: {=bool}, ", &self.opnc());
+        defmt::write!(f, "opncell: {=bool}, ", &self.opncell());
         defmt::write!(f, "ts_1: {=bool}, ", &self.ts_1());
         defmt::write!(f, "ts_2: {=bool}, ", &self.ts_2());
         defmt::write!(f, "ts_3: {=bool}, ", &self.ts_3());
