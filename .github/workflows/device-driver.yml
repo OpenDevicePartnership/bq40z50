@@ -1,6 +1,4 @@
-# This workflow checks whether the library is able to run without the std library (e.g., embedded).
-# This entire file should be removed if this crate does not support no-std. See check.yml for
-# information about how the concurrency cancellation and workflow triggering works
+# Keep each revision's generated Rust in sync with its DDSL source.
 permissions:
   contents: read
 on:
@@ -14,6 +12,7 @@ name: device-driver-pregen-check
 jobs:
   device-driver-pregen-check:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     name: device-driver-pregen-check
     strategy:
       matrix:
@@ -22,29 +21,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Install stable
-        uses: dtolnay/rust-toolchain@stable
-      - name: Install nightly with rustfmt
-        uses: dtolnay/rust-toolchain@nightly
+          persist-credentials: false
+      - name: Check generated device driver
+        uses: tullom/device-driver-pregen-check@v1.2.0
         with:
-          components: rustfmt
-      - name: Install device-driver-cli from crates.io
-        uses: baptiste0928/cargo-install@v3
-        with:
-          crate: device-driver-cli
-          version: '=2.1.0'
-      - name: Generate files
-        run: ddc build rust -s device_${{ matrix.chip-rev }}.ddsl -o ci_gen_${{matrix.chip-rev}}.rs --rust-defmt-feature=defmt-03
-      - name: Format generated file with nightly rustfmt
-        # The committed pregen files are formatted with nightly rustfmt (see
-        # rustfmt.toml unstable options). Format the freshly generated file
-        # the same way before diffing, otherwise this check perpetually
-        # conflicts with the `nightly / fmt` check.
-        run: rustup run nightly rustfmt --edition 2024 ci_gen_${{matrix.chip-rev}}.rs
-      - name: Check that the files are the exact same
-        uses: LouisBrunner/diff-action@v2.0.0
-        with:
-          old: ci_gen_${{matrix.chip-rev}}.rs
-          new: src/versions/gen_${{matrix.chip-rev}}.rs
-          mode: strict
-          tolerance: same
+          source: device_${{ matrix.chip-rev }}.ddsl
+          generated-file: src/versions/gen_${{ matrix.chip-rev }}.rs
+          cli-version: '2.1.0'
+          rust-toolchain: '1.94.0'
+          rust-defmt-feature: defmt-03
