@@ -37,7 +37,9 @@ cargo test --locked --features r1,embassy-timeout,pec-lookup-table
 
 `write_dataflash` commits data in chunks of up to 32 bytes and is **not atomic**.
 If a write fails, earlier chunks are not rolled back, and the failing chunk may
-also have reached the gauge. Errors do not report how many bytes were committed.
+also have reached the gauge. If at least one chunk was committed before failure,
+the error returns `PartialDataFlashWrite { committed }`, where `committed` is the
+number of caller-payload bytes successfully written (excluding bus framing).
 Retrying the entire write rewrites earlier chunks; callers must verify the
 affected data and handle recovery.
 
