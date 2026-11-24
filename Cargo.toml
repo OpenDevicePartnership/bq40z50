@@ -33,7 +33,7 @@ smbus-pec = { version = "1.0.1" }
 
 [dev-dependencies]
 embedded-hal-mock = { version = "0.11.1", features = ["embedded-hal-async"] }
-tokio = { version = "1.42.0", features = ["rt", "macros"] }
+tokio = { version = "1.53.3", features = ["rt", "macros"] }
 embassy-time = { version = "0.5.0", features = ["std"] }
 embassy-executor = { version = "0.9.1", features = [
 	"arch-std",

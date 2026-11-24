@@ -243,6 +243,13 @@ version = "0.9.2"
 notes = "no_std fixed-capacity data structures. Extensive unsafe for MaybeUninit buffers, lock-free queues (Vyukov MPMC, SPSC), Treiber stack pools with ABA prevention (CAS tagged pointers + ARM LLSC). All Send/Sync bounds verified correct. Build script probes for ARM LLSC. Assisted-by: copilot-cli:claude-opus-4.6"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
 
+[[audits.OpenDevicePartnership.audits.heapless]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "0.9.2 -> 0.9.3"
+notes = "Delta 0.9.2->0.9.3: Fixes unsoundness in Deque/HistoryBuf/IndexMap::clear when Drop panics (Guard pattern). Adds CString conversions (into_string, into_bytes, from_bytes_truncating_at_nul), Deque::pop_front_if/pop_back_if, const Vec::from_array. New transmute_copy in as_len_type is sound (closed type enum). Pointer-cast cleanups. Assisted-by: copilot-cli:claude-opus-4.6"
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
+
 [[audits.OpenDevicePartnership.audits.litrs]]
 who = "Jerry Xie <jerryxie@microsoft.com>"
 criteria = "safe-to-deploy"
@@ -300,16 +307,25 @@ version = "2.0.17"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/mcxa-pac/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.tokio]]
-who = "Robert Zieba <robertzieba@microsoft.com>"
+who = "Felipe Balbi <felipe@balbi.sh>"
 criteria = "safe-to-run"
-version = "1.45.0"
-aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
+version = "1.52.3"
+notes = "Async runtime. The existing [[trusted.tokio]] entry covers releases published by user 6741 (Alice Ryhl); this specific 1.52.3 release isn't covered by that trust window so add an explicit audit. tokio's capability surface is broad (process spawn, fs, signal, net) but only what's enabled by features matters: tmp108's dev-dep enables `rt`, `macros`, `rt-multi-thread`, `time` only - no `fs`, `net`, `process`, `signal`. unsafe usage is extensive but expected for an async runtime (intrusive lists, atomics, thread-local state); no build script. Assisted-by: opencode:claude-opus-4.7-1m-internal"
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/tmp108/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.tokio]]
-who = "Felipe Balbi <felipe.balbi@microsoft.com>"
+who = "Felipe Balbi <febalbi@microsoft.com>"
 criteria = "safe-to-run"
-delta = "1.45.0 -> 1.51.1"
-aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-mcu/refs/heads/main/supply-chain/audits.toml"
+delta = "1.52.3 -> 1.53.1"
+notes = """
+Async runtime, dev-dependency only (doctests and the async unit tests), so safe-to-run rather than safe-to-deploy. Chains off the full 1.52.3 audit above; only the delta was reviewed here.
+
+build.rs is byte-for-byte identical between the two versions and there are no new dependencies; the only Cargo.toml change beyond the version is the new `schedule-latency` feature, which is empty and gated behind `--cfg tokio_unstable`. Nothing new runs at build or test time.
+
+120 source files change (+2478/-1097), concentrated in runtime/time, runtime/time_alt, the sync primitives (broadcast, mpsc, oneshot, notify, semaphore, watch) and util (linked_list, sharded_list, rand). Four source files are new: io/uring/rename.rs and io/uring/statx.rs, which add filesystem operations behind the `io-uring` feature, and runtime/metrics/schedule_latency{,_mock}.rs behind the unstable `schedule-latency` feature. None of those features are enabled here - tmp108 enables only `rt`, `macros`, `rt-multi-thread` and `time` - and io-uring does not appear in Cargo.lock, so that new capability surface is not reachable from this build.
+
+Assisted-by: opencode:claude-opus-5"""
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/tmp108/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.tokio-macros]]
 who = "Robert Zieba <robertzieba@microsoft.com>"
