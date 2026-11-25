@@ -51,4 +51,9 @@ Unless you explicitly state otherwise, any contribution submitted for
 inclusion in the work by you shall be licensed under the terms of the
 MIT license.
 
+See [CONTRIBUTING.md](https://github.com/OpenDevicePartnership/bq40z50/blob/main/CONTRIBUTING.md)
+for the commit-message convention (Conventional Commits) and the pull
+request rules. AI coding agents should read
+[AGENTS.md](https://github.com/OpenDevicePartnership/bq40z50/blob/main/AGENTS.md).
+
 License: MIT

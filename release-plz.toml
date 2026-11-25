@@ -1,0 +1,64 @@
+# Release-plz configuration.
+#
+# Releases in this repository are automated. Nothing here is edited by hand:
+# not `version` in `Cargo.toml`, not `CHANGELOG.md`, not the git tags. See
+# `.github/workflows/release-plz.yml` for the two jobs that drive it, and the
+# "Releases" section of `AGENTS.md` for the contributor-facing rules.
+#
+# Docs: https://release-plz.dev/docs/config
+
+[workspace]
+# Pin the canonical repository instead of letting release-plz infer it from
+# the default git remote. Development happens through forks, so a contributor
+# running `release-plz update` locally would otherwise generate changelog
+# entries and release links pointing at their own fork.
+repo_url = "https://github.com/OpenDevicePartnership/bq40z50"
+
+# Pin the release pull request's branch prefix rather than inheriting
+# release-plz's default. The value matches the current default, so this is a
+# guard rather than a change: it keeps the branch name stable if release-plz
+# ever moves its default, and it is the name the branch-protection carve-outs
+# are written against.
+#
+# Two rulesets on this repository exclude `refs/heads/release-plz-*`:
+# "Disable Branch Creation" (so the branch can be created at all) and
+# "Branch Protection" (so release-plz can push to it without a pull request).
+# Change this prefix and both exclusions must change with it, or every release
+# fails on a rule violation instead of a visible configuration error.
+pr_branch_prefix = "release-plz-"
+
+[[package]]
+# The crate is `bq40z50-rx`; the repository is `bq40z50`. They differ, which
+# matters for the crates.io Trusted Publishing setup described in the workflow.
+name = "bq40z50-rx"
+
+# Regenerate `CHANGELOG.md` from the conventional commits that have landed
+# since the last tag.
+#
+# This repository is squash-only, so the commit that lands on `main` is the
+# squash commit, whose subject is the pull request title. The pull request
+# title is therefore what ends up in the changelog and what drives the version
+# bump - not the individual commits on the branch. See `AGENTS.md`.
+changelog_update = true
+
+# Tag `vX.Y.Z` and cut a GitHub release whose body is the matching changelog
+# section. The "Tag Creation Namespace" ruleset excludes `refs/tags/v*` from
+# its creation rule so this is allowed; every other tag namespace is blocked.
+git_release_enable = true
+
+# Publish to crates.io. The workflow authenticates with Trusted Publishing, so
+# there is no registry token anywhere in this repository.
+publish = true
+
+# Run cargo-semver-checks and let it drive the version bump: an undeclared API
+# break is promoted to a major semver bump, which on `0.x` means `0.x` ->
+# `0.(x+1)`.
+#
+# This is the only place cargo-semver-checks runs. `check.yml` had a `semver`
+# job; it was removed because it is incompatible with release-plz owning the
+# version. On a feature branch `Cargo.toml` still carries the last published
+# version, so `cargo semver-checks check-release` fails every pull request that
+# makes a breaking change - the bump it asks for does not arrive until the
+# release pull request. Restoring that job means setting `semver_check = false`
+# here to avoid running the check twice.
+semver_check = true
